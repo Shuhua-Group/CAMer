@@ -1,0 +1,2 @@
+# CAM
+Continuous Admixture Modeling
