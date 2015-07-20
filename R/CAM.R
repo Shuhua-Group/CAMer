@@ -355,7 +355,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #'
 #' data(CGF_50)
 #' fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE)
-#' fit #Lengths of intervals being 10 indicates larger T should be tried.
+#' fit #Lengths of intervals being 20 indicates larger T should be tried.
 #'
 #' \dontrun{
 #' #passing a file path to the argument `rawld=`
