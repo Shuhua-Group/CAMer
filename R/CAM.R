@@ -1,8 +1,8 @@
-#' Package for Continuous Admixture Modeling (CAM)
+#' Continuous Admixture Modeling (CAM)
 #' 
 #' \pkg{CAM} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
 #' 
-#' See the vignettes (intro.html under doc/ in the lib) to see some examples of how to use the functions.
+#' Type \code{browseVignettes(CAM)} in R for the vignettes to see some examples of how to use the functions.
 #' 
 #' @docType package
 #' @name CAM-package
@@ -132,7 +132,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                     fast.search=TRUE,max.duration=150L,
                     single.parallel=isolation && !fast.search,
                     single.clusternum=4L){
-    maxindex<-which(y==max(y))[1]
+    maxindex<-which(y==max(y))[1L]
     if(maxindex>1){
         y<-y[-seq_len(maxindex-1L)]
         d<-d[-seq_len(maxindex-1L)]
@@ -299,7 +299,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                              theta0=sapply(estimate,function(dummy) dummy$theta0),
                              theta1=sapply(estimate,function(dummy) dummy$theta1),
                              ssE=sapply(estimate,function(dummy) dummy$ssE),
-                             Max.index=rep(result$maxindex,4),
+                             Max.index=rep(result$maxindex,4L),
                              msE=sapply(estimate,function(dummy) dummy$msE))
 
     result
@@ -407,21 +407,21 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     names(results$CAM.list)<-c("Combined_LD",paste("Jack",seq_len(length(Jack.index)),sep=""))
 
     results$fitted<-rawld$Fitted
-    if(results$CAM.list[[1]]$maxindex>1) results$fitted<-results$fitted[-seq_len(tempresults[[1]]$maxindex-1)]
-    v<-distance(results$fitted,results$CAM.list[[1]]$y)
+    if(results$CAM.list[[1L]]$maxindex>1L) results$fitted<-results$fitted[-seq_len(results$CAM.list[[1L]]$maxindex-1L)]
+    v<-distance(results$fitted,results$CAM.list[[1L]]$y)
 
     data<-NULL
     for(ld in seq_len(ncol(Y))){
-        data.temp<-data.frame(LD=rep(names(results$CAM.list)[ld],4),
+        data.temp<-data.frame(LD=rep(names(results$CAM.list)[ld],4L),
                               Model=names(results$CAM.list[[ld]]$estimate),
                               Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
                               End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
                               theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
                               theta1=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta1),
                               ssE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$ssE),
-                              Max.index=rep(results$CAM.list[[ld]]$maxindex,4),
+                              Max.index=rep(results$CAM.list[[ld]]$maxindex,4L),
                               msE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$msE),
-                              quasi.F=if(ld==1L) sapply(results$CAM.list[[1L]]$estimate,function(dummy){dummy$ssE/v}) else rep(NA,4))
+                              quasi.F=if(ld==1L) sapply(results$CAM.list[[1L]]$estimate,function(dummy){dummy$ssE/v}) else rep(NA,4L))
         data<-rbind(data,data.temp)
     }
     data$LD<-as.factor(data$LD)
@@ -447,25 +447,22 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
 #' @export
 
 reconstruct.fitted<-function(CAM.single){
-    y1<-CAM.single$estimate[[1]]$theta0+CAM.single$estimate[[1]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[1]]$n]*CAM.single$m1*CAM.single$m2
+    y1<-CAM.single$estimate[[1L]]$theta0+CAM.single$estimate[[1L]]$theta1*
+        CAM.single$A[,CAM.single$estimate[[1L]]$n]*CAM.single$m1*CAM.single$m2
 
-    alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2]]$n)
-    y2<-CAM.single$estimate[[2]]$theta0+CAM.single$estimate[[2]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[2]]$end:CAM.single$estimate[[2]]$start]%*%
-        matrix(CAM.single$m1^((CAM.single$estimate[[2]]$n-1):0/CAM.single$estimate[[2]]$n),ncol=1)*alpha*CAM.single$m1
-    y2<-as.numeric(y2)
+    alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2L]]$n)
+    y2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
+        CAM.single$A[,CAM.single$estimate[[2L]]$end:CAM.single$estimate[[2L]]$start]%*%
+        matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1
 
-    alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3]]$n)
-    y3<-CAM.single$estimate[[3]]$theta0+CAM.single$estimate[[3]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[3]]$end:CAM.single$estimate[[3]]$start]%*%
-        matrix(CAM.single$m2^((CAM.single$estimate[[3]]$n-1):0/CAM.single$estimate[[3]]$n),ncol=1)*alpha*CAM.single$m2
-    y3<-as.numeric(y3)
+    alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3L]]$n)
+    y3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
+        CAM.single$A[,CAM.single$estimate[[3L]]$end:CAM.single$estimate[[3L]]$start]%*%
+        matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2
 
-    y4<-CAM.single$estimate[[4]]$theta0+CAM.single$estimate[[4]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[4]]$end:CAM.single$estimate[[4]]$start]%*%
-        matrix((1-1/CAM.single$estimate[[4]]$n)^(0:(CAM.single$estimate[[4]]$n-1))/c(rep(CAM.single$estimate[[4]]$n,CAM.single$estimate[[4]]$n-1),1),ncol=1)*CAM.single$m1*CAM.single$m2
-    y4<-as.numeric(y4)
+    y4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
+        CAM.single$A[,CAM.single$estimate[[4L]]$end:CAM.single$estimate[[4L]]$start]%*%
+        matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2
 
     z<-list(y1,y2,y3,y4)
     names(z)<-paste(names(CAM.single$estimate),".fitted",sep="")
@@ -518,10 +515,10 @@ plot.CAM<-function(x,filename,
                                        "#7af8ff","#1ea1a8","#1ea1a8"),ncol=4),
                    box.log=TRUE,alpha=0.6,fit.lwd=3,LD.col="black",LD.lwd=1,...){
     model.cols2<-col2rgb(model.cols,alpha=TRUE)
-    alpha<-alpha*rep(1,4)
-    for(model in 1:4){
-        if(nchar(model.cols[3,model])==7)
-            model.cols2[4,3*model]<-round(alpha[model]*model.cols2[4,3*model])
+    alpha<-alpha*rep(1,4L)
+    for(model in 1L:4L){
+        if(nchar(model.cols[3L,model])==7L)
+            model.cols2[4L,3L*model]<-round(alpha[model]*model.cols2[4L,3L*model])
     }
 
     data<-x$summary
@@ -537,11 +534,11 @@ plot.CAM<-function(x,filename,
             sapply(sort(unique(time)),function(t) as.numeric(c(t,sum(time==t))))
         }
     })
-    NJack<-length(levels(data$LD))-1
+    NJack<-length(levels(data$LD))-1L
 
     if(!missing(filename)) pdf(filename,width=9.6,height=7.2)
 
-    layout(matrix(c(1,2,3,3),ncol=2,nrow=2,byrow=TRUE),widths=c(4,4),heights=c(1,2))
+    layout(matrix(c(1,2,3,3),ncol=2L,nrow=2L,byrow=TRUE),widths=c(4,4),heights=c(1,2))
 
     par(bty="n",las=1)
     if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) xmax<-100
@@ -645,21 +642,21 @@ construct.CAM<-function(rawld,m1,dataset){
 
     m2<-1-m1
 
-    results<-list(d=d,Y=Y,isolation="CGF1-I" %in% levels(dataset$Model),CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
+    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
     class(results)<-"CAM"
 
     for(ld in seq_along(levels(dataset$LD))){
         d.temp<-d
         y.temp<-Y[,ld]
         data2<-dataset[(4*ld-3):(4*ld),]
-        maxindex<-data2$Max.index[1]
+        maxindex<-data2$Max.index[1L]
         if(maxindex>1){
-            y.temp<-y.temp[-seq_len(maxindex-1)]
-            d.temp<-d.temp[-seq_len(maxindex-1)]
+            y.temp<-y.temp[-seq_len(maxindex-1L)]
+            d.temp<-d.temp[-seq_len(maxindex-1L)]
         }
         A<-exp(-d.temp%*%t(seq_len(T)))
         results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,A=A,y=y.temp,m1=m1,m2=m2)
-        for(model in unique(dataset$Model)){
+        for(model in 1L:4L){
             data.temp<-data2[model,]
             results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model=="HI") data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
         }
@@ -758,12 +755,12 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
     p.value[is.na(p.value)]<-0
     p.value<-cbind(rbind(0,p.value),0)
     p.value<-p.value+t(p.value)
-    p.value[matrix(as.logical(diag(4)),ncol=4)]<-rep(NA,4)
+    p.value[matrix(as.logical(diag(4L)),ncol=4L)]<-rep(NA,4L)
     colnames(p.value)<-row.names(p.value)<-models
 
 
-    best<-which(means==min(means))[1]
-    if(means[4]!=means[best] && p.value[4,best]<alpha){
+    best<-which(means==min(means))[1L]
+    if(means[4L]!=means[best] && p.value[4L,best]<alpha){
         best<-c(best,which(p.value[best,]>=alpha))
         best<-models[sort(best)]
     } else best<-"HI"
