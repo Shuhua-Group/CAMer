@@ -46,6 +46,8 @@ It is not recommended to pass other arguments to basic functions like \code{plot
 data(CGF_50)
 fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE)
 plot(fit,"bad_fitting.pdf")
+
+#may not be able to display
 plot(fit,model.cols=matrix(c("pink","red","pink",
                              "lightseagreen","green","green",
                              "skyblue","blue","blue",

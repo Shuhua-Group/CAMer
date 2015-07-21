@@ -58,19 +58,21 @@ library(foreach);library(doSNOW)
 
 #fit models with isolation=FALSE.
 fit<-CAM(GA_I,m1=0.3,T=150L,isolation=FALSE)
-\dontrun{plot(fit) #may not be able to display}
+\dontrun{
+plot(fit) #may not be able to display
+}
 #Bad fitting indicates isolation=TRUE should be tried.
 fit<-CAM(GA_I,m1=0.3,T=150L,isolation=TRUE)
 fit
 fit$summary
 \dontrun{
-plot(fit)
+plot(fit) #may not be able to display
 plot(fit,"D:/plot.pdf") #plot to a .pdf file
 }
 
 data(CGF_50)
 fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE)
-fit #Lengths of intervals being 10 indicates larger T should be tried.
+fit #Lengths of intervals being 20 indicates larger T should be tried.
 
 \dontrun{
 #passing a file path to the argument `rawld=`

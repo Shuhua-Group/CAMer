@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{An Introdunction to **package** package}
+%\VignetteIndexEntry{An Introdunction to **CAM** package}
 -->
 
-An Introduction to **package** package
+An Introduction to **CAM** package
 ===============
 
 This package does Continuous Admixture Modeling (CAM) and related summary. It introduces two new S3 classes, **CAM.single** and **CAM**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
@@ -16,12 +16,12 @@ This package does Continuous Admixture Modeling (CAM) and related summary. It in
 The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
 ```{r}
-# library(package)
-# data(CGF_50)
-# d<-CGF_50$Distance
-# y<-CGF_50$Combined_LD
-# fit<-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
-# fit
+library(CAM)
+data(CGF_50)
+d<-CGF_50$Distance
+y<-CGF_50$Combined_LD
+fit<-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
+fit
 ```
 
 where `d` corresponds to genetic distance and `y` corresponds to an LD decay curve. The admixture proportion for population 1 ($m_1$) is 0.3 for this data set.
@@ -37,10 +37,10 @@ See the help page of `singleCAM()` for more examples.
 The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:
 
 ```{r}
-# data(GA_I)
-# library(foreach);library(doSNOW)
-# fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
-# fit
+data(GA_I)
+library(foreach);library(doSNOW)
+fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
+fit
 ```
 
 One can also specify the file path of the .rawld file in argument `rawld=`.
@@ -55,7 +55,7 @@ See help page of `CAM()` for more examples.
 A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example:
 
 ```{r,fig.width=9.6,fig.height=7.2}
-# plot(fit)
+plot(fit)
 ```
 
 where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
@@ -63,10 +63,10 @@ where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_
 To change the colors of models:
 
 ```{r,fig.width=9.6,fig.height=7.2}
-# plot(fit,model.cols=matrix(c("pink","red","pink",
-#                              "lightseagreen","green","green",
-#                              "skyblue","blue","blue",
-#                              "yellow","orange","orange"),ncol=4))
+plot(fit,model.cols=matrix(c("pink","red","pink",
+                             "lightseagreen","green","green",
+                             "skyblue","blue","blue",
+                             "yellow","orange","orange"),ncol=4))
 ```
 
 See help page of `plot.CAM()` for more details.
@@ -77,14 +77,14 @@ See help page of `plot.CAM()` for more details.
 The function `conclude.model()` can draw conclusions on which models are the significantly best ones. It takes a "CAM" class object or its summary table as input:
 
 ```{r}
-# conclusion<-conclude.model(fit)
-# conclusion<-conclude.model(fit$summary)
-# conclusion
+conclusion<-conclude.model(fit)
+conclusion<-conclude.model(fit$summary)
+conclusion
 ```
 
 The function returns an object of "CAM.conclusion" class, which has a special method for `print()`.
 
-Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does NOT check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a "CAM" class object for this purpose.
+Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does **NOT** check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a "CAM" class object for this purpose.
 
 See the help page of `conclude.model()` for further information.
 
@@ -96,11 +96,11 @@ See the help page of `conclude.model()` for further information.
 Sometimes maybe only the summary table of a **CAM** object is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function.
 
 ```{r,fig.width=9.6,fig.height=7.2}
-# summarydata<-fit$summary
-# rm(fit)
-# fit<-construct.CAM(rawld=GA_I,m1=0.3,dataset=summarydata)
-# fit
-# plot(fit)
+summarydata<-fit$summary
+rm(fit)
+fit<-construct.CAM(rawld=GA_I,m1=0.3,dataset=summarydata)
+fit
+plot(fit)
 ```
 
 where `fit` is obtained from previous examples.
@@ -110,6 +110,6 @@ where `fit` is obtained from previous examples.
 One may want to get the fitted LD decay curves. The function `reconstruct.fitted` takes a **CAM.single** object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** objects in the constructed **CAM** object from `construct.CAM` as input:
 
 ```{r}
-# fitted<-reconstruct.fitted(fit$CAM.list[[1]])
-# str(fitted)
+fitted<-reconstruct.fitted(fit$CAM.list[[1]])
+str(fitted)
 ```

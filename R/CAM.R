@@ -10,7 +10,7 @@ NULL
 
 #' Simulated .rawld File for CGF1
 #'
-#' A data frame read from a .rawld file by \code{read.table}. Simulation data using 10 chromosomes where the true model is CGF1 (50 generations) with admixture proportion of population 1 being 0.3.
+#' A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is CGF1 (50 generations) with admixture proportion of population 1 being 0.3.
 #'
 #' @details
 #' The useful variables are as follows:
@@ -26,7 +26,7 @@ NULL
 
 #' Simulated .rawld File for GA-I
 #'
-#' A data frame read from a .rawld file by \code{read.table}. Simulation data using 10 chromosomes where the true model is GA-I (start from the 100th generation and end at the 30th generation) with admixture proportion of population 1 being 0.3.
+#' A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is GA-I (start from the 100th generation and end at the 30th generation) with admixture proportion of population 1 being 0.3.
 #'
 #' @details
 #' The useful variables are as follows:
@@ -343,13 +343,15 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #'
 #' #fit models with isolation=FALSE.
 #' fit<-CAM(GA_I,m1=0.3,T=150L,isolation=FALSE)
-#' \dontrun{plot(fit) #may not be able to display}
+#' \dontrun{
+#' plot(fit) #may not be able to display
+#' }
 #' #Bad fitting indicates isolation=TRUE should be tried.
 #' fit<-CAM(GA_I,m1=0.3,T=150L,isolation=TRUE)
 #' fit
 #' fit$summary
 #' \dontrun{
-#' plot(fit)
+#' plot(fit) #may not be able to display
 #' plot(fit,"D:/plot.pdf") #plot to a .pdf file
 #' }
 #'
@@ -490,6 +492,8 @@ reconstruct.fitted<-function(CAM.single){
 #' data(CGF_50)
 #' fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE)
 #' plot(fit,"bad_fitting.pdf")
+#' 
+#' #may not be able to display
 #' plot(fit,model.cols=matrix(c("pink","red","pink",
 #'                              "lightseagreen","green","green",
 #'                              "skyblue","blue","blue",
@@ -720,11 +724,11 @@ print.CAM<-function(x){
 #' @return an object of S3 class "CAM.conclusion". A list consisting of:
 #' \item{call}{function call}
 #' \item{group.means}{a named vector of group means of log(msE)/msE with each model being a group}
-#' \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j.}
+#' \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
 #' \item{best.models}{the set of best models concluded}
 #' \item{p.adjust.method}{method for adjusting p values used}
 #' @details
-#' The function uses msE to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+#' The function uses pairwise Student's t-test on msE to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
 #'
 #' There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
 #' @note
@@ -735,7 +739,7 @@ print.CAM<-function(x){
 #' conslusion<-conclude.model(fit)
 #' 
 #' conslusion<-conclude.model(fit,alpha=0.01,p.adjust.method="bonferroni",log=FALSE)
-#' @seealso \code{\link{CAM}}, \code{\link[stats]{p.adjust}}
+#' @seealso \code{\link{CAM}}, \code{\link[stats]{p.adjust}}, \code{\link[stats]{pairwise.t.test}}
 #' @import stats
 #' @export
 
@@ -761,7 +765,7 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
         best<-models[sort(best)]
     } else best<-"HI"
 
-    conclusion<-list(call=match.call(),group.means=means,adjusted.p.value=p.value,best.models=best,p.adjust.method=p.adjust.method)
+    conclusion<-list(call=match.call(),alpha=alpha,group.means=means,adjusted.p.value=p.value,best.models=best,p.adjust.method=p.adjust.method)
     class(conclusion)<-"CAM.conclusion"
     conclusion
 }
@@ -777,6 +781,8 @@ print.CAM.conclusion<-function(x){
     cat("Function call: ")
     print(x$call)
     cat("\n")
+    cat("Familiwise Error Rate: ")
+    cat(x$alpha,"\n\n",sep="")
     cat("Best Model(s): ")
     for(i in seq_along(x$best.models)){
         cat(x$best.models[i])

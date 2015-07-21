@@ -19,7 +19,7 @@ conclude.model(x, alpha = 0.05, p.adjust.method = "holm", log = TRUE)
 an object of S3 class "CAM.conclusion". A list consisting of:
 \item{call}{function call}
 \item{group.means}{a named vector of group means of log(msE)/msE with each model being a group}
-\item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j.}
+\item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
 \item{best.models}{the set of best models concluded}
 \item{p.adjust.method}{method for adjusting p values used}
 }
@@ -27,7 +27,7 @@ an object of S3 class "CAM.conclusion". A list consisting of:
 Draw conclusions on which models are best from a "CAM" class object or its summary table.
 }
 \details{
-The function uses msE to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+The function uses pairwise Student's t-test on msE to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
 
 There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
 }
@@ -38,9 +38,10 @@ The function only chooses the best model(s). It does NOT do any diagnostic analy
 data(CGF_50)
 fit<-CAM(CGF_50,0.3,70L,isolation=FALSE)
 conslusion<-conclude.model(fit)
-conclusion
+
+conslusion<-conclude.model(fit,alpha=0.01,p.adjust.method="bonferroni",log=FALSE)
 }
 \seealso{
-\code{\link{CAM}}, \code{\link[stats]{p.adjust}}
+\code{\link{CAM}}, \code{\link[stats]{p.adjust}}, \code{\link[stats]{pairwise.t.test}}
 }
 
