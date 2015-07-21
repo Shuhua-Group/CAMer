@@ -645,7 +645,7 @@ construct.CAM<-function(rawld,m1,dataset){
 
     m2<-1-m1
 
-    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
+    results<-list(d=d,Y=Y,isolation="CGF1-I" %in% levels(dataset$Model),CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
     class(results)<-"CAM"
 
     for(ld in seq_along(levels(dataset$LD))){

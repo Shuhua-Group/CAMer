@@ -9,9 +9,9 @@ An Introduction to **CAM** package
 This package does Continuous Admixture Modeling (CAM) and related summary. It introduces two new S3 classes, **CAM.single** and **CAM**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
-##Computation
+## Computation
 
-###Single LD Decay Curve
+### Single LD Decay Curve
 
 The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
@@ -32,7 +32,7 @@ Parallel computation is supported provided that **foreach** package and **doSNOW
 
 See the help page of `singleCAM()` for more examples.
 
-###Multiple LD Decay Curves (.rawld File)
+### Multiple LD Decay Curves (.rawld File)
 
 The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:
 
@@ -52,7 +52,7 @@ Parallel computation is also supported as in the example, provided that **foreac
 See help page of `CAM()` for more examples.
 
 ------------------------
-##Summary Plots
+## Summary Plots
 
 A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example:
 
@@ -74,7 +74,7 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
 See help page of `plot.CAM()` for more details.
 
 ----------------------
-##Draw Conclusions on Best Model(s)
+## Draw Conclusions on Best Model(s)
 
 The function `conclude.model()` can draw conclusions on which models are the significantly best ones. It takes a "CAM" class object or its summary table as input:
 
@@ -91,9 +91,9 @@ Note that this function only selects the significantly best model(s), i.e. the o
 See the help page of `conclude.model()` for further information.
 
 -----------------
-##Miscellaneous
+## Miscellaneous
 
-###Construct a Simple **CAM** object
+### Construct a Simple **CAM** object
 
 Sometimes maybe only the summary table of an object of **CAM** class is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function and `conclude.model()` function.
 
@@ -108,7 +108,7 @@ conclude.model(fit)
 
 where `fit` is obtained from previous examples.
 
-###Reconstruct Fitted LD Decay Curves
+### Reconstruct Fitted LD Decay Curves
 
 One may want to get the fitted LD decay curves. The function `reconstruct.fitted()` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
 
