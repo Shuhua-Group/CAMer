@@ -61,77 +61,103 @@ img {
 
 
 
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{An Introdunction to **CAM** package}
--->
 <div id="an-introduction-to-cam-package" class="section level1">
 <h1>An Introduction to <strong>CAM</strong> package</h1>
-<p>This package does Continuous Admixture Modeling (CAM) and related summary. It introduces two new S3 classes, <strong>CAM.single</strong> and <strong>CAM</strong>, and some corresponding methods. It also contains some utility functions and two simulated data sets (<em>CGF_50</em> and <em>GA_I</em>) for illustration.</p>
-<table>
-<colgroup>
-<col width="15%"></col>
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left">## Computation</td>
-</tr>
-<tr class="even">
-<td align="left">### Single LD Decay Curve</td>
-</tr>
-<tr class="odd">
-<td align="left">The function <code>singleCAM()</code> does CAM for a single LD decay curve. For example:</td>
-</tr>
-<tr class="even">
-<td align="left"><code>r library(CAM) data(CGF_50) d&lt;-CGF_50$Distance y&lt;-CGF_50$Combined_LD fit&lt;-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE) fit</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>## Continuous Admixture Inference (CAM) for a Single LD Decay Curve ## ## Function call: singleCAM(d = d, y = y, m1 = 0.3, T = 70L, isolation = FALSE) ## ## Length of Used LD: 3497 ## ##      Model Start End          msE ## HI      HI    23  NA 8.912686e-06 ## CGF1  CGF1    49   1 1.654922e-06 ## CGF2  CGF2    60   1 2.750241e-06 ## GA      GA    53   1 5.509048e-06</code></td>
-</tr>
-<tr class="even">
-<td align="left">where <code>d</code> corresponds to genetic distance and <code>y</code> corresponds to an LD decay curve. The admixture proportion for population 1 (<span class="math">\(m_1\)</span>) is 0.3 for this data set.</td>
-</tr>
-<tr class="odd">
-<td align="left">Here the class of <code>fit</code> is <strong>CAM.single</strong>, and it has its own method for <code>print()</code>.</td>
-</tr>
-<tr class="even">
-<td align="left">Parallel computation is supported provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</td>
-</tr>
-<tr class="odd">
-<td align="left">See the help page of <code>singleCAM()</code> for more examples.</td>
-</tr>
-<tr class="even">
-<td align="left">### Multiple LD Decay Curves (.rawld File)</td>
-</tr>
-<tr class="odd">
-<td align="left">The function <code>CAM()</code> does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:</td>
-</tr>
-<tr class="even">
-<td align="left"><code>r data(GA_I) library(foreach);library(doSNOW)</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>## Loading required package: iterators ## Loading required package: snow</code></td>
-</tr>
-<tr class="even">
-<td align="left"><code>r fit&lt;-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE) fit</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>## Continuous Admixture Inference (CAM) for a .rawlf File ## ## Function call:CAM(rawld = GA_I, m1 = 0.3, T = 150L, LD.parallel = TRUE, single.parallel = FALSE) ## ## Total Length of LD: 3497 ## ##                   LD  Model Start End          msE  quasi.F ## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224 ## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815 ## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717 ## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281 ## HI1            Jack1     HI    63  NA 2.220300e-06       NA ## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA ## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA ## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA ## HI2            Jack2     HI    63  NA 2.358990e-06       NA ## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA ## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA ## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA ## HI3            Jack3     HI    64  NA 2.185886e-06       NA ## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA ## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA ## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA ## HI4            Jack4     HI    64  NA 2.432188e-06       NA ## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA ## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA ## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA ## HI5            Jack5     HI    63  NA 2.423726e-06       NA ## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA ## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA ## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA ## HI6            Jack6     HI    64  NA 2.307339e-06       NA ## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA ## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA ## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA ## HI7            Jack7     HI    63  NA 2.396205e-06       NA ## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA ## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA ## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA ## HI8            Jack8     HI    63  NA 2.304644e-06       NA ## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA ## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA ## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA ## HI9            Jack9     HI    64  NA 2.350640e-06       NA ## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA ## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA ## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA ## HI10          Jack10     HI    63  NA 2.248512e-06       NA ## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA ## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA ## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA</code></td>
-</tr>
-<tr class="even">
-<td align="left">One can also specify the file path of the .rawld file in argument <code>rawld=</code>.</td>
-</tr>
-<tr class="odd">
-<td align="left">Here the class of <code>fit</code> is <strong>CAM</strong>, and it has its own method for <code>print()</code> and <code>plot()</code>. A <strong>CAM</strong> object has an element named <code>CAM.list</code> consisting of the <strong>CAM.single</strong> objects for each LD decay curve.</td>
-</tr>
-<tr class="even">
-<td align="left">Parallel computation is also supported as in the example, provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</td>
-</tr>
-<tr class="odd">
-<td align="left">See help page of <code>CAM()</code> for more examples.</td>
-</tr>
-</tbody>
-</table>
+<p>This package does Continuous Admixture Modeling (CAM) and related summary. It introduces three new S3 classes, <strong>CAM.single</strong>, <strong>CAM</strong> and <strong>CAM.conclusion</strong>, and some corresponding methods. It also contains some utility functions and two simulated data sets (<em>CGF_50</em> and <em>GA_I</em>) for illustration.</p>
+<hr />
+<div id="computation" class="section level2">
+<h2>Computation</h2>
+<div id="single-ld-decay-curve" class="section level3">
+<h3>Single LD Decay Curve</h3>
+<p>The function <code>singleCAM()</code> does CAM for a single LD decay curve. For example:</p>
+<pre class="r"><code>data(CGF_50)
+d&lt;-CGF_50$Distance
+y&lt;-CGF_50$Combined_LD
+fit&lt;-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
+fit</code></pre>
+<pre><code>## Continuous Admixture Inference (CAM) for a Single LD Decay Curve
+## 
+## Function call: singleCAM(d = d, y = y, m1 = 0.3, T = 70L, isolation = FALSE)
+## 
+## Length of Used LD: 3497 
+## 
+##      Model Start End          msE
+## HI      HI    23  NA 8.912686e-06
+## CGF1  CGF1    49   1 1.654922e-06
+## CGF2  CGF2    60   1 2.750241e-06
+## GA      GA    53   1 5.509048e-06</code></pre>
+<p>where <code>d</code> corresponds to genetic distance and <code>y</code> corresponds to an LD decay curve. The admixture proportion for population 1 (<span class="math">\(m_1\)</span>) is 0.3 for this data set.</p>
+<p>Here the class of <code>fit</code> is <strong>CAM.single</strong>, and it has its own method for <code>print()</code>.</p>
+<p>Parallel computation is supported provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</p>
+<p>See the help page of <code>singleCAM()</code> for more examples.</p>
+</div>
+<div id="multiple-ld-decay-curves-.rawld-file" class="section level3">
+<h3>Multiple LD Decay Curves (.rawld File)</h3>
+<p>The function <code>CAM()</code> does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:</p>
+<pre class="r"><code>data(GA_I)
+library(foreach);library(doSNOW)</code></pre>
+<pre><code>## Loading required package: iterators
+## Loading required package: snow</code></pre>
+<pre class="r"><code>fit&lt;-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
+fit</code></pre>
+<pre><code>## Continuous Admixture Inference (CAM) for a .rawlf File
+## 
+## Function call:CAM(rawld = GA_I, m1 = 0.3, T = 150L, LD.parallel = TRUE, single.parallel = FALSE)
+## 
+## Total Length of LD: 3497 
+## 
+##                   LD  Model Start End          msE  quasi.F
+## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224
+## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
+## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
+## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281
+## HI1            Jack1     HI    63  NA 2.220300e-06       NA
+## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA
+## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA
+## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA
+## HI2            Jack2     HI    63  NA 2.358990e-06       NA
+## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA
+## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA
+## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA
+## HI3            Jack3     HI    64  NA 2.185886e-06       NA
+## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA
+## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA
+## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA
+## HI4            Jack4     HI    64  NA 2.432188e-06       NA
+## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA
+## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA
+## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA
+## HI5            Jack5     HI    63  NA 2.423726e-06       NA
+## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA
+## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA
+## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA
+## HI6            Jack6     HI    64  NA 2.307339e-06       NA
+## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA
+## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA
+## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA
+## HI7            Jack7     HI    63  NA 2.396205e-06       NA
+## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA
+## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA
+## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA
+## HI8            Jack8     HI    63  NA 2.304644e-06       NA
+## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA
+## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA
+## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA
+## HI9            Jack9     HI    64  NA 2.350640e-06       NA
+## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA
+## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA
+## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA
+## HI10          Jack10     HI    63  NA 2.248512e-06       NA
+## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA
+## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA
+## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA</code></pre>
+<p>One can also specify the file path of the .rawld file in argument <code>rawld=</code>.</p>
+<p>Here the class of <code>fit</code> is <strong>CAM</strong>, and it has its own method for <code>print()</code> and <code>plot()</code>. A <strong>CAM</strong> object has an element named <code>CAM.list</code> consisting of the <strong>CAM.single</strong> objects for each LD decay curve.</p>
+<p>Parallel computation is also supported as in the example, provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</p>
+<p>See help page of <code>CAM()</code> for more examples.</p>
+<hr />
+</div>
+</div>
 <div id="summary-plots" class="section level2">
 <h2>Summary Plots</h2>
 <p>A new method of <code>plot()</code> for <strong>CAM</strong> class is introduced in this package (<code>plot.CAM()</code>). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to  in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for . For example:</p>
@@ -145,34 +171,36 @@ img {
                              &quot;yellow&quot;,&quot;orange&quot;,&quot;orange&quot;),ncol=4))</code></pre>
 <p><img src="data:image/png;base64,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" /></p>
 <p>See help page of <code>plot.CAM()</code> for more details.</p>
-<table>
-<colgroup>
-<col width="30%"></col>
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left">## Draw Conclusions on Best Model(s)</td>
-</tr>
-<tr class="even">
-<td align="left">The function <code>conclude.model()</code> can draw conclusions on which models are the significantly best ones. It takes a “CAM” class object or its summary table as input:</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>r conclusion&lt;-conclude.model(fit) conclusion&lt;-conclude.model(fit$summary) conclusion</code></td>
-</tr>
-<tr class="even">
-<td align="left"><code>## CAM Best Model(s) Conclusion: ## ## Function call: conclude.model(x = fit$summary) ## ## Familiwise Error Rate: 0.05 ## ## Best Model(s): CGF1-I, CGF2-I, GA-I ## ## Group Means of log(msE)/msE: ##    CGF1-I    CGF2-I      GA-I        HI ## -13.22938 -13.23121 -13.23263 -12.97332 ## ## Adjusted p-value: ##              CGF1-I       CGF2-I         GA-I           HI ## CGF1-I           NA 8.078541e-01 1.797942e-01 9.238602e-10 ## CGF2-I 8.078541e-01           NA 8.078541e-01 8.919968e-10 ## GA-I   1.797942e-01 8.078541e-01           NA 9.238602e-10 ## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA</code></td>
-</tr>
-<tr class="odd">
-<td align="left">The function returns an object of <strong>CAM.conclusion</strong> class, which has a special method for <code>print()</code>.</td>
-</tr>
-<tr class="even">
-<td align="left">Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does <strong>NOT</strong> check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a “CAM” class object for this purpose.</td>
-</tr>
-<tr class="odd">
-<td align="left">See the help page of <code>conclude.model()</code> for further information.</td>
-</tr>
-</tbody>
-</table>
+<hr />
+</div>
+<div id="draw-conclusions-on-best-models" class="section level2">
+<h2>Draw Conclusions on Best Model(s)</h2>
+<p>The function <code>conclude.model()</code> can draw conclusions on which models are the significantly best ones. It takes a “CAM” class object or its summary table as input:</p>
+<pre class="r"><code>conclusion&lt;-conclude.model(fit)
+conclusion&lt;-conclude.model(fit$summary)
+conclusion</code></pre>
+<pre><code>## CAM Best Model(s) Conclusion:
+## 
+## Function call: conclude.model(x = fit$summary)
+## 
+## Familiwise Error Rate: 0.05
+## 
+## Best Model(s): CGF1-I, CGF2-I, GA-I
+## 
+## Group Means of log(msE)/msE:
+##    CGF1-I    CGF2-I      GA-I        HI 
+## -13.22938 -13.23121 -13.23263 -12.97332 
+## 
+## Adjusted p-value:
+##              CGF1-I       CGF2-I         GA-I           HI
+## CGF1-I           NA 8.078541e-01 1.797942e-01 9.238602e-10
+## CGF2-I 8.078541e-01           NA 8.078541e-01 8.919968e-10
+## GA-I   1.797942e-01 8.078541e-01           NA 9.238602e-10
+## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA</code></pre>
+<p>The function returns an object of <strong>CAM.conclusion</strong> class, which has a special method for <code>print()</code>.</p>
+<p>Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does <strong>NOT</strong> check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a “CAM” class object for this purpose.</p>
+<p>See the help page of <code>conclude.model()</code> for further information.</p>
+<hr />
 </div>
 <div id="miscellaneous" class="section level2">
 <h2>Miscellaneous</h2>

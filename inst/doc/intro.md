@@ -1,14 +1,14 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{An Introdunction to **CAM** package}
--->
+
 
 An Introduction to **CAM** package
 ===============
 
-This package does Continuous Admixture Modeling (CAM) and related summary. It introduces two new S3 classes, **CAM.single** and **CAM**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
+
+
+This package does Continuous Admixture Modeling (CAM) and related summary. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
+
 ## Computation
 
 ### Single LD Decay Curve
@@ -17,7 +17,6 @@ The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
 
 ```r
-library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
 y<-CGF_50$Combined_LD
@@ -130,6 +129,7 @@ Parallel computation is also supported as in the example, provided that **foreac
 See help page of `CAM()` for more examples.
 
 ------------------------
+
 ## Summary Plots
 
 A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example:
@@ -139,7 +139,7 @@ A new method of `plot()` for **CAM** class is introduced in this package (`plot.
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-3-1.png) 
+![](intro_files/figure-html/unnamed-chunk-4-1.png) 
 
 where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
 
@@ -153,11 +153,12 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
                              "yellow","orange","orange"),ncol=4))
 ```
 
-![](intro_files/figure-html/unnamed-chunk-4-1.png) 
+![](intro_files/figure-html/unnamed-chunk-5-1.png) 
 
 See help page of `plot.CAM()` for more details.
 
 ----------------------
+
 ## Draw Conclusions on Best Model(s)
 
 The function `conclude.model()` can draw conclusions on which models are the significantly best ones. It takes a "CAM" class object or its summary table as input:
@@ -197,6 +198,7 @@ Note that this function only selects the significantly best model(s), i.e. the o
 See the help page of `conclude.model()` for further information.
 
 -----------------
+
 ## Miscellaneous
 
 ### Construct a Simple **CAM** object
@@ -267,7 +269,7 @@ fit
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-6-1.png) 
+![](intro_files/figure-html/unnamed-chunk-7-1.png) 
 
 ```r
 conclude.model(fit)

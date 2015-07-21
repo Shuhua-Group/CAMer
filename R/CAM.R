@@ -2,7 +2,7 @@
 #' 
 #' \pkg{CAM} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
 #' 
-#' See the vignettes (intro.html) to see some examples of how to use the functions.
+#' See the vignettes (intro.html under doc/ in the lib) to see some examples of how to use the functions.
 #' 
 #' @docType package
 #' @name CAM-package
