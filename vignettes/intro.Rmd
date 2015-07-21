@@ -110,7 +110,7 @@ where `fit` is obtained from previous examples.
 
 ###Reconstruct Fitted LD Decay Curves
 
-One may want to get the fitted LD decay curves. The function `reconstruct.fitted` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
+One may want to get the fitted LD decay curves. The function `reconstruct.fitted()` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
 
 ```{r}
 fitted<-reconstruct.fitted(fit$CAM.list[[1]])
