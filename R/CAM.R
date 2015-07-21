@@ -659,7 +659,7 @@ construct.CAM<-function(rawld,m1,dataset){
         }
         A<-exp(-d.temp%*%t(seq_len(T)))
         results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,A=A,y=y.temp,m1=m1,m2=m2)
-        for(model in 1:4){
+        for(model in unique(dataset$Model)){
             data.temp<-data2[model,]
             results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model=="HI") data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
         }
