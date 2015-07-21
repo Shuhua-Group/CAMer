@@ -454,15 +454,18 @@ reconstruct.fitted<-function(CAM.single){
     y2<-CAM.single$estimate[[2]]$theta0+CAM.single$estimate[[2]]$theta1*
         CAM.single$A[,CAM.single$estimate[[2]]$end:CAM.single$estimate[[2]]$start]%*%
         matrix(CAM.single$m1^((CAM.single$estimate[[2]]$n-1):0/CAM.single$estimate[[2]]$n),ncol=1)*alpha*CAM.single$m1
+    y2<-as.numeric(y2)
 
     alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3]]$n)
     y3<-CAM.single$estimate[[3]]$theta0+CAM.single$estimate[[3]]$theta1*
         CAM.single$A[,CAM.single$estimate[[3]]$end:CAM.single$estimate[[3]]$start]%*%
         matrix(CAM.single$m2^((CAM.single$estimate[[3]]$n-1):0/CAM.single$estimate[[3]]$n),ncol=1)*alpha*CAM.single$m2
+    y3<-as.numeric(y3)
 
     y4<-CAM.single$estimate[[4]]$theta0+CAM.single$estimate[[4]]$theta1*
         CAM.single$A[,CAM.single$estimate[[4]]$end:CAM.single$estimate[[4]]$start]%*%
         matrix((1-1/CAM.single$estimate[[4]]$n)^(0:(CAM.single$estimate[[4]]$n-1))/c(rep(CAM.single$estimate[[4]]$n,CAM.single$estimate[[4]]$n-1),1),ncol=1)*CAM.single$m1*CAM.single$m2
+    y4<-as.numeric(y4)
 
     z<-list(y1,y2,y3,y4)
     names(z)<-paste(names(CAM.single$estimate),".fitted",sep="")

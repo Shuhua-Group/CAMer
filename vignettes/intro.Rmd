@@ -28,7 +28,7 @@ where `d` corresponds to genetic distance and `y` corresponds to an LD decay cur
 
 Here the class of `fit` is **CAM.single**, and it has its own method for `print()`.
 
-Parallel computation is supported provided that **foreach** package and **doSNOW** package are installed.
+Parallel computation is supported provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
 
 See the help page of `singleCAM()` for more examples.
 
@@ -46,6 +46,8 @@ fit
 One can also specify the file path of the .rawld file in argument `rawld=`.
 
 Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
+
+Parallel computation is also supported as in the example, provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
 
 See help page of `CAM()` for more examples.
 
@@ -82,7 +84,7 @@ conclusion<-conclude.model(fit$summary)
 conclusion
 ```
 
-The function returns an object of "CAM.conclusion" class, which has a special method for `print()`.
+The function returns an object of **CAM.conclusion** class, which has a special method for `print()`.
 
 Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does **NOT** check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a "CAM" class object for this purpose.
 
@@ -93,7 +95,7 @@ See the help page of `conclude.model()` for further information.
 
 ###Construct a Simple **CAM** object
 
-Sometimes maybe only the summary table of a **CAM** object is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function.
+Sometimes maybe only the summary table of an object of **CAM** class is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function and `conclude.model()` function.
 
 ```{r,fig.width=9.6,fig.height=7.2}
 summarydata<-fit$summary
@@ -101,13 +103,14 @@ rm(fit)
 fit<-construct.CAM(rawld=GA_I,m1=0.3,dataset=summarydata)
 fit
 plot(fit)
+conclude.model(fit)
 ```
 
 where `fit` is obtained from previous examples.
 
 ###Reconstruct Fitted LD Decay Curves
 
-One may want to get the fitted LD decay curves. The function `reconstruct.fitted` takes a **CAM.single** object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** objects in the constructed **CAM** object from `construct.CAM` as input:
+One may want to get the fitted LD decay curves. The function `reconstruct.fitted` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
 
 ```{r}
 fitted<-reconstruct.fitted(fit$CAM.list[[1]])
