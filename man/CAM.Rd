@@ -48,9 +48,11 @@ Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{LD.p
 
 The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each LD decay curve.
 
-Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
-
 If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
+
+If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
+
+Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 }
 \examples{
 data(GA_I)

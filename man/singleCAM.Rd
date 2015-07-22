@@ -58,6 +58,8 @@ If \code{isolation=TRUE,fast.search=TRUE}, for CGF1-I, CGF2-I, GA-I models, it u
 
 If the last entry of distence is greater than 10, a warning of unit will be given.
 
+If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
+
 Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{single.parallel=TRUE}. It is recommended to library these required packages before using the parallel functionality.
 
 Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computatio time.

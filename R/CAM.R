@@ -93,6 +93,8 @@ fit.theta<-function(Ac,y){
 #' \code{maxindex} is the index of \code{y} such that \code{y[maxindex]} is the maximal value of \code{y}. If the first few values of \code{y} are not decreasing as theoretically expected, the \code{1:maxindex} of \code{y} and \code{d} will be removed in calculation and in returned values.
 #'
 #' If the last entry of distence is greater than 10, a warning of unit will be given.
+#' 
+#' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #'
 #' Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{single.parallel=TRUE}. It is recommended to library these required packages before using the parallel functionality.
 #'
@@ -219,6 +221,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         ssE[n]<-coef$ssE
                     }
                     n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
+                    if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
                     list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
                 } else {
                     est.old<-est.fun(1,T)
@@ -228,6 +231,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         if(gen.new$changed) gen.old<-gen.new
                         else break
                     }
+                    if(gen.new$start==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
                     list(m=gen.new$end,n=gen.new$start-gen.new$end+1L,
                          start=gen.new$start,end=gen.new$end,
                          theta0=gen.new$theta0,theta1=gen.new$theta1,
@@ -246,6 +250,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         ssE[n]<-coef$ssE
                     }
                     n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
+                    if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
                     list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
                 } else {
                     ssE<-theta0<-theta1<-matrix(nrow=T,ncol=T)
@@ -265,6 +270,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                             if(ssE[n,m]<SSE){
                                 M<-m;N<-n;SSE<-ssE[n,m]
                             }
+                    if(M+N-1L==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
                     list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0[N,M],theta1=theta1[N,M],ssE=SSE,msE=SSE/(length(y)-1))
                 }
             }
@@ -279,6 +285,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                 ssE[n]<-coef$ssE
             }
             n<-which(ssE==min(ssE,na.rm=TRUE))[1]
+            if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
             list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
         }
 
@@ -334,9 +341,12 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #'
 #' The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each LD decay curve.
 #'
+#' If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
+#' 
+#' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
+#' 
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 #'
-#' If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
 #' @examples
 #' data(GA_I)
 #' library(foreach);library(doSNOW)
