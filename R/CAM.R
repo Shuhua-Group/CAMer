@@ -483,6 +483,7 @@ reconstruct.fitted<-function(CAM.single){
 #'
 #' @param x an object of "CAM" class
 #' @param filename pdf file path.
+#' @param xmax the most ancient generation to be plotted. If an estimated time interval goes beyond xmax, there will be an arrow at the end of the line. Can be missing.
 #' @param model.cols a matrix of colors. See "Details"
 #' @param box.log a logical expression. If \code{TRUE}, the scale of the axis will be in log scale. Defaults to \code{TRUE}
 #' @param alpha a numeric value in [0,1] representitng alpha of the fitted LD decay curves for Combined LD. Defaults to 0.6. Can be a vector representing different alphas for different models. Ignored if alpha is specified in the third row of \code{model.cols}.
@@ -496,15 +497,16 @@ reconstruct.fitted<-function(CAM.single){
 #'
 #' If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 #'
-#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{col2rgb}.
+#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function.
 #' @examples
 #' \dontrun{
 #' data(CGF_50)
-#' fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE)
+#' fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE) #will give warnings
 #' plot(fit,"bad_fitting.pdf")
 #' 
 #' #may not be able to display
-#' plot(fit,model.cols=matrix(c("pink","red","pink",
+#' #This is not a very informative and user-friendly plot
+#' plot(fit,xmax=2L,model.cols=matrix(c("pink","red","pink",
 #'                              "lightseagreen","green","green",
 #'                              "skyblue","blue","blue",
 #'                              "yellow","orange","orange"),ncol=4),
@@ -512,13 +514,15 @@ reconstruct.fitted<-function(CAM.single){
 #' }
 #' @note
 #' It is not recommended to pass other arguments to basic functions like \code{plot} in \code{...}.
-
-#' @seealso \code{\link{CAM}}, \code{\link[grDevices]{rgb}}, \code{\link[grDevices]{col2rgb}}
+#' 
+#' It is recommended to select the best-fit model(s) according to the output of \code{\link{conclude.model}} rather than the boxplot of msE because \code{\link{conclude.model}} does paired t-tests, whose conclusion may look quite different from what we see from the boxplot.
+#' 
+#' @seealso \code{\link{CAM}}, \code{\link{conclude.model}}, \code{\link[grDevices]{rgb}}, \code{\link[grDevices]{col2rgb}}
 #' @import graphics
 #' @import grDevices
 #' @export
 
-plot.CAM<-function(x,filename,
+plot.CAM<-function(x,filename,xmax,
                    model.cols=matrix(c("#ffa1c2B2","#b50d37B2","#da577c",
                                        "#9bff94","#0fbd02","#0fbd02",
                                        "#e9a1ff","#9111b8","#9111b8",
@@ -551,10 +555,15 @@ plot.CAM<-function(x,filename,
     layout(matrix(c(1,2,3,3),ncol=2L,nrow=2L,byrow=TRUE),widths=c(4,4),heights=c(1,2))
 
     par(bty="n",las=1)
-    if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) xmax<-100
-    else if(min(sapply(intervals,function(dummy) min(dummy[1,])))>=200 && max(sapply(intervals,function(dummy) max(dummy[1,])))<500) xmax<-500
-    else if(max(sapply(intervals,function(dummy) max(dummy[1,])))>=500) xmax<-x$T
-    else xmax<-200
+    if(missing(xmax)){
+        if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) xmax<-100
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<200) xmax<-200
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<500) xmax<-500
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<1000) xmax<-1000
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<2000) xmax<-2000
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<3000) xmax<-3000
+        else xmax<-x$T
+    }
     plot(x=1:xmax,y=seq(0,4,length.out=xmax),type="n",ann=FALSE,axes=FALSE,...)
 
     for(model in 1:4){

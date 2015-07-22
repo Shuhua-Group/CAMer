@@ -4,7 +4,7 @@
 \alias{plot.CAM}
 \title{Summary Plots for "CAM" Class}
 \usage{
-\method{plot}{CAM}(x, filename, model.cols = matrix(c("#ffa1c2B2",
+\method{plot}{CAM}(x, filename, xmax, model.cols = matrix(c("#ffa1c2B2",
   "#b50d37B2", "#da577c", "#9bff94", "#0fbd02", "#0fbd02", "#e9a1ff", "#9111b8",
   "#9111b8", "#7af8ff", "#1ea1a8", "#1ea1a8"), ncol = 4), box.log = TRUE,
   alpha = 0.6, fit.lwd = 3, LD.col = "black", LD.lwd = 1, ...)
@@ -13,6 +13,8 @@
 \item{x}{an object of "CAM" class}
 
 \item{filename}{pdf file path.}
+
+\item{xmax}{the most ancient generation to be plotted. If an estimated time interval goes beyond xmax, there will be an arrow at the end of the line. Can be missing.}
 
 \item{model.cols}{a matrix of colors. See "Details"}
 
@@ -36,19 +38,22 @@ The function generates three plots in a device. The plot on the top left is the 
 
 If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 
-The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{col2rgb}.
+The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function.
 }
 \note{
 It is not recommended to pass other arguments to basic functions like \code{plot} in \code{...}.
+
+It is recommended to select the best-fit model(s) according to the output of \code{\link{conclude.model}} rather than the boxplot of msE because \code{\link{conclude.model}} does paired t-tests, whose conclusion may look quite different from what we see from the boxplot.
 }
 \examples{
 \dontrun{
 data(CGF_50)
-fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE)
+fit<-CAM(CGF_50,0.3,10L,isolation=FALSE,LD.parallel=FALSE) #will give warnings
 plot(fit,"bad_fitting.pdf")
 
 #may not be able to display
-plot(fit,model.cols=matrix(c("pink","red","pink",
+#This is not a very informative and user-friendly plot
+plot(fit,xmax=2L,model.cols=matrix(c("pink","red","pink",
                              "lightseagreen","green","green",
                              "skyblue","blue","blue",
                              "yellow","orange","orange"),ncol=4),
@@ -56,6 +61,6 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
 }
 }
 \seealso{
-\code{\link{CAM}}, \code{\link[grDevices]{rgb}}, \code{\link[grDevices]{col2rgb}}
+\code{\link{CAM}}, \code{\link{conclude.model}}, \code{\link[grDevices]{rgb}}, \code{\link[grDevices]{col2rgb}}
 }
 
