@@ -27,7 +27,7 @@ an object of S3 class "CAM.conclusion". A list consisting of:
 Draw conclusions on which models are best from a "CAM" class object or its summary table.
 }
 \details{
-The function uses pairwise Student's t-test on msE to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+The function uses pairwise paired Student's t-test on msE based on Jackknives to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
 
 There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
 }

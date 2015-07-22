@@ -3,8 +3,6 @@
 An Introduction to **CAM** package
 ===============
 
-
-
 This package does Continuous Admixture Modeling (CAM) and related summary. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
@@ -17,6 +15,7 @@ The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
 
 ```r
+library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
 y<-CGF_50$Combined_LD
@@ -139,7 +138,7 @@ A new method of `plot()` for **CAM** class is introduced in this package (`plot.
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-4-1.png) 
+![](intro_files/figure-html/unnamed-chunk-3-1.png) 
 
 where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
 
@@ -153,7 +152,7 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
                              "yellow","orange","orange"),ncol=4))
 ```
 
-![](intro_files/figure-html/unnamed-chunk-5-1.png) 
+![](intro_files/figure-html/unnamed-chunk-4-1.png) 
 
 See help page of `plot.CAM()` for more details.
 
@@ -269,7 +268,7 @@ fit
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-7-1.png) 
+![](intro_files/figure-html/unnamed-chunk-6-1.png) 
 
 ```r
 conclude.model(fit)
@@ -310,8 +309,8 @@ str(fitted)
 
 ```
 ## List of 4
-##  $ HI.fitted    : num [1:3497] 0.192 0.19 0.187 0.185 0.183 ...
-##  $ CGF1-I.fitted: num [1:3497] 0.199 0.196 0.194 0.191 0.188 ...
-##  $ CGF2-I.fitted: num [1:3497] 0.2 0.197 0.194 0.192 0.189 ...
-##  $ GA-I.fitted  : num [1:3497] 0.2 0.197 0.194 0.192 0.189 ...
+##  $ HI.fitted    : num [1:3497] NA NA NA NA NA NA NA NA NA NA ...
+##  $ CGF1-I.fitted: num [1:3497, 1] 0.199 0.196 0.194 0.191 0.188 ...
+##  $ CGF2-I.fitted: num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
+##  $ GA-I.fitted  : num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
 ```

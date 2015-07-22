@@ -8,10 +8,6 @@ output:
 An Introduction to **CAM** package
 ===============
 
-```{r,echo=FALSE,results='hide'}
-library(CAM)
-```
-
 This package does Continuous Admixture Modeling (CAM) and related summary. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
@@ -23,6 +19,7 @@ This package does Continuous Admixture Modeling (CAM) and related summary. It in
 The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
 ```{r}
+library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
 y<-CGF_50$Combined_LD

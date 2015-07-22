@@ -14,10 +14,13 @@ construct.CAM(rawld, m1, dataset)
 \item{dataset}{summary table as in \code{summary} of an object of "CAM" class}
 }
 \value{
-a simple "CAM" class object. It is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found.
+a simple "CAM" class object.
 }
 \description{
 Construct a simple "CAM" class object which can be passed to \code{\link{plot.CAM}} and whose elements in \code{CAM.list} can be passed to \code{\link{reconstruct.fitted}}. Can be used when only the .rawld file, \eqn{m_1} and the summary table is available (e.g., only the summary table was saved after running \code{\link{CAM}} last time).
+}
+\note{
+The returned onject is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found. The \code{T} and \code{A} are not the original ones. The \code{T} is the minial possible one, i.e. the smallest one that is sufficient to do the following analysis and construction.
 }
 \examples{
 library(foreach);library(doSNOW)
