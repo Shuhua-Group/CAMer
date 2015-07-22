@@ -552,7 +552,8 @@ plot.CAM<-function(x,filename,
 
     par(bty="n",las=1)
     if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) xmax<-100
-    else if(min(sapply(intervals,function(dummy) min(dummy[1,])))>=200) xmax<-500
+    else if(min(sapply(intervals,function(dummy) min(dummy[1,])))>=200 && max(sapply(intervals,function(dummy) max(dummy[1,])))<500) xmax<-500
+    else if(max(sapply(intervals,function(dummy) max(dummy[1,])))>=500) xmax<-x$T
     else xmax<-200
     plot(x=1:xmax,y=seq(0,4,length.out=xmax),type="n",ann=FALSE,axes=FALSE,...)
 
@@ -615,7 +616,9 @@ plot.CAM<-function(x,filename,
 #' @param rawld original .rawld filepath or its data frame
 #' @param m1 the admixture proportion of population 1.
 #' @param dataset summary table as in \code{summary} of an object of "CAM" class
-#' @return a simple "CAM" class object. It is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found.
+#' @return a simple "CAM" class object.
+#' @note 
+#' The returned onject is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found. The \code{T} and \code{A} are not the original ones. The \code{T} is the minial possible one, i.e. the smallest one that is sufficient to do the following analysis and construction.
 #' @examples
 #' library(foreach);library(doSNOW)
 #' data(GA_I)
@@ -652,7 +655,7 @@ construct.CAM<-function(rawld,m1,dataset){
 
     m2<-1-m1
 
-    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
+    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),d=d,Y=Y,T=T,CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
     class(results)<-"CAM"
 
     for(ld in seq_along(levels(dataset$LD))){
@@ -665,7 +668,7 @@ construct.CAM<-function(rawld,m1,dataset){
             d.temp<-d.temp[-seq_len(maxindex-1L)]
         }
         A<-exp(-d.temp%*%t(seq_len(T)))
-        results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,A=A,y=y.temp,m1=m1,m2=m2)
+        results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,T=T,A=A,y=y.temp,m1=m1,m2=m2)
         for(model in 1L:4L){
             data.temp<-data2[model,]
             results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model=="HI") data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
