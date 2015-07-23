@@ -518,7 +518,8 @@ reconstruct.fitted<-function(CAM.single){
 #'                              "lightseagreen","green","green",
 #'                              "skyblue","blue","blue",
 #'                              "yellow","orange","orange"),ncol=4),
-#'      box.log=FALSE,alpha=1,fit.lwd=1,LD.col="gray",LD.lwd=3)
+#'      box.log=FALSE,box.lim=c(0,1),
+#'      alpha=1,fit.lwd=1,LD.col="gray",LD.lwd=3,LD.lim=c(0,1))
 #' }
 #' @note
 #' It is not recommended to pass other arguments to basic functions like \code{plot} in \code{...}.
