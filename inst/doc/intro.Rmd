@@ -4,7 +4,6 @@ output:
     keep_md: yes
 ---
 
-
 An Introduction to **CAM** package
 ===============
 

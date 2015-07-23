@@ -43,7 +43,7 @@ The function generates three plots in a device. The plot on the top left is the 
 
 If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 
-The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
+The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]{col2rgb}}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
 }
 \note{
 It is not recommended to pass other arguments to basic functions like \code{plot} in \code{...}.

@@ -2,7 +2,7 @@
 #' 
 #' \pkg{CAM} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
 #' 
-#' Type \code{browseVignettes(CAM)} in R for the vignettes to see some examples of how to use the functions.
+#' See \href{https://github.com/david940408/CAM/blob/master/inst/doc/intro.md}{An Introduction to CAM package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
 #' 
 #' @docType package
 #' @name CAM-package
@@ -505,7 +505,7 @@ reconstruct.fitted<-function(CAM.single){
 #'
 #' If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 #'
-#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
+#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]{col2rgb}}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
 #' @examples
 #' \dontrun{
 #' data(CGF_50)
@@ -703,9 +703,18 @@ construct.CAM<-function(rawld,m1,dataset){
         results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,T=T,A=A,y=y.temp,m1=m1,m2=m2)
         for(model in 1L:4L){
             data.temp<-data2[model,]
-            results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model=="HI") data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
+            results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model==1L) data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
         }
         names(results$CAM.list[[ld]]$estimate)<-if(results$isolation) c("HI","CGF1-I","CGF2-I","GA-I") else c("HI","CGF1","CGF2","GA")
+        results$CAM.list[[ld]]$summary<-data.frame(Model=names(results$CAM.list[[ld]]$estimate),
+                                                   Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
+                                                   End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
+                                                   theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
+                                                   theta1=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta1),
+                                                   ssE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$ssE),
+                                                   Max.index=rep(results$CAM.list[[ld]]$maxindex,4L),
+                                                   msE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$msE))
+        class(results$CAM.list[[ld]])<-"CAM.single"
     }
     names(results$CAM.list)<-unique(dataset$LD)
     results

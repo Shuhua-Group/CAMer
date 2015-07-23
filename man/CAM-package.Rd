@@ -8,6 +8,6 @@
 \pkg{CAM} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
 }
 \details{
-Type \code{browseVignettes(CAM)} in R for the vignettes to see some examples of how to use the functions.
+See \href{https://github.com/david940408/CAM/blob/master/inst/doc/intro.md}{An Introduction to CAM package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
 }
 
