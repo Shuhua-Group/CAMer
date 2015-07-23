@@ -4,21 +4,24 @@
 \alias{plot.CAM}
 \title{Summary Plots for "CAM" Class}
 \usage{
-\method{plot}{CAM}(x, filename, xmax, model.cols = matrix(c("#ffa1c2B2",
+\method{plot}{CAM}(x, filename, T.max, model.cols = matrix(c("#ffa1c2B2",
   "#b50d37B2", "#da577c", "#9bff94", "#0fbd02", "#0fbd02", "#e9a1ff", "#9111b8",
   "#9111b8", "#7af8ff", "#1ea1a8", "#1ea1a8"), ncol = 4), box.log = TRUE,
-  alpha = 0.6, fit.lwd = 3, LD.col = "black", LD.lwd = 1, ...)
+  box.lim, alpha = 0.6, fit.lwd = 3, LD.col = "black", LD.lwd = 1,
+  LD.lim = c(-0.002, 0.25), ...)
 }
 \arguments{
 \item{x}{an object of "CAM" class}
 
 \item{filename}{pdf file path.}
 
-\item{xmax}{the most ancient generation to be plotted. If an estimated time interval goes beyond xmax, there will be an arrow at the end of the line. Can be missing.}
+\item{T.max}{the most ancient generation to be plotted. If an estimated time interval goes beyond T.max, there will be an arrow at the end of the line. Can be missing.}
 
 \item{model.cols}{a matrix of colors. See "Details"}
 
 \item{box.log}{a logical expression. If \code{TRUE}, the scale of the axis will be in log scale. Defaults to \code{TRUE}}
+
+\item{box.lim}{the limit of msE shown in the boxplot. Defaults to the default of \code{\link[graphics]{boxplot}}}
 
 \item{alpha}{a numeric value in [0,1] representitng alpha of the fitted LD decay curves for Combined LD. Defaults to 0.6. Can be a vector representing different alphas for different models. Ignored if alpha is specified in the third row of \code{model.cols}.}
 
@@ -27,6 +30,8 @@
 \item{LD.col}{color of the original Combined LD curve. Defaults to "black".}
 
 \item{LD.lwd}{line width of the original Combined LD curve. Defaults to 1.}
+
+\item{LD.lim}{the limit of the Weighted LD-axis in the third plot (Fitting of Models). Defaults to \code{c(-.002,.25)}.}
 
 \item{...}{other graphical arguments passed to basic functions like \code{plot}.}
 }
@@ -38,7 +43,7 @@ The function generates three plots in a device. The plot on the top left is the 
 
 If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 
-The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function.
+The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
 }
 \note{
 It is not recommended to pass other arguments to basic functions like \code{plot} in \code{...}.
@@ -53,7 +58,7 @@ plot(fit,"bad_fitting.pdf")
 
 #may not be able to display
 #This is not a very informative and user-friendly plot
-plot(fit,xmax=2L,model.cols=matrix(c("pink","red","pink",
+plot(fit,T.max=2L,model.cols=matrix(c("pink","red","pink",
                              "lightseagreen","green","green",
                              "skyblue","blue","blue",
                              "yellow","orange","orange"),ncol=4),

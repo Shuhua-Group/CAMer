@@ -289,8 +289,11 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
             list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
         }
 
+    if(single.parallel && !(require(doSNOW,quietly=TRUE) && require(foreach,quietly=TRUE))){
+        warning("'doSNOW' and 'foreach' packages not found! Computing sequentially...")
+        single.parallel<-FALSE
+    }
     if(single.parallel){
-        require(doSNOW);require(foreach)
         cl<-makeCluster(single.clusternum)
         registerDoSNOW(cl)
         clusterExport(cl,c("distance","fit.theta"),envir=environment())
@@ -383,7 +386,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
               LD.parallel=TRUE,LD.clusternum,
               single.parallel=isolation && !fast.search,
               single.clusternum=4L){
-    if(is.character(rawld)) rawld<-read.table(rawld,header=TRUE)
+    if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
     Y<-rawld[,c(LD.index,Jack.index)]
@@ -401,9 +404,12 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     }
     class(results)<-"CAM"
 
+    if(LD.parallel && !(require(foreach,quietly=TRUE) && require(doSNOW,quietly=TRUE))){
+        warning("'foreach' and doSNOW' packages not found! Computing sequentially...")
+        LD.parallel<-FALSE
+    }
     if(LD.parallel){
         if(missing(LD.clusternum)) LD.clusternum<-ncol(Y)
-        require(doSNOW);require(foreach)
         cl<-makeCluster(LD.clusternum)
         registerDoSNOW(cl)
         clusterExport(cl,c("distance","fit.theta","singleCAM"),envir=environment())
@@ -483,13 +489,15 @@ reconstruct.fitted<-function(CAM.single){
 #'
 #' @param x an object of "CAM" class
 #' @param filename pdf file path.
-#' @param xmax the most ancient generation to be plotted. If an estimated time interval goes beyond xmax, there will be an arrow at the end of the line. Can be missing.
+#' @param T.max the most ancient generation to be plotted. If an estimated time interval goes beyond T.max, there will be an arrow at the end of the line. Can be missing.
 #' @param model.cols a matrix of colors. See "Details"
 #' @param box.log a logical expression. If \code{TRUE}, the scale of the axis will be in log scale. Defaults to \code{TRUE}
+#' @param box.lim the limit of msE shown in the boxplot. Defaults to the default of \code{\link[graphics]{boxplot}}
 #' @param alpha a numeric value in [0,1] representitng alpha of the fitted LD decay curves for Combined LD. Defaults to 0.6. Can be a vector representing different alphas for different models. Ignored if alpha is specified in the third row of \code{model.cols}.
 #' @param fit.lwd line width of the fitted LD decay curve for Combined LD of the four models. Defaults to 3. Can be a vector representing different line widths for different models.
 #' @param LD.col color of the original Combined LD curve. Defaults to "black".
 #' @param LD.lwd line width of the original Combined LD curve. Defaults to 1.
+#' @param LD.lim the limit of the Weighted LD-axis in the third plot (Fitting of Models). Defaults to \code{c(-.002,.25)}.
 #' @param ... other graphical arguments passed to basic functions like \code{plot}.
 #' @details
 #'
@@ -497,7 +505,7 @@ reconstruct.fitted<-function(CAM.single){
 #'
 #' If \code{filename} is set, plot to the .pdf file, otherwise plot to the current device. The function is specially designed for a .pdf plot with width being 9.6 and height being 7.2. To add things to the plot and then save it to a file, better to set the size as above. May not be able to plot directly in an R window.
 #'
-#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function.
+#' The colors in Column 1/2/3/4 correspond to the colors for HI/CGF1(-I)/CGF2(-I)/GA(-I). The first/second row of \code{model.cols} is the lightest/deepest possible color in the "Time Intervals/Points" plot. The third row of \code{model.cols} is the color for "msE Boxplot" and "Fitting of Models" plot. The colors will be converted to RGB colors by \code{\link[grDevices]col2rgb}, so the input should be convertable by this function. The input of \code{model.cols} may also be the numeric vector version of the matrix stated above, i.e. \code{as.numeric(model.cols)}.
 #' @examples
 #' \dontrun{
 #' data(CGF_50)
@@ -506,7 +514,7 @@ reconstruct.fitted<-function(CAM.single){
 #' 
 #' #may not be able to display
 #' #This is not a very informative and user-friendly plot
-#' plot(fit,xmax=2L,model.cols=matrix(c("pink","red","pink",
+#' plot(fit,T.max=2L,model.cols=matrix(c("pink","red","pink",
 #'                              "lightseagreen","green","green",
 #'                              "skyblue","blue","blue",
 #'                              "yellow","orange","orange"),ncol=4),
@@ -522,13 +530,14 @@ reconstruct.fitted<-function(CAM.single){
 #' @import grDevices
 #' @export
 
-plot.CAM<-function(x,filename,xmax,
+plot.CAM<-function(x,filename,T.max,
                    model.cols=matrix(c("#ffa1c2B2","#b50d37B2","#da577c",
                                        "#9bff94","#0fbd02","#0fbd02",
                                        "#e9a1ff","#9111b8","#9111b8",
                                        "#7af8ff","#1ea1a8","#1ea1a8"),ncol=4),
-                   box.log=TRUE,alpha=0.6,fit.lwd=3,LD.col="black",LD.lwd=1,...){
-    model.cols2<-col2rgb(model.cols,alpha=TRUE)
+                   box.log=TRUE,box.lim,
+                   alpha=0.6,fit.lwd=3,LD.col="black",LD.lwd=1,LD.lim=c(-.002,.25),...){
+    model.cols2<-grDevices::col2rgb(model.cols,alpha=TRUE)
     alpha<-alpha*rep(1,4L)
     for(model in 1L:4L){
         if(nchar(model.cols[3L,model])==7L)
@@ -550,72 +559,85 @@ plot.CAM<-function(x,filename,xmax,
     })
     NJack<-length(levels(data$LD))-1L
 
-    if(!missing(filename)) pdf(filename,width=9.6,height=7.2)
+    if(!missing(filename)) grDevices::pdf(filename,width=9.6,height=7.2)
 
-    layout(matrix(c(1,2,3,3),ncol=2L,nrow=2L,byrow=TRUE),widths=c(4,4),heights=c(1,2))
+    graphics::layout(matrix(c(1,2,3,3),ncol=2L,nrow=2L,byrow=TRUE),widths=c(4,4),heights=c(1,2))
 
-    par(bty="n",las=1)
-    if(missing(xmax)){
-        if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) xmax<-100
-        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<200) xmax<-200
-        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<500) xmax<-500
-        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<1000) xmax<-1000
-        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<2000) xmax<-2000
-        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<3000) xmax<-3000
-        else xmax<-x$T
+    graphics::par(bty="n",las=1)
+    if(missing(T.max)){
+        if(max(sapply(intervals,function(dummy) max(dummy[1,])))<=50) T.max<-100
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<200) T.max<-200
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<500) T.max<-500
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<1000) T.max<-1000
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<2000) T.max<-2000
+        else if(max(sapply(intervals,function(dummy) max(dummy[1,])))<3000) T.max<-3000
+        else T.max<-x$T
     }
-    plot(x=1:xmax,y=seq(0,4,length.out=xmax),type="n",ann=FALSE,axes=FALSE,...)
+    graphics::plot(x=1:T.max,y=seq(0,4,length.out=T.max),type="n",ann=FALSE,axes=FALSE,...)
 
     for(model in 1:4){
-        colors<-colorRampPalette(model.cols[1:2,model],alpha=TRUE)(NJack)
+        colors<-grDevices::colorRampPalette(model.cols[1:2,model],alpha=TRUE)(NJack)
         dummy<-intervals[[model]]
         if(model==1){
-            points(x=dummy[model,],y=rep(4.5-model,ncol(dummy)),col=colors[dummy[2,]],pch=15,cex=1.2,...)
+            graphics::points(x=dummy[model,],y=rep(4.5-model,ncol(dummy)),col=colors[dummy[2,]],pch=15,cex=1.2,...)
         } else {
-            if(max(dummy[1,])<=xmax){
+            if(max(dummy[1,])<=T.max){
                 for(t in seq_len(ncol(dummy)))
-                    lines(x=dummy[1,t]+c(-.5,.5),y=rep(4.5-model,2),col=colors[dummy[2,t]],lwd=5,...)
+                    graphics::lines(x=dummy[1,t]+c(-.5,.5),y=rep(4.5-model,2),col=colors[dummy[2,t]],lwd=5,...)
             } else {
-                for(t in seq_len(xmax-min(dummy[1,])+1))
-                    lines(x=dummy[1,t]+c(-.5,.5),y=rep(4.5-model,2),col=colors[dummy[2,t]],lwd=5,...)
-                arrows(x0=xmax-5,y0=2.5,x1=xmax+2,lwd=3,col=colors[dummy[2,xmax-min(dummy[1,])+1]],angle=20,length=.2,...)
+                for(t in seq_len(T.max-min(dummy[1,])+1))
+                    graphics::lines(x=dummy[1,t]+c(-.5,.5),y=rep(4.5-model,2),col=colors[dummy[2,t]],lwd=5,...)
+                graphics::arrows(x0=T.max-5,y0=2.5,x1=T.max+2,lwd=3,col=colors[dummy[2,T.max-min(dummy[1,])+1]],angle=20,length=.2,...)
             }
         }
     }
-    axis(1);axis(side=4,labels=NA,at=4:1-.5)
-    title(main="Time Intervals/Points",xlab="Generation",ylab="")
+    graphics::axis(1);graphics::axis(side=4,labels=NA,at=4:1-.5)
+    graphics::title(main="Time Intervals/Points",xlab="Generation",ylab="")
     if(x$isolation){
-        mtext(c("      HI"," CGF1-I"," CGF2-I","    GA-I"),side=4,line=1,at=4:1-.5)
-    } else mtext(c("   HI","CGF1","CGF2","  GA"),side=4,line=2,at=4:1-.5)
+        graphics::mtext(c("      HI"," CGF1-I"," CGF2-I","    GA-I"),side=4,line=1,at=4:1-.5)
+    } else graphics::mtext(c("   HI","CGF1","CGF2","  GA"),side=4,line=2,at=4:1-.5)
 
-    boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"],
-            data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"],
-            data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"],
-            data.jack$msE[data.jack$Model=="HI"],
-            horizontal=TRUE,boxwex=.8,pch=20,
-            log=if(box.log) "x" else "",medlwd=1,
-            boxfill=rev(model.cols[3,]),
-            outcol=rev(model.cols[3,]),
-            main="msE Boxplot",xlab=if(box.log) "msE on log scale" else "msE",axes=FALSE,...)
-    axis(2,labels=NA);axis(1)
+    if(missing(box.lim)){
+        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"],
+                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"],
+                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"],
+                          data.jack$msE[data.jack$Model=="HI"],
+                          horizontal=TRUE,boxwex=.8,pch=20,
+                          log=if(box.log) "x" else "",medlwd=1,
+                          boxfill=rev(model.cols[3,]),
+                          outcol=rev(model.cols[3,]),
+                          main="msE Boxplot",xlab=if(box.log) "msE on log scale" else "msE",axes=FALSE,...)
+    } else {
+        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"],
+                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"],
+                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"],
+                          data.jack$msE[data.jack$Model=="HI"],
+                          horizontal=TRUE,boxwex=.8,pch=20,
+                          log=if(box.log) "x" else "",medlwd=1,
+                          ylim=box.lim,
+                          boxfill=rev(model.cols[3,]),
+                          outcol=rev(model.cols[3,]),
+                          main="msE Boxplot",xlab=if(box.log) "msE on log scale" else "msE",axes=FALSE,...)
+    }
+    graphics::axis(2,labels=NA);graphics::axis(1)
 
-    par(bty="n",las=1,mar=c(5,17,4,10.5)+.1)
-    colors<-apply(model.cols2,2,function(col) rgb(col[1],col[2],col[3],col[4],maxColorValue=255))[seq(3,12,by=3)]
+    graphics::par(bty="n",las=1,mar=c(5,17,4,10.5)+.1)
+    colors<-apply(model.cols2,2,function(col) grDevices::rgb(col[1],col[2],col[3],col[4],maxColorValue=255))[seq(3,12,by=3)]
     fit.lwd<-fit.lwd*rep(1L,4)
     fitted<-reconstruct.fitted(x$CAM.list[[1]])
-    plot(x$CAM.list[[1]]$d,x$CAM.list[[1]]$y,
-         col=LD.col,type="l",lwd=LD.lwd,ylim=c(-.002,.25),
-         xlab="Distance (Morgan)",ylab="",main="Fitting of Models",axes=FALSE,...)
+    graphics::plot(x$CAM.list[[1]]$d,x$CAM.list[[1]]$y,
+                   col=LD.col,type="l",lwd=LD.lwd,ylim=LD.lim,
+                   xlab="Distance (Morgan)",ylab="",main="Fitting of Models",axes=FALSE,...)
     for(model in 1:4)
-        lines(x$CAM.list[[1]]$d,fitted[[model]],col=colors[model],lwd=fit.lwd[model],...)
-    legend(x="topright",
-           legend=paste(names(x$CAM.list[[1]]$estimate)," (",round(x$summary$quasi.F[1:4],3),")",sep=""),
-           col=colors,
-           pch=-1,lty=1,lwd=2,
-           ncol=1,bty="n")
-    axis(2);axis(1);text(par("usr")[1]-0.15,y=.15,labels="Weighted LD",xpd=TRUE)
+        graphics::lines(x$CAM.list[[1]]$d,fitted[[model]],col=colors[model],lwd=fit.lwd[model],...)
+    graphics::legend(x="topright",
+                     legend=paste(names(x$CAM.list[[1]]$estimate)," (",round(x$summary$quasi.F[1:4],3),")",sep=""),
+                     col=colors,
+                     pch=-1,lty=1,lwd=2,
+                     ncol=1,bty="n")
+    graphics::axis(2);graphics::axis(1);graphics::text(par("usr")[1]-0.15,y=LD.lim[2]*.6+LD.lim[1]*.4,labels="Weighted LD",xpd=TRUE)
 
-    if(!missing(filename)) dev.off()
+    if(!missing(filename)) grDevices::dev.off()
 }
 
 #' Quickly Construct a Simple "CAM" Class Object from .rawld File and Summary Table
@@ -642,7 +664,7 @@ plot.CAM<-function(x,filename,xmax,
 #' @export
 
 construct.CAM<-function(rawld,m1,dataset){
-    if(is.character(rawld)) rawld<-read.table(rawld,header=TRUE)
+    if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
     Y<-rawld[,c(LD.index,Jack.index)]
