@@ -30,7 +30,7 @@ where `d` corresponds to genetic distance and `y` corresponds to an LD decay cur
 
 Here the class of `fit` is **CAM.single**, and it has its own method for `print()`.
 
-Parallel computation is supported provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
+Parallel computation is also supported provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
 
 See the help page of `singleCAM()` for more examples.
 
@@ -40,7 +40,6 @@ The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Pa
 
 ```{r}
 data(GA_I)
-library(foreach);library(doSNOW)
 fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
 fit
 ```
@@ -49,7 +48,7 @@ One can also specify the file path of the .rawld file in argument `rawld=`.
 
 Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
 
-Parallel computation is also supported as in the example, provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
+Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
 
 See help page of `CAM()` for more examples.
 

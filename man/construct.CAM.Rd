@@ -23,7 +23,6 @@ Construct a simple "CAM" class object which can be passed to \code{\link{plot.CA
 The returned onject is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found. The \code{T} and \code{A} are not the original ones. The \code{T} is the minial possible one, i.e. the smallest one that is sufficient to do the following analysis and construction.
 }
 \examples{
-library(foreach);library(doSNOW)
 data(GA_I)
 fit<-CAM(GA_I,m1=0.3,T=150L)
 dataset<-fit$summary

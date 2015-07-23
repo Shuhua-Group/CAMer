@@ -96,7 +96,7 @@ fit.theta<-function(Ac,y){
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #'
-#' Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{single.parallel=TRUE}. It is recommended to library these required packages before using the parallel functionality.
+#' Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will sompute sequentially with warnings.
 #'
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computatio time.
 #'
@@ -107,6 +107,9 @@ fit.theta<-function(Ac,y){
 #' d<-CGF_50$Distance
 #'
 #' #fit models with isolation=FALSE
+#' fit<-singleCAM(d,y,m1=0.3,T=10L,isolation=FALSE) #with warning
+#' 
+#' #re-run with larger T
 #' fit<-singleCAM(d,y,m1=0.3,T=100L,isolation=FALSE)
 #' fit
 #'
@@ -116,7 +119,6 @@ fit.theta<-function(Ac,y){
 #'
 #' #fit models with isolation=TRUE using slow searching algorithm
 #' #with parallel computation
-#' library(foreach);library(doSNOW)
 #' fit<-singleCAM(d,y,m1=0.3,T=100L,fast.search=FALSE,
 #'                single.parallel=TRUE,single.clusternum=4L)
 #' fit
@@ -289,16 +291,25 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
             list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
         }
 
-    if(single.parallel && !(require(doSNOW,quietly=TRUE) && require(foreach,quietly=TRUE))){
-        warning("'doSNOW' and 'foreach' packages not found! Computing sequentially...")
+    if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
+        warning("'parallel' or 'snow' package not found! Computing sequentially...")
         single.parallel<-FALSE
     }
     if(single.parallel){
-        cl<-makeCluster(single.clusternum)
-        registerDoSNOW(cl)
-        clusterExport(cl,c("distance","fit.theta"),envir=environment())
-        estimate<-foreach(model=seq_len(4L))%dopar% search(model)
-        stopCluster(cl)
+        if(getRversion()>="2.14.0"){
+            cl<-parallel::makeCluster(single.clusternum)
+            parallel::clusterExport(cl,c("distance","fit.theta"),envir=environment())
+            parallel::clusterExport(cl,ls(),envir=environment())
+            estimate<-parallel::parLapply(cl,seq_len(4L),search)
+            parallel::stopCluster(cl)
+        } else {
+            require(snow,quietly=TRUE)
+            cl<-makeCluster(single.clusternum)
+            clusterExport(cl,c("distance","fit.theta"),envir=environment())
+            clusterExport(cl,ls(),envir=environment())
+            estimate<-parLapply(cl,seq_len(4L),search)
+            stopCluster(cl)
+        }
     } else estimate<-lapply(seq_len(4L),search)
 
     names(estimate)<-if(isolation) c("HI","CGF1-I","CGF2-I","GA-I") else c("HI","CGF1","CGF2","GA")
@@ -334,8 +345,6 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #' There is a special method of \code{plot} and \code{print} for this class.
 #' @details
 #'
-#' Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. It is recommended to library these required packages before using the parallel functionality.
-#'
 #' \code{max.duration} is only used when \code{isolation=TRUE} and \code{fast.search=FALSE}. The maximal duration of admixture \eqn{n} to be considered as possible. Smaller values can make the slow searching algorithm faster. If \code{max.duration>T}, it will be set to be \code{T}.
 #'
 #' \code{LD.clusternum} is used if \code{LD.parallel=TRUE}. If not specified, it is set to be the number of LD decay curves in the .rawld file.
@@ -348,14 +357,16 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #' 
+#' Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will sompute sequentially with warnings.
+#' 
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 #'
 #' @examples
 #' data(GA_I)
-#' library(foreach);library(doSNOW)
 #'
 #' #fit models with isolation=FALSE.
 #' fit<-CAM(GA_I,m1=0.3,T=150L,isolation=FALSE)
+#' fit
 #' \dontrun{
 #' plot(fit) #may not be able to display
 #' }
@@ -365,12 +376,12 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #' fit$summary
 #' \dontrun{
 #' plot(fit) #may not be able to display
-#' plot(fit,"D:/plot.pdf") #plot to a .pdf file
+#' plot(fit,"plot.pdf") #plot to a .pdf file
 #' }
 #'
 #' data(CGF_50)
-#' fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE)
-#' fit #Lengths of intervals being 20 indicates larger T should be tried.
+#' fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE) #with warnings
+#' fit
 #'
 #' \dontrun{
 #' #passing a file path to the argument `rawld=`
@@ -404,19 +415,28 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     }
     class(results)<-"CAM"
 
-    if(LD.parallel && !(require(foreach,quietly=TRUE) && require(doSNOW,quietly=TRUE))){
-        warning("'foreach' and doSNOW' packages not found! Computing sequentially...")
+    if(LD.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
+        warning("'parallel' or 'snow' package not found! Computing each LD sequentially...")
         LD.parallel<-FALSE
     }
     if(LD.parallel){
         if(missing(LD.clusternum)) LD.clusternum<-ncol(Y)
-        cl<-makeCluster(LD.clusternum)
-        registerDoSNOW(cl)
-        clusterExport(cl,c("distance","fit.theta","singleCAM"),envir=environment())
-        results$CAM.list<-foreach(ld=seq_len(ncol(Y)))%dopar%{
+        if(getRversion()>="2.14.0"){
+        cl<-parallel::makeCluster(LD.clusternum)
+        parallel::clusterExport(cl,c("distance","fit.theta","singleCAM"),envir=environment())
+        parallel::clusterExport(cl,ls(),envir=environment())
+        results$CAM.list<-parallel::parLapply(cl,seq_len(ncol(Y)),function(ld){
             singleCAM(d,Y[,ld],m1,T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum)
+        })
+        parallel::stopCluster(cl)
+        } else {
+            require(snow,quietly=TRUE)
+            cl<-makeCluster(single.clusternum)
+            clusterExport(cl,c("distance","fit.theta"),envir=environment())
+            clusterExport(cl,ls(),envir=environment())
+            estimate<-parLapply(cl,seq_len(4L),search)
+            stopCluster(cl)
         }
-        stopCluster(cl)
     } else results$CAM.list<-lapply(seq_len(ncol(Y)),function(ld){
         singleCAM(d,Y[,ld],m1,T,isolation=isolation,single.parallel=single.parallel,fast.search=fast.search,max.duration=max.duration,single.clusternum=single.clusternum)
     })
@@ -652,7 +672,6 @@ plot.CAM<-function(x,filename,T.max,
 #' @note 
 #' The returned onject is not as complate as the "CAM" class object obtained from \code{\link{CAM}}. Particularly, it does not include the information about how the estimates are found. The \code{T} and \code{A} are not the original ones. The \code{T} is the minial possible one, i.e. the smallest one that is sufficient to do the following analysis and construction.
 #' @examples
-#' library(foreach);library(doSNOW)
 #' data(GA_I)
 #' fit<-CAM(GA_I,m1=0.3,T=150L)
 #' dataset<-fit$summary
@@ -740,7 +759,7 @@ print.CAM.single<-function(x){
     print(x$call)
     cat("\n")
     cat("Length of Used LD:", length(x$y),"\n\n")
-    print(x$summary[,c("Model","Start","End","msE")])
+    print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE)
 }
 
 #' Print Method for "CAM" Class
@@ -764,7 +783,7 @@ print.CAM<-function(x){
         cat("\n")
     }
     cat("Total Length of LD:",length(x$d),"\n\n")
-    print(x$summary[,c("LD","Model","Start","End","msE","quasi.F")])
+    print(x$summary[,c("LD","Model","Start","End","msE","quasi.F")],row.names=FALSE)
 }
 
 #' Draw Conclusions on Models from a "CAM" class object
@@ -805,7 +824,7 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
     means<-tapply(data$msE,data$Model,mean)
     models<-names(means)
 
-    p.value<-pairwise.t.test(data$msE,data$Model,p.adjust.method=p.adjust.method,paired=TRUE)$p.value
+    p.value<-stats::pairwise.t.test(data$msE,data$Model,p.adjust.method=p.adjust.method,paired=TRUE)$p.value
     p.value[is.na(p.value)]<-0
     p.value<-cbind(rbind(0,p.value),0)
     p.value<-p.value+t(p.value)

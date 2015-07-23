@@ -82,24 +82,21 @@ fit</code></pre>
 ## 
 ## Length of Used LD: 3497 
 ## 
-##      Model Start End          msE
-## HI      HI    23  NA 8.912686e-06
-## CGF1  CGF1    49   1 1.654922e-06
-## CGF2  CGF2    60   1 2.750241e-06
-## GA      GA    53   1 5.509048e-06</code></pre>
+##  Model Start End          msE
+##     HI    23  NA 8.912686e-06
+##   CGF1    49   1 1.654922e-06
+##   CGF2    60   1 2.750241e-06
+##     GA    53   1 5.509048e-06</code></pre>
 <p>where <code>d</code> corresponds to genetic distance and <code>y</code> corresponds to an LD decay curve. The admixture proportion for population 1 (<span class="math">\(m_1\)</span>) is 0.3 for this data set.</p>
 <p>Here the class of <code>fit</code> is <strong>CAM.single</strong>, and it has its own method for <code>print()</code>.</p>
-<p>Parallel computation is supported provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</p>
+<p>Parallel computation is also supported provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing funcationality.</p>
 <p>See the help page of <code>singleCAM()</code> for more examples.</p>
 </div>
 <div id="multiple-ld-decay-curves-.rawld-file" class="section level3">
 <h3>Multiple LD Decay Curves (.rawld File)</h3>
 <p>The function <code>CAM()</code> does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:</p>
 <pre class="r"><code>data(GA_I)
-library(foreach);library(doSNOW)</code></pre>
-<pre><code>## Loading required package: iterators
-## Loading required package: snow</code></pre>
-<pre class="r"><code>fit&lt;-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
+fit&lt;-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
 fit</code></pre>
 <pre><code>## Continuous Admixture Inference (CAM) for a .rawlf File
 ## 
@@ -107,54 +104,54 @@ fit</code></pre>
 ## 
 ## Total Length of LD: 3497 
 ## 
-##                   LD  Model Start End          msE  quasi.F
-## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224
-## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-## HI1            Jack1     HI    63  NA 2.220300e-06       NA
-## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA
-## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA
-## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA
-## HI2            Jack2     HI    63  NA 2.358990e-06       NA
-## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA
-## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA
-## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA
-## HI3            Jack3     HI    64  NA 2.185886e-06       NA
-## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA
-## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA
-## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA
-## HI4            Jack4     HI    64  NA 2.432188e-06       NA
-## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA
-## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA
-## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA
-## HI5            Jack5     HI    63  NA 2.423726e-06       NA
-## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA
-## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA
-## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA
-## HI6            Jack6     HI    64  NA 2.307339e-06       NA
-## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA
-## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA
-## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA
-## HI7            Jack7     HI    63  NA 2.396205e-06       NA
-## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA
-## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA
-## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA
-## HI8            Jack8     HI    63  NA 2.304644e-06       NA
-## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA
-## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA
-## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA
-## HI9            Jack9     HI    64  NA 2.350640e-06       NA
-## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA
-## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA
-## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA
-## HI10          Jack10     HI    63  NA 2.248512e-06       NA
-## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA
-## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA
-## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA</code></pre>
+##           LD  Model Start End          msE  quasi.F
+##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
+##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
+##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
+##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
+##        Jack1     HI    63  NA 2.220300e-06       NA
+##        Jack1 CGF1-I   105  23 1.794603e-06       NA
+##        Jack1 CGF2-I   111  28 1.779137e-06       NA
+##        Jack1   GA-I    98  30 1.787182e-06       NA
+##        Jack2     HI    63  NA 2.358990e-06       NA
+##        Jack2 CGF1-I   106  22 1.852915e-06       NA
+##        Jack2 CGF2-I   115  26 1.848968e-06       NA
+##        Jack2   GA-I    99  29 1.847539e-06       NA
+##        Jack3     HI    64  NA 2.185886e-06       NA
+##        Jack3 CGF1-I   108  22 1.725799e-06       NA
+##        Jack3 CGF2-I   115  27 1.708941e-06       NA
+##        Jack3   GA-I   101  29 1.723330e-06       NA
+##        Jack4     HI    64  NA 2.432188e-06       NA
+##        Jack4 CGF1-I   109  21 1.882746e-06       NA
+##        Jack4 CGF2-I   119  25 1.888059e-06       NA
+##        Jack4   GA-I    99  30 1.867834e-06       NA
+##        Jack5     HI    63  NA 2.423726e-06       NA
+##        Jack5 CGF1-I   110  20 1.802694e-06       NA
+##        Jack5 CGF2-I   118  25 1.803764e-06       NA
+##        Jack5   GA-I   100  29 1.801889e-06       NA
+##        Jack6     HI    64  NA 2.307339e-06       NA
+##        Jack6 CGF1-I   109  21 1.770311e-06       NA
+##        Jack6 CGF2-I   119  25 1.776908e-06       NA
+##        Jack6   GA-I   100  29 1.763367e-06       NA
+##        Jack7     HI    63  NA 2.396205e-06       NA
+##        Jack7 CGF1-I   107  21 1.786312e-06       NA
+##        Jack7 CGF2-I   116  25 1.787210e-06       NA
+##        Jack7   GA-I   100  28 1.787691e-06       NA
+##        Jack8     HI    63  NA 2.304644e-06       NA
+##        Jack8 CGF1-I   108  21 1.774159e-06       NA
+##        Jack8 CGF2-I   115  26 1.750770e-06       NA
+##        Jack8   GA-I    99  29 1.749116e-06       NA
+##        Jack9     HI    64  NA 2.350640e-06       NA
+##        Jack9 CGF1-I   106  23 1.867137e-06       NA
+##        Jack9 CGF2-I   117  26 1.880573e-06       NA
+##        Jack9   GA-I    99  30 1.868055e-06       NA
+##       Jack10     HI    63  NA 2.248512e-06       NA
+##       Jack10 CGF1-I   105  23 1.721175e-06       NA
+##       Jack10 CGF2-I   113  27 1.722507e-06       NA
+##       Jack10   GA-I    98  30 1.723349e-06       NA</code></pre>
 <p>One can also specify the file path of the .rawld file in argument <code>rawld=</code>.</p>
 <p>Here the class of <code>fit</code> is <strong>CAM</strong>, and it has its own method for <code>print()</code> and <code>plot()</code>. A <strong>CAM</strong> object has an element named <code>CAM.list</code> consisting of the <strong>CAM.single</strong> objects for each LD decay curve.</p>
-<p>Parallel computation is also supported as in the example, provided that <strong>foreach</strong> package and <strong>doSNOW</strong> package are installed. It is recommended to library them before utilizing the parallel computation.</p>
+<p>Parallel computation is also supported as in the example, provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing funcationality.</p>
 <p>See help page of <code>CAM()</code> for more examples.</p>
 <hr />
 </div>
@@ -216,51 +213,51 @@ fit</code></pre>
 ## 
 ## Total Length of LD: 3497 
 ## 
-##                   LD  Model Start End          msE  quasi.F
-## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224
-## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-## HI1            Jack1     HI    63  NA 2.220300e-06       NA
-## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA
-## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA
-## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA
-## HI10          Jack10     HI    63  NA 2.248512e-06       NA
-## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA
-## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA
-## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA
-## HI2            Jack2     HI    63  NA 2.358990e-06       NA
-## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA
-## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA
-## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA
-## HI3            Jack3     HI    64  NA 2.185886e-06       NA
-## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA
-## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA
-## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA
-## HI4            Jack4     HI    64  NA 2.432188e-06       NA
-## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA
-## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA
-## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA
-## HI5            Jack5     HI    63  NA 2.423726e-06       NA
-## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA
-## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA
-## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA
-## HI6            Jack6     HI    64  NA 2.307339e-06       NA
-## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA
-## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA
-## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA
-## HI7            Jack7     HI    63  NA 2.396205e-06       NA
-## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA
-## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA
-## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA
-## HI8            Jack8     HI    63  NA 2.304644e-06       NA
-## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA
-## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA
-## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA
-## HI9            Jack9     HI    64  NA 2.350640e-06       NA
-## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA
-## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA
-## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA</code></pre>
+##           LD  Model Start End          msE  quasi.F
+##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
+##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
+##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
+##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
+##        Jack1     HI    63  NA 2.220300e-06       NA
+##        Jack1 CGF1-I   105  23 1.794603e-06       NA
+##        Jack1 CGF2-I   111  28 1.779137e-06       NA
+##        Jack1   GA-I    98  30 1.787182e-06       NA
+##       Jack10     HI    63  NA 2.248512e-06       NA
+##       Jack10 CGF1-I   105  23 1.721175e-06       NA
+##       Jack10 CGF2-I   113  27 1.722507e-06       NA
+##       Jack10   GA-I    98  30 1.723349e-06       NA
+##        Jack2     HI    63  NA 2.358990e-06       NA
+##        Jack2 CGF1-I   106  22 1.852915e-06       NA
+##        Jack2 CGF2-I   115  26 1.848968e-06       NA
+##        Jack2   GA-I    99  29 1.847539e-06       NA
+##        Jack3     HI    64  NA 2.185886e-06       NA
+##        Jack3 CGF1-I   108  22 1.725799e-06       NA
+##        Jack3 CGF2-I   115  27 1.708941e-06       NA
+##        Jack3   GA-I   101  29 1.723330e-06       NA
+##        Jack4     HI    64  NA 2.432188e-06       NA
+##        Jack4 CGF1-I   109  21 1.882746e-06       NA
+##        Jack4 CGF2-I   119  25 1.888059e-06       NA
+##        Jack4   GA-I    99  30 1.867834e-06       NA
+##        Jack5     HI    63  NA 2.423726e-06       NA
+##        Jack5 CGF1-I   110  20 1.802694e-06       NA
+##        Jack5 CGF2-I   118  25 1.803764e-06       NA
+##        Jack5   GA-I   100  29 1.801889e-06       NA
+##        Jack6     HI    64  NA 2.307339e-06       NA
+##        Jack6 CGF1-I   109  21 1.770311e-06       NA
+##        Jack6 CGF2-I   119  25 1.776908e-06       NA
+##        Jack6   GA-I   100  29 1.763367e-06       NA
+##        Jack7     HI    63  NA 2.396205e-06       NA
+##        Jack7 CGF1-I   107  21 1.786312e-06       NA
+##        Jack7 CGF2-I   116  25 1.787210e-06       NA
+##        Jack7   GA-I   100  28 1.787691e-06       NA
+##        Jack8     HI    63  NA 2.304644e-06       NA
+##        Jack8 CGF1-I   108  21 1.774159e-06       NA
+##        Jack8 CGF2-I   115  26 1.750770e-06       NA
+##        Jack8   GA-I    99  29 1.749116e-06       NA
+##        Jack9     HI    64  NA 2.350640e-06       NA
+##        Jack9 CGF1-I   106  23 1.867137e-06       NA
+##        Jack9 CGF2-I   117  26 1.880573e-06       NA
+##        Jack9   GA-I    99  30 1.868055e-06       NA</code></pre>
 <pre class="r"><code>plot(fit)</code></pre>
 <p><img src="data:image/png;base64,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" /></p>
 <pre class="r"><code>conclude.model(fit)</code></pre>

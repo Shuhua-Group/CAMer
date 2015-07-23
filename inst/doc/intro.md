@@ -29,18 +29,18 @@ fit
 ## 
 ## Length of Used LD: 3497 
 ## 
-##      Model Start End          msE
-## HI      HI    23  NA 8.912686e-06
-## CGF1  CGF1    49   1 1.654922e-06
-## CGF2  CGF2    60   1 2.750241e-06
-## GA      GA    53   1 5.509048e-06
+##  Model Start End          msE
+##     HI    23  NA 8.912686e-06
+##   CGF1    49   1 1.654922e-06
+##   CGF2    60   1 2.750241e-06
+##     GA    53   1 5.509048e-06
 ```
 
 where `d` corresponds to genetic distance and `y` corresponds to an LD decay curve. The admixture proportion for population 1 ($m_1$) is 0.3 for this data set.
 
 Here the class of `fit` is **CAM.single**, and it has its own method for `print()`.
 
-Parallel computation is supported provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
+Parallel computation is also supported provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
 
 See the help page of `singleCAM()` for more examples.
 
@@ -51,15 +51,6 @@ The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Pa
 
 ```r
 data(GA_I)
-library(foreach);library(doSNOW)
-```
-
-```
-## Loading required package: iterators
-## Loading required package: snow
-```
-
-```r
 fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
 fit
 ```
@@ -71,58 +62,58 @@ fit
 ## 
 ## Total Length of LD: 3497 
 ## 
-##                   LD  Model Start End          msE  quasi.F
-## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224
-## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-## HI1            Jack1     HI    63  NA 2.220300e-06       NA
-## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA
-## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA
-## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA
-## HI2            Jack2     HI    63  NA 2.358990e-06       NA
-## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA
-## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA
-## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA
-## HI3            Jack3     HI    64  NA 2.185886e-06       NA
-## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA
-## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA
-## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA
-## HI4            Jack4     HI    64  NA 2.432188e-06       NA
-## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA
-## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA
-## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA
-## HI5            Jack5     HI    63  NA 2.423726e-06       NA
-## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA
-## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA
-## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA
-## HI6            Jack6     HI    64  NA 2.307339e-06       NA
-## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA
-## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA
-## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA
-## HI7            Jack7     HI    63  NA 2.396205e-06       NA
-## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA
-## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA
-## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA
-## HI8            Jack8     HI    63  NA 2.304644e-06       NA
-## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA
-## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA
-## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA
-## HI9            Jack9     HI    64  NA 2.350640e-06       NA
-## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA
-## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA
-## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA
-## HI10          Jack10     HI    63  NA 2.248512e-06       NA
-## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA
-## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA
-## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA
+##           LD  Model Start End          msE  quasi.F
+##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
+##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
+##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
+##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
+##        Jack1     HI    63  NA 2.220300e-06       NA
+##        Jack1 CGF1-I   105  23 1.794603e-06       NA
+##        Jack1 CGF2-I   111  28 1.779137e-06       NA
+##        Jack1   GA-I    98  30 1.787182e-06       NA
+##        Jack2     HI    63  NA 2.358990e-06       NA
+##        Jack2 CGF1-I   106  22 1.852915e-06       NA
+##        Jack2 CGF2-I   115  26 1.848968e-06       NA
+##        Jack2   GA-I    99  29 1.847539e-06       NA
+##        Jack3     HI    64  NA 2.185886e-06       NA
+##        Jack3 CGF1-I   108  22 1.725799e-06       NA
+##        Jack3 CGF2-I   115  27 1.708941e-06       NA
+##        Jack3   GA-I   101  29 1.723330e-06       NA
+##        Jack4     HI    64  NA 2.432188e-06       NA
+##        Jack4 CGF1-I   109  21 1.882746e-06       NA
+##        Jack4 CGF2-I   119  25 1.888059e-06       NA
+##        Jack4   GA-I    99  30 1.867834e-06       NA
+##        Jack5     HI    63  NA 2.423726e-06       NA
+##        Jack5 CGF1-I   110  20 1.802694e-06       NA
+##        Jack5 CGF2-I   118  25 1.803764e-06       NA
+##        Jack5   GA-I   100  29 1.801889e-06       NA
+##        Jack6     HI    64  NA 2.307339e-06       NA
+##        Jack6 CGF1-I   109  21 1.770311e-06       NA
+##        Jack6 CGF2-I   119  25 1.776908e-06       NA
+##        Jack6   GA-I   100  29 1.763367e-06       NA
+##        Jack7     HI    63  NA 2.396205e-06       NA
+##        Jack7 CGF1-I   107  21 1.786312e-06       NA
+##        Jack7 CGF2-I   116  25 1.787210e-06       NA
+##        Jack7   GA-I   100  28 1.787691e-06       NA
+##        Jack8     HI    63  NA 2.304644e-06       NA
+##        Jack8 CGF1-I   108  21 1.774159e-06       NA
+##        Jack8 CGF2-I   115  26 1.750770e-06       NA
+##        Jack8   GA-I    99  29 1.749116e-06       NA
+##        Jack9     HI    64  NA 2.350640e-06       NA
+##        Jack9 CGF1-I   106  23 1.867137e-06       NA
+##        Jack9 CGF2-I   117  26 1.880573e-06       NA
+##        Jack9   GA-I    99  30 1.868055e-06       NA
+##       Jack10     HI    63  NA 2.248512e-06       NA
+##       Jack10 CGF1-I   105  23 1.721175e-06       NA
+##       Jack10 CGF2-I   113  27 1.722507e-06       NA
+##       Jack10   GA-I    98  30 1.723349e-06       NA
 ```
 
 One can also specify the file path of the .rawld file in argument `rawld=`.
 
 Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
 
-Parallel computation is also supported as in the example, provided that **foreach** package and **doSNOW** package are installed. It is recommended to library them before utilizing the parallel computation.
+Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
 
 See help page of `CAM()` for more examples.
 
@@ -216,51 +207,51 @@ fit
 ## 
 ## Total Length of LD: 3497 
 ## 
-##                   LD  Model Start End          msE  quasi.F
-## HI       Combined_LD     HI    63  NA 2.235635e-06 1.323224
-## CGF1-I   Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-## CGF2-I   Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-## GA-I     Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-## HI1            Jack1     HI    63  NA 2.220300e-06       NA
-## CGF1-I1        Jack1 CGF1-I   105  23 1.794603e-06       NA
-## CGF2-I1        Jack1 CGF2-I   111  28 1.779137e-06       NA
-## GA-I1          Jack1   GA-I    98  30 1.787182e-06       NA
-## HI10          Jack10     HI    63  NA 2.248512e-06       NA
-## CGF1-I10      Jack10 CGF1-I   105  23 1.721175e-06       NA
-## CGF2-I10      Jack10 CGF2-I   113  27 1.722507e-06       NA
-## GA-I10        Jack10   GA-I    98  30 1.723349e-06       NA
-## HI2            Jack2     HI    63  NA 2.358990e-06       NA
-## CGF1-I2        Jack2 CGF1-I   106  22 1.852915e-06       NA
-## CGF2-I2        Jack2 CGF2-I   115  26 1.848968e-06       NA
-## GA-I2          Jack2   GA-I    99  29 1.847539e-06       NA
-## HI3            Jack3     HI    64  NA 2.185886e-06       NA
-## CGF1-I3        Jack3 CGF1-I   108  22 1.725799e-06       NA
-## CGF2-I3        Jack3 CGF2-I   115  27 1.708941e-06       NA
-## GA-I3          Jack3   GA-I   101  29 1.723330e-06       NA
-## HI4            Jack4     HI    64  NA 2.432188e-06       NA
-## CGF1-I4        Jack4 CGF1-I   109  21 1.882746e-06       NA
-## CGF2-I4        Jack4 CGF2-I   119  25 1.888059e-06       NA
-## GA-I4          Jack4   GA-I    99  30 1.867834e-06       NA
-## HI5            Jack5     HI    63  NA 2.423726e-06       NA
-## CGF1-I5        Jack5 CGF1-I   110  20 1.802694e-06       NA
-## CGF2-I5        Jack5 CGF2-I   118  25 1.803764e-06       NA
-## GA-I5          Jack5   GA-I   100  29 1.801889e-06       NA
-## HI6            Jack6     HI    64  NA 2.307339e-06       NA
-## CGF1-I6        Jack6 CGF1-I   109  21 1.770311e-06       NA
-## CGF2-I6        Jack6 CGF2-I   119  25 1.776908e-06       NA
-## GA-I6          Jack6   GA-I   100  29 1.763367e-06       NA
-## HI7            Jack7     HI    63  NA 2.396205e-06       NA
-## CGF1-I7        Jack7 CGF1-I   107  21 1.786312e-06       NA
-## CGF2-I7        Jack7 CGF2-I   116  25 1.787210e-06       NA
-## GA-I7          Jack7   GA-I   100  28 1.787691e-06       NA
-## HI8            Jack8     HI    63  NA 2.304644e-06       NA
-## CGF1-I8        Jack8 CGF1-I   108  21 1.774159e-06       NA
-## CGF2-I8        Jack8 CGF2-I   115  26 1.750770e-06       NA
-## GA-I8          Jack8   GA-I    99  29 1.749116e-06       NA
-## HI9            Jack9     HI    64  NA 2.350640e-06       NA
-## CGF1-I9        Jack9 CGF1-I   106  23 1.867137e-06       NA
-## CGF2-I9        Jack9 CGF2-I   117  26 1.880573e-06       NA
-## GA-I9          Jack9   GA-I    99  30 1.868055e-06       NA
+##           LD  Model Start End          msE  quasi.F
+##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
+##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
+##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
+##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
+##        Jack1     HI    63  NA 2.220300e-06       NA
+##        Jack1 CGF1-I   105  23 1.794603e-06       NA
+##        Jack1 CGF2-I   111  28 1.779137e-06       NA
+##        Jack1   GA-I    98  30 1.787182e-06       NA
+##       Jack10     HI    63  NA 2.248512e-06       NA
+##       Jack10 CGF1-I   105  23 1.721175e-06       NA
+##       Jack10 CGF2-I   113  27 1.722507e-06       NA
+##       Jack10   GA-I    98  30 1.723349e-06       NA
+##        Jack2     HI    63  NA 2.358990e-06       NA
+##        Jack2 CGF1-I   106  22 1.852915e-06       NA
+##        Jack2 CGF2-I   115  26 1.848968e-06       NA
+##        Jack2   GA-I    99  29 1.847539e-06       NA
+##        Jack3     HI    64  NA 2.185886e-06       NA
+##        Jack3 CGF1-I   108  22 1.725799e-06       NA
+##        Jack3 CGF2-I   115  27 1.708941e-06       NA
+##        Jack3   GA-I   101  29 1.723330e-06       NA
+##        Jack4     HI    64  NA 2.432188e-06       NA
+##        Jack4 CGF1-I   109  21 1.882746e-06       NA
+##        Jack4 CGF2-I   119  25 1.888059e-06       NA
+##        Jack4   GA-I    99  30 1.867834e-06       NA
+##        Jack5     HI    63  NA 2.423726e-06       NA
+##        Jack5 CGF1-I   110  20 1.802694e-06       NA
+##        Jack5 CGF2-I   118  25 1.803764e-06       NA
+##        Jack5   GA-I   100  29 1.801889e-06       NA
+##        Jack6     HI    64  NA 2.307339e-06       NA
+##        Jack6 CGF1-I   109  21 1.770311e-06       NA
+##        Jack6 CGF2-I   119  25 1.776908e-06       NA
+##        Jack6   GA-I   100  29 1.763367e-06       NA
+##        Jack7     HI    63  NA 2.396205e-06       NA
+##        Jack7 CGF1-I   107  21 1.786312e-06       NA
+##        Jack7 CGF2-I   116  25 1.787210e-06       NA
+##        Jack7   GA-I   100  28 1.787691e-06       NA
+##        Jack8     HI    63  NA 2.304644e-06       NA
+##        Jack8 CGF1-I   108  21 1.774159e-06       NA
+##        Jack8 CGF2-I   115  26 1.750770e-06       NA
+##        Jack8   GA-I    99  29 1.749116e-06       NA
+##        Jack9     HI    64  NA 2.350640e-06       NA
+##        Jack9 CGF1-I   106  23 1.867137e-06       NA
+##        Jack9 CGF2-I   117  26 1.880573e-06       NA
+##        Jack9   GA-I    99  30 1.868055e-06       NA
 ```
 
 ```r

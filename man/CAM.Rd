@@ -38,8 +38,6 @@ There is a special method of \code{plot} and \code{print} for this class.
 Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) respectively for all Ld decay curves in a .rawld file.
 }
 \details{
-Require \pkg{doSNOW}, \pkg{foreach} package and their dependencies if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. It is recommended to library these required packages before using the parallel functionality.
-
 \code{max.duration} is only used when \code{isolation=TRUE} and \code{fast.search=FALSE}. The maximal duration of admixture \eqn{n} to be considered as possible. Smaller values can make the slow searching algorithm faster. If \code{max.duration>T}, it will be set to be \code{T}.
 
 \code{LD.clusternum} is used if \code{LD.parallel=TRUE}. If not specified, it is set to be the number of LD decay curves in the .rawld file.
@@ -52,14 +50,16 @@ If the last entry of Distence in the .rawld file is greater than 10, a warning o
 
 If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 
+Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will sompute sequentially with warnings.
+
 Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 }
 \examples{
 data(GA_I)
-library(foreach);library(doSNOW)
 
 #fit models with isolation=FALSE.
 fit<-CAM(GA_I,m1=0.3,T=150L,isolation=FALSE)
+fit
 \dontrun{
 plot(fit) #may not be able to display
 }
@@ -69,12 +69,12 @@ fit
 fit$summary
 \dontrun{
 plot(fit) #may not be able to display
-plot(fit,"D:/plot.pdf") #plot to a .pdf file
+plot(fit,"plot.pdf") #plot to a .pdf file
 }
 
 data(CGF_50)
-fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE)
-fit #Lengths of intervals being 20 indicates larger T should be tried.
+fit<-CAM(CGF_50,0.3,20L,isolation=FALSE,LD.parallel=FALSE) #with warnings
+fit
 
 \dontrun{
 #passing a file path to the argument `rawld=`
