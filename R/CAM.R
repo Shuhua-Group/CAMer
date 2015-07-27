@@ -96,7 +96,7 @@ fit.theta<-function(Ac,y){
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #'
-#' Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will sompute sequentially with warnings.
+#' Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 #'
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computatio time.
 #'
@@ -292,7 +292,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
         }
 
     if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
-        warning("'parallel' or 'snow' package not found! Computing sequentially...")
+        message("Cannot find 'parallel' or 'snow' package! Computing sequentially...\n")
         single.parallel<-FALSE
     }
     if(single.parallel){
@@ -357,7 +357,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #' 
-#' Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will sompute sequentially with warnings.
+#' Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 #' 
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 #'
@@ -416,7 +416,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     class(results)<-"CAM"
 
     if(LD.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
-        warning("'parallel' or 'snow' package not found! Computing each LD sequentially...")
+        message("Cannot find 'parallel' or 'snow' package! Computing each LD sequentially...\n")
         LD.parallel<-FALSE
     }
     if(LD.parallel){
