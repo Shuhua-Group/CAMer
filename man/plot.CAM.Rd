@@ -33,7 +33,7 @@
 
 \item{LD.lim}{the limit of the Weighted LD-axis in the third plot (Fitting of Models). Defaults to \code{c(-.002,.25)}.}
 
-\item{...}{other graphical arguments passed to basic functions like \code{plot}.}
+\item{...}{further arguments}
 }
 \description{
 Summary Plots for "CAM" Class

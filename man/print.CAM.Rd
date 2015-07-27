@@ -4,10 +4,12 @@
 \alias{print.CAM}
 \title{Print Method for "CAM" Class}
 \usage{
-\method{print}{CAM}(x)
+\method{print}{CAM}(x, ...)
 }
 \arguments{
 \item{x}{a "CAM" class object}
+
+\item{...}{further arguments}
 }
 \description{
 Print Method for "CAM" Class

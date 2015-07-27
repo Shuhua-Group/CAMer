@@ -4,10 +4,12 @@
 \alias{print.CAM.single}
 \title{Print Method for "CAM.single" Class}
 \usage{
-\method{print}{CAM.single}(x)
+\method{print}{CAM.single}(x, ...)
 }
 \arguments{
 \item{x}{a "CAM.single" class object}
+
+\item{...}{further arguments}
 }
 \description{
 Print Method for "CAM.single" Class

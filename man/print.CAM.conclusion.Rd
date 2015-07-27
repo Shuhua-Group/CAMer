@@ -4,10 +4,12 @@
 \alias{print.CAM.conclusion}
 \title{Print Method for "CAM.conclusion" Class}
 \usage{
-\method{print}{CAM.conclusion}(x)
+\method{print}{CAM.conclusion}(x, ...)
 }
 \arguments{
 \item{x}{an object of "CAM.conclusion" class}
+
+\item{...}{further arguments}
 }
 \description{
 Print Method for "CAM.conclusion" Class

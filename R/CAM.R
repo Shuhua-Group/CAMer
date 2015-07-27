@@ -518,7 +518,7 @@ reconstruct.fitted<-function(CAM.single){
 #' @param LD.col color of the original Combined LD curve. Defaults to "black".
 #' @param LD.lwd line width of the original Combined LD curve. Defaults to 1.
 #' @param LD.lim the limit of the Weighted LD-axis in the third plot (Fitting of Models). Defaults to \code{c(-.002,.25)}.
-#' @param ... other graphical arguments passed to basic functions like \code{plot}.
+#' @param ... further arguments
 #' @details
 #'
 #' The function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}.
@@ -742,6 +742,7 @@ construct.CAM<-function(rawld,m1,dataset){
 #' Print Method for "CAM.single" Class
 #'
 #' @param x a "CAM.single" class object
+#' @param ... further arguments
 #' @details
 #' Print a very brief summary of a "CAM.single" class object. Include:
 #' \itemize{
@@ -753,18 +754,19 @@ construct.CAM<-function(rawld,m1,dataset){
 #' @seealso \code{\link{singleCAM}}
 #' @export
 
-print.CAM.single<-function(x){
+print.CAM.single<-function(x,...){
     cat("Continuous Admixture Inference (CAM) for a Single LD Decay Curve\n\n")
     cat("Function call: ")
     print(x$call)
     cat("\n")
     cat("Length of Used LD:", length(x$y),"\n\n")
-    print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE)
+    print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE,...)
 }
 
 #' Print Method for "CAM" Class
 #'
 #' @param x a "CAM" class object
+#' @param ... further arguments
 #' @details
 #' The print method for "CAM" Class. Include:
 #' \itemize{
@@ -775,7 +777,7 @@ print.CAM.single<-function(x){
 #' @seealso \code{\link{CAM}}
 #' @export
 
-print.CAM<-function(x){
+print.CAM<-function(x,...){
     cat("Continuous Admixture Inference (CAM) for a .rawlf File\n\n")
     if(!is.null(x$call)){
         cat("Function call:")
@@ -783,7 +785,7 @@ print.CAM<-function(x){
         cat("\n")
     }
     cat("Total Length of LD:",length(x$d),"\n\n")
-    print(x$summary[,c("LD","Model","Start","End","msE","quasi.F")],row.names=FALSE)
+    print(x$summary[,c("LD","Model","Start","End","msE","quasi.F")],row.names=FALSE,...)
 }
 
 #' Draw Conclusions on Models from a "CAM" class object
@@ -846,10 +848,11 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
 #' Print Method for "CAM.conclusion" Class
 #'
 #' @param x an object of "CAM.conclusion" class
+#' @param ... further arguments
 #' @seealso \code{\link{conclude.model}}
 #' @export
 
-print.CAM.conclusion<-function(x){
+print.CAM.conclusion<-function(x,...){
     cat("CAM Best Model(s) Conclusion:\n\n")
     cat("Function call: ")
     print(x$call)
@@ -863,8 +866,8 @@ print.CAM.conclusion<-function(x){
         else cat(", ")
     }
     cat("Group Means of log(msE)/msE:\n")
-    print(x$group.means)
+    print(x$group.means,...)
     cat("\n")
     cat("Adjusted p-value:\n")
-    print(x$adjusted.p.value)
+    print(x$adjusted.p.value,...)
 }
