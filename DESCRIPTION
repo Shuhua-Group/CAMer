@@ -4,7 +4,7 @@ Title: Continuous Admixture Modeling (CAM)
 Version: 0.1
 Date: 2015-07-20
 Author: Qiu Hongxiang
-Suggests: R (>= 2.14.0), parallel, snow
+Suggests: parallel, snow
 Maintainer: Qiu Hongxiang <david940408@gmail.com>
 Description: Includes functions for doing Continuous Admixture Modeling (CAM), e.g. LD fitting, summary plots, summary tables, selecting the best model(s), etc.
 License: GPL-2
