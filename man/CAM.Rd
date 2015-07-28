@@ -54,6 +54,16 @@ Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code
 
 Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 }
+\note{
+When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}:
+\enumerate{
+ \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
+
+ \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+}
+
+Do care abour memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+}
 \examples{
 data(GA_I)
 
@@ -80,8 +90,5 @@ fit
 #passing a file path to the argument `rawld=`
 fit<-CAM("CGF_50.rawld",0.3)
 }
-}
-\seealso{
-\code{\link{singleCAM}}, \code{\link{plot.CAM}}, \code{\link{construct.CAM}}
 }
 

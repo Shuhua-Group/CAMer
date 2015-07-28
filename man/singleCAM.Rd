@@ -4,14 +4,14 @@
 \alias{singleCAM}
 \title{Continuous Admixture Modeling (CAM) for a Single LD Decay Curve}
 \usage{
-singleCAM(d, y, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
+singleCAM(d, Z, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
   max.duration = 150L, single.parallel = isolation && !fast.search,
   single.clusternum = 4L)
 }
 \arguments{
 \item{d}{the numeric vector of genetic distance (Morgan) of LD decay curve}
 
-\item{y}{the numeric vector of LD decay curve}
+\item{Z}{the numeric vector of LD decay curve}
 
 \item{m1}{the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.}
 
@@ -30,8 +30,8 @@ singleCAM(d, y, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
 \value{
 an object of S3 class "CAM.single". A list consisting of:
 \item{call}{the matched call}
-\item{maxindex}{the index of the maximal value in \code{y} See "Details".}
-\item{d,y}{identical to function inputs up to some truncation. See "Details"}
+\item{maxindex}{the index of the maximal value in \code{Z} See "Details".}
+\item{d,Z}{identical to function inputs up to some truncation. See "Details"}
 \item{T,isolation}{identical to function inputs}
 \item{A}{numeric matrix \eqn{A} with the \eqn{(i,j)}-th entry being \eqn{\text{exp}(-j \cdot d_i)}, \eqn{d_i} meaning the \eqn{i}-th entry of \code{d} and \eqn{j} meaning the genertion.}
 \item{m1,m2}{admixture proportion of population 1 and 2}
@@ -50,11 +50,11 @@ Given a single LD decay curve, for each model, this function does the following:
 
 If \code{isolation=FALSE}, it goes through all possible time intervals/points in [0,\code{T}], each time estimating \eqn{\theta_0} and \eqn{\theta_1} for the corresponding interval/point, and chooses the time interval/point that achieves the smallest ssE as the estimate for the model. Each corresponding \eqn{\theta=(\theta_0,\theta_1)} is the estimted \eqn{\theta} for each model.
 
-If \code{isolation=TRUE,fast.search=FALSE}, it also goes through all possible time intervals/points to estimate parameters. This slow algorithm is not recommended as it takes more than 40 minutes if \code{T=500L,max.duration=150L} and \code{y} has length 3497 without parallel computation.
+If \code{isolation=TRUE,fast.search=FALSE}, it also goes through all possible time intervals/points to estimate parameters. This slow algorithm is not recommended as it takes more than 40 minutes if \code{T=500L,max.duration=150L} and \code{Z} has length 3497 without parallel computation.
 
-If \code{isolation=TRUE,fast.search=TRUE}, for CGF1-I, CGF2-I, GA-I models, it uses a fast searching algorithm to search for a local minimum of ssE. This local minimum is not guaranteed to be the global minimum as that in the slow algorithm, but usually it is the same or quite close to that. It is recommended to use the fast algorithm because it takes only about 2 minutes if \code{T=500L,max.duration=150L} and \code{y} has length 3497 without parallel computation.
+If \code{isolation=TRUE,fast.search=TRUE}, for CGF1-I, CGF2-I, GA-I models, it uses a fast searching algorithm to search for a local minimum of ssE. This local minimum is not guaranteed to be the global minimum as that in the slow algorithm, but usually it is the same or quite close to that. It is recommended to use the fast algorithm because it takes only about 2 minutes if \code{T=500L,max.duration=150L} and \code{Z} has length 3497 without parallel computation.
 
-\code{maxindex} is the index of \code{y} such that \code{y[maxindex]} is the maximal value of \code{y}. If the first few values of \code{y} are not decreasing as theoretically expected, the \code{1:maxindex} of \code{y} and \code{d} will be removed in calculation and in returned values.
+\code{maxindex} is the index of \code{Z} such that \code{Z[maxindex]} is the maximal value of \code{Z}. If the first few values of \code{Z} are not decreasing as theoretically expected, the \code{1:maxindex} of \code{Z} and \code{d} will be removed in calculation and in returned values.
 
 If the last entry of distence is greater than 10, a warning of unit will be given.
 
@@ -66,31 +66,39 @@ Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} 
 
 There is a special method of \code{plot} and \code{print} for this class.
 }
+\note{
+When \code{single.parallel=TRUE}:
+\enumerate{
+ \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
+
+ \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+}
+}
 \examples{
 data(CGF_50)
-y<-CGF_50$Combined_LD
+Z<-CGF_50$Combined_LD
 d<-CGF_50$Distance
 
 #fit models with isolation=FALSE
-fit<-singleCAM(d,y,m1=0.3,T=10L,isolation=FALSE) #with warning
+fit<-singleCAM(d,Z,m1=0.3,T=10L,isolation=FALSE) #with warning
 
 #re-run with larger T
-fit<-singleCAM(d,y,m1=0.3,T=100L,isolation=FALSE)
+fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 fit
 
 #fit models with isolation=TRUE using fast searching algorithm
-fit<-singleCAM(d,y,m1=0.3,T=100L)
+fit<-singleCAM(d,Z,m1=0.3,T=100L)
 fit
 
 #fit models with isolation=TRUE using slow searching algorithm
 #with parallel computation
-fit<-singleCAM(d,y,m1=0.3,T=100L,fast.search=FALSE,
+fit<-singleCAM(d,Z,m1=0.3,T=100L,fast.search=FALSE,
                single.parallel=TRUE,single.clusternum=4L)
 fit
 
 #fit models with isolation=TRUE using slow searching algorithm
 #without parallel computation
-fit<-singleCAM(d,y,m1=0.3,T=70L,fast.search=FALSE,single.parallel=FALSE)
+fit<-singleCAM(d,Z,m1=0.3,T=70L,fast.search=FALSE,single.parallel=FALSE)
 fit
 
 fitted.curves<-reconstruct.fitted(fit)

@@ -17,10 +17,10 @@ Given an object of "CAM.single" class, reconstruct the fitted LD decay curves of
 }
 \examples{
 data(CGF_50)
-y<-CGF_50$Combined_LD
+Z<-CGF_50$Combined_LD
 d<-CGF_50$Distance
 
-fit<-singleCAM(d,y,m1=0.3,T=100L,isolation=FALSE)
+fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 fitted.curves<-reconstruct.fitted(fit)
 }
 \seealso{

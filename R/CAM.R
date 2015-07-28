@@ -46,12 +46,12 @@ distance<-function(v1,v2){
 }
 
 
-fit.theta<-function(Ac,y){
-    X<-cbind(rep(1,length(y)),Ac)
+fit.theta<-function(Ac,Z){
+    X<-cbind(rep(1,length(Z)),Ac)
     QR<-qr(X)
     Q<-qr.Q(QR);R<-qr.R(QR)
-    theta<-solve(R,t(Q)%*%y)
-    list(theta0=theta[1],theta1=theta[2],ssE=distance(theta[1]+Ac*theta[2],y))
+    theta<-solve(R,t(Q)%*%Z)
+    list(theta0=theta[1],theta1=theta[2],ssE=distance(theta[1]+Ac*theta[2],Z))
 }
 
 #' Continuous Admixture Modeling (CAM) for a Single LD Decay Curve
@@ -60,7 +60,7 @@ fit.theta<-function(Ac,y){
 #'
 #' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
 #' @param T the most ancient generation to be searched. Defaults to 500.
-#' @param y the numeric vector of LD decay curve
+#' @param Z the numeric vector of LD decay curve
 #' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search Defaults to \code{TRUE}. See "Details".
@@ -69,8 +69,8 @@ fit.theta<-function(Ac,y){
 #' @param single.clusternum the number of clusters in parallel computation. Defaults to 4 for the four models. Used if \code{single.parallel=TRUE}.
 #' @return an object of S3 class "CAM.single". A list consisting of:
 #' \item{call}{the matched call}
-#' \item{maxindex}{the index of the maximal value in \code{y} See "Details".}
-#' \item{d,y}{identical to function inputs up to some truncation. See "Details"}
+#' \item{maxindex}{the index of the maximal value in \code{Z} See "Details".}
+#' \item{d,Z}{identical to function inputs up to some truncation. See "Details"}
 #' \item{T,isolation}{identical to function inputs}
 #' \item{A}{numeric matrix \eqn{A} with the \eqn{(i,j)}-th entry being \eqn{\text{exp}(-j \cdot d_i)}, \eqn{d_i} meaning the \eqn{i}-th entry of \code{d} and \eqn{j} meaning the genertion.}
 #' \item{m1,m2}{admixture proportion of population 1 and 2}
@@ -86,11 +86,11 @@ fit.theta<-function(Ac,y){
 #'
 #' If \code{isolation=FALSE}, it goes through all possible time intervals/points in [0,\code{T}], each time estimating \eqn{\theta_0} and \eqn{\theta_1} for the corresponding interval/point, and chooses the time interval/point that achieves the smallest ssE as the estimate for the model. Each corresponding \eqn{\theta=(\theta_0,\theta_1)} is the estimted \eqn{\theta} for each model.
 #'
-#' If \code{isolation=TRUE,fast.search=FALSE}, it also goes through all possible time intervals/points to estimate parameters. This slow algorithm is not recommended as it takes more than 40 minutes if \code{T=500L,max.duration=150L} and \code{y} has length 3497 without parallel computation.
+#' If \code{isolation=TRUE,fast.search=FALSE}, it also goes through all possible time intervals/points to estimate parameters. This slow algorithm is not recommended as it takes more than 40 minutes if \code{T=500L,max.duration=150L} and \code{Z} has length 3497 without parallel computation.
 #'
-#' If \code{isolation=TRUE,fast.search=TRUE}, for CGF1-I, CGF2-I, GA-I models, it uses a fast searching algorithm to search for a local minimum of ssE. This local minimum is not guaranteed to be the global minimum as that in the slow algorithm, but usually it is the same or quite close to that. It is recommended to use the fast algorithm because it takes only about 2 minutes if \code{T=500L,max.duration=150L} and \code{y} has length 3497 without parallel computation.
+#' If \code{isolation=TRUE,fast.search=TRUE}, for CGF1-I, CGF2-I, GA-I models, it uses a fast searching algorithm to search for a local minimum of ssE. This local minimum is not guaranteed to be the global minimum as that in the slow algorithm, but usually it is the same or quite close to that. It is recommended to use the fast algorithm because it takes only about 2 minutes if \code{T=500L,max.duration=150L} and \code{Z} has length 3497 without parallel computation.
 #'
-#' \code{maxindex} is the index of \code{y} such that \code{y[maxindex]} is the maximal value of \code{y}. If the first few values of \code{y} are not decreasing as theoretically expected, the \code{1:maxindex} of \code{y} and \code{d} will be removed in calculation and in returned values.
+#' \code{maxindex} is the index of \code{Z} such that \code{Z[maxindex]} is the maximal value of \code{Z}. If the first few values of \code{Z} are not decreasing as theoretically expected, the \code{1:maxindex} of \code{Z} and \code{d} will be removed in calculation and in returned values.
 #'
 #' If the last entry of distence is greater than 10, a warning of unit will be given.
 #' 
@@ -103,42 +103,49 @@ fit.theta<-function(Ac,y){
 #' There is a special method of \code{plot} and \code{print} for this class.
 #' @examples
 #' data(CGF_50)
-#' y<-CGF_50$Combined_LD
+#' Z<-CGF_50$Combined_LD
 #' d<-CGF_50$Distance
 #'
 #' #fit models with isolation=FALSE
-#' fit<-singleCAM(d,y,m1=0.3,T=10L,isolation=FALSE) #with warning
+#' fit<-singleCAM(d,Z,m1=0.3,T=10L,isolation=FALSE) #with warning
 #' 
 #' #re-run with larger T
-#' fit<-singleCAM(d,y,m1=0.3,T=100L,isolation=FALSE)
+#' fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 #' fit
 #'
 #' #fit models with isolation=TRUE using fast searching algorithm
-#' fit<-singleCAM(d,y,m1=0.3,T=100L)
+#' fit<-singleCAM(d,Z,m1=0.3,T=100L)
 #' fit
 #'
 #' #fit models with isolation=TRUE using slow searching algorithm
 #' #with parallel computation
-#' fit<-singleCAM(d,y,m1=0.3,T=100L,fast.search=FALSE,
+#' fit<-singleCAM(d,Z,m1=0.3,T=100L,fast.search=FALSE,
 #'                single.parallel=TRUE,single.clusternum=4L)
 #' fit
 #'
 #' #fit models with isolation=TRUE using slow searching algorithm
 #' #without parallel computation
-#' fit<-singleCAM(d,y,m1=0.3,T=70L,fast.search=FALSE,single.parallel=FALSE)
+#' fit<-singleCAM(d,Z,m1=0.3,T=70L,fast.search=FALSE,single.parallel=FALSE)
 #' fit
 #'
 #' fitted.curves<-reconstruct.fitted(fit)
+#' @note
+#' When \code{single.parallel=TRUE}:
+#' \enumerate{
+#'  \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
+#' 
+#'  \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+#' }
 #' @seealso \code{\link{CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @export
 
-singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
+singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                     fast.search=TRUE,max.duration=150L,
                     single.parallel=isolation && !fast.search,
                     single.clusternum=4L){
-    maxindex<-which(y==max(y))[1L]
+    maxindex<-which(Z==max(Z))[1L]
     if(maxindex>1){
-        y<-y[-seq_len(maxindex-1L)]
+        Z<-Z[-seq_len(maxindex-1L)]
         d<-d[-seq_len(maxindex-1L)]
     }
     A<-exp(-d%*%t(seq_len(T)))
@@ -148,7 +155,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
 
     result<-list(call=match.call(),maxindex=maxindex,
-                 d=d,T=T,A=A,y=y,isolation=isolation,m1=m1,m2=m2)
+                 d=d,T=T,A=A,Z=Z,isolation=isolation,m1=m1,m2=m2)
     if(isolation){
         result$fast.search<-fast.search
         if(!fast.search){
@@ -160,24 +167,24 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 
     est.fun.HI<-function(n){
         Ac<-A[,n]*m1*m2
-        fit.theta(Ac,y)
+        fit.theta(Ac,Z)
     }
     est.fun.CGF1<-function(end,start){
         n<-start-end+1L
         alpha<-1-m1^(1/n)
         Ac<-A[,end:start]%*%matrix(m1^((n-1):0/n),ncol=1L)*alpha*m1
-        fit.theta(Ac,y)
+        fit.theta(Ac,Z)
     }
     est.fun.CGF2<-function(end,start){
         n<-start-end+1L
         alpha<-1-m2^(1/n)
         Ac<-A[,end:start]%*%matrix(m2^((n-1):0/n),ncol=1L)*alpha*m2
-        fit.theta(Ac,y)
+        fit.theta(Ac,Z)
     }
     est.fun.GA<-function(end,start){
         n<-start-end+1L
         Ac<-A[,end:start]%*%matrix((1-1/n)^(0:(n-1))/c(rep(n,n-1),1),ncol=1L)*m1*m2
-        fit.theta(Ac,y)
+        fit.theta(Ac,Z)
     }
     est.funs<-list(est.fun.HI,est.fun.CGF1,est.fun.CGF2,est.fun.GA)
 
@@ -223,8 +230,8 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         ssE[n]<-coef$ssE
                     }
                     n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
-                    if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
-                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
+                    
+                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
                 } else {
                     est.old<-est.fun(1,T)
                     gen.old<-list(end=1,start=T,theta0=est.old$theta0,theta1=est.old$theta1,ssE=est.old$ssE)
@@ -233,11 +240,11 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         if(gen.new$changed) gen.old<-gen.new
                         else break
                     }
-                    if(gen.new$start==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
+                    
                     list(m=gen.new$end,n=gen.new$start-gen.new$end+1L,
                          start=gen.new$start,end=gen.new$end,
                          theta0=gen.new$theta0,theta1=gen.new$theta1,
-                         ssE=gen.new$ssE,msE=gen.new$ssE/(length(y)-1))
+                         ssE=gen.new$ssE,msE=gen.new$ssE/(length(Z)-1))
                 }
             }
         } else
@@ -252,8 +259,8 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                         ssE[n]<-coef$ssE
                     }
                     n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
-                    if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
-                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
+                    
+                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
                 } else {
                     ssE<-theta0<-theta1<-matrix(nrow=T,ncol=T)
 
@@ -272,8 +279,8 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                             if(ssE[n,m]<SSE){
                                 M<-m;N<-n;SSE<-ssE[n,m]
                             }
-                    if(M+N-1L==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
-                    list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0[N,M],theta1=theta1[N,M],ssE=SSE,msE=SSE/(length(y)-1))
+                    
+                    list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0[N,M],theta1=theta1[N,M],ssE=SSE,msE=SSE/(length(Z)-1))
                 }
             }
     } else
@@ -287,8 +294,8 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                 ssE[n]<-coef$ssE
             }
             n<-which(ssE==min(ssE,na.rm=TRUE))[1]
-            if(n==T) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
-            list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(y)-1))
+            
+            list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
         }
 
     if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
@@ -298,17 +305,23 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
     if(single.parallel){
         if(getRversion()>="2.14.0"){
             cl<-parallel::makeCluster(single.clusternum)
-            parallel::clusterExport(cl,c("distance","fit.theta"),envir=environment())
-            parallel::clusterExport(cl,ls(),envir=environment())
-            estimate<-parallel::parLapply(cl,seq_len(4L),search)
-            parallel::stopCluster(cl)
+            parallel::clusterExport(cl,c("distance","fit.theta","est.funs","A","Z","m1","m2","T"),envir=environment())
+            if(isolation && !fast.search)
+                parallel::clusterExport(cl,"max.duration",envir=environment())
+            if(isolation && fast.search)
+                parallel::clusterExport(cl,"upgrade.generation",envir=environment())
+            tryCatch(estimate<-parallel::parLapply(cl,seq_len(4L),search),
+                     finally=parallel::stopCluster(cl))
         } else {
             require(snow,quietly=TRUE)
             cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta"),envir=environment())
-            clusterExport(cl,ls(),envir=environment())
-            estimate<-parLapply(cl,seq_len(4L),search)
-            stopCluster(cl)
+            clusterExport(cl,c("distance","fit.theta","est.funs","A","Z","m1","m2","T"),envir=environment())
+            if(isolation && !fast.search)
+                clusterExport(cl,"max.duration",envir=environment())
+            if(isolation && fast.search)
+                clusterExport(cl,"upgrade.generation",envir=environment())
+            tryCatch(estimate<-parLapply(cl,seq_len(4L),search),
+                     finally=stopCluster(cl))
         }
     } else estimate<-lapply(seq_len(4L),search)
 
@@ -322,6 +335,7 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
                              ssE=sapply(estimate,function(dummy) dummy$ssE),
                              Max.index=rep(result$maxindex,4L),
                              msE=sapply(estimate,function(dummy) dummy$msE))
+    if(any(result$summary$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
 
     result
 }
@@ -387,7 +401,15 @@ singleCAM<-function(d,y,m1,T=500L,isolation=TRUE,
 #' #passing a file path to the argument `rawld=`
 #' fit<-CAM("CGF_50.rawld",0.3)
 #' }
-#' @seealso \code{\link{singleCAM}}, \code{\link{plot.CAM}}, \code{\link{construct.CAM}}
+#' @note 
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}:
+#' \enumerate{
+#'  \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
+#' 
+#'  \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+#' }
+#' 
+#' Do care abour memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
 #' @import utils
 #' @export
 #'
@@ -400,12 +422,12 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
-    Y<-rawld[,c(LD.index,Jack.index)]
+    Zs<-rawld[,c(LD.index,Jack.index)]
     d<-rawld$Distance
 
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
 
-    results<-list(call=match.call(),d=d,Y=Y,T=T,isolation=isolation,m1=m1,m2=1-m1)
+    results<-list(call=match.call(),d=d,Zs=Zs,T=T,isolation=isolation,m1=m1,m2=1-m1)
     if(isolation){
         results$fast.search<-fast.search
         if(!fast.search){
@@ -420,34 +442,34 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
         LD.parallel<-FALSE
     }
     if(LD.parallel){
-        if(missing(LD.clusternum)) LD.clusternum<-ncol(Y)
+        if(missing(LD.clusternum)) LD.clusternum<-ncol(Zs)
         if(getRversion()>="2.14.0"){
         cl<-parallel::makeCluster(LD.clusternum)
-        parallel::clusterExport(cl,c("distance","fit.theta","singleCAM"),envir=environment())
-        parallel::clusterExport(cl,ls(),envir=environment())
-        results$CAM.list<-parallel::parLapply(cl,seq_len(ncol(Y)),function(ld){
-            singleCAM(d,Y[,ld],m1,T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum)
-        })
-        parallel::stopCluster(cl)
+        parallel::clusterExport(cl,c("distance","fit.theta","singleCAM","d","m1","T","isolation","fast.search","max.duration","single.parallel","single.clusternum"),envir=environment())
+        if(isolation && !fast.search)
+            parallel::clusterExport(cl,"max.duration",envir=environment())
+        tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
+                 finally=parallel::stopCluster(cl))
         } else {
             require(snow,quietly=TRUE)
             cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta"),envir=environment())
-            clusterExport(cl,ls(),envir=environment())
-            estimate<-parLapply(cl,seq_len(4L),search)
-            stopCluster(cl)
+            clusterExport(cl,c("distance","fit.theta","singleCAM","d","m1","T","isolation","fast.search","max.duration","single.parallel","single.clusternum"),envir=environment())
+            if(isolation && !fast.search)
+                clusterExport(cl,"max.duration",envir=environment())
+            tryCatch(results$CAM.list<-parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
+                     finally=stopCluster(cl))
         }
-    } else results$CAM.list<-lapply(seq_len(ncol(Y)),function(ld){
-        singleCAM(d,Y[,ld],m1,T,isolation=isolation,single.parallel=single.parallel,fast.search=fast.search,max.duration=max.duration,single.clusternum=single.clusternum)
+    } else results$CAM.list<-lapply(seq_len(ncol(Zs)),function(ld){
+        singleCAM(d,Zs[,ld],m1,T,isolation=isolation,single.parallel=single.parallel,fast.search=fast.search,max.duration=max.duration,single.clusternum=single.clusternum)
     })
     names(results$CAM.list)<-c("Combined_LD",paste("Jack",seq_len(length(Jack.index)),sep=""))
 
     results$fitted<-rawld$Fitted
     if(results$CAM.list[[1L]]$maxindex>1L) results$fitted<-results$fitted[-seq_len(results$CAM.list[[1L]]$maxindex-1L)]
-    v<-distance(results$fitted,results$CAM.list[[1L]]$y)
+    v<-distance(results$fitted,results$CAM.list[[1L]]$Z)
 
     data<-NULL
-    for(ld in seq_len(ncol(Y))){
+    for(ld in seq_len(ncol(Zs))){
         data.temp<-data.frame(LD=rep(names(results$CAM.list)[ld],4L),
                               Model=names(results$CAM.list[[ld]]$estimate),
                               Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
@@ -463,6 +485,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     data$LD<-as.factor(data$LD)
     data$Model<-factor(data$Model,ordered=TRUE)
     results$summary<-data
+    if(any(data$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
     results
 }
 
@@ -474,33 +497,33 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
 #' @return a list consisting of the four fitted curves
 #' @examples
 #' data(CGF_50)
-#' y<-CGF_50$Combined_LD
+#' Z<-CGF_50$Combined_LD
 #' d<-CGF_50$Distance
 #'
-#' fit<-singleCAM(d,y,m1=0.3,T=100L,isolation=FALSE)
+#' fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 #' fitted.curves<-reconstruct.fitted(fit)
 #' @seealso \code{\link{singleCAM}}, \code{\link{construct.CAM}}
 #' @export
 
 reconstruct.fitted<-function(CAM.single){
-    y1<-CAM.single$estimate[[1L]]$theta0+CAM.single$estimate[[1L]]$theta1*
+    Z1<-CAM.single$estimate[[1L]]$theta0+CAM.single$estimate[[1L]]$theta1*
         CAM.single$A[,CAM.single$estimate[[1L]]$n]*CAM.single$m1*CAM.single$m2
 
     alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2L]]$n)
-    y2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
+    Z2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
         CAM.single$A[,CAM.single$estimate[[2L]]$end:CAM.single$estimate[[2L]]$start]%*%
         matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1
 
     alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3L]]$n)
-    y3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
+    Z3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
         CAM.single$A[,CAM.single$estimate[[3L]]$end:CAM.single$estimate[[3L]]$start]%*%
         matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2
 
-    y4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
+    Z4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
         CAM.single$A[,CAM.single$estimate[[4L]]$end:CAM.single$estimate[[4L]]$start]%*%
         matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2
 
-    z<-list(y1,y2,y3,y4)
+    z<-list(Z1,Z2,Z3,Z4)
     names(z)<-paste(names(CAM.single$estimate),".fitted",sep="")
     z
 }
@@ -646,7 +669,7 @@ plot.CAM<-function(x,filename,T.max,
     colors<-apply(model.cols2,2,function(col) grDevices::rgb(col[1],col[2],col[3],col[4],maxColorValue=255))[seq(3,12,by=3)]
     fit.lwd<-fit.lwd*rep(1L,4)
     fitted<-reconstruct.fitted(x$CAM.list[[1]])
-    graphics::plot(x$CAM.list[[1]]$d,x$CAM.list[[1]]$y,
+    graphics::plot(x$CAM.list[[1]]$d,x$CAM.list[[1]]$Z,
                    col=LD.col,type="l",lwd=LD.lwd,ylim=LD.lim,
                    xlab="Distance (Morgan)",ylab="",main="Fitting of Models",axes=FALSE,...)
     for(model in 1:4)
@@ -687,7 +710,7 @@ construct.CAM<-function(rawld,m1,dataset){
     if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
-    Y<-rawld[,c(LD.index,Jack.index)]
+    Zs<-rawld[,c(LD.index,Jack.index)]
     d<-rawld$Distance
 
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
@@ -706,20 +729,20 @@ construct.CAM<-function(rawld,m1,dataset){
 
     m2<-1-m1
 
-    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),d=d,Y=Y,T=T,CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
+    results<-list(isolation="CGF1-I" %in% levels(dataset$Model),d=d,Zs=Zs,T=T,CAM.list=NULL,fitted=rawld$Fitted,summary=dataset)
     class(results)<-"CAM"
 
     for(ld in seq_along(levels(dataset$LD))){
         d.temp<-d
-        y.temp<-Y[,ld]
+        Z.temp<-Zs[,ld]
         data2<-dataset[(4*ld-3):(4*ld),]
         maxindex<-data2$Max.index[1L]
         if(maxindex>1){
-            y.temp<-y.temp[-seq_len(maxindex-1L)]
+            Z.temp<-Z.temp[-seq_len(maxindex-1L)]
             d.temp<-d.temp[-seq_len(maxindex-1L)]
         }
         A<-exp(-d.temp%*%t(seq_len(T)))
-        results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,T=T,A=A,y=y.temp,m1=m1,m2=m2)
+        results$CAM.list[[ld]]<-list(maxindex=maxindex,d=d.temp,T=T,A=A,Z=Z.temp,m1=m1,m2=m2)
         for(model in 1L:4L){
             data.temp<-data2[model,]
             results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model==1L) data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
@@ -759,7 +782,7 @@ print.CAM.single<-function(x,...){
     cat("Function call: ")
     print(x$call)
     cat("\n")
-    cat("Length of Used LD:", length(x$y),"\n\n")
+    cat("Length of Used LD:", length(x$Z),"\n\n")
     print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE,...)
 }
 
