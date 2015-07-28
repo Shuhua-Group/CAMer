@@ -98,7 +98,7 @@ fit.theta<-function(Ac,Z){
 #'
 #' Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 #'
-#' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computatio time.
+#' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computation time.
 #'
 #' There is a special method of \code{plot} and \code{print} for this class.
 #' @examples
@@ -130,12 +130,7 @@ fit.theta<-function(Ac,Z){
 #'
 #' fitted.curves<-reconstruct.fitted(fit)
 #' @note
-#' When \code{single.parallel=TRUE}:
-#' \enumerate{
-#'  \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
-#' 
-#'  \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
-#' }
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
 #' @seealso \code{\link{CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @export
 
@@ -402,14 +397,10 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' fit<-CAM("CGF_50.rawld",0.3)
 #' }
 #' @note 
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}:
-#' \enumerate{
-#'  \item If \pkg{parallel} package is available, the user may terminate the execution of the function and the user can run \code{parallel::setDefaultCluster()} to stop all clusters.
-#' 
-#'  \item If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
-#' }
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
 #' 
 #' Do care abour memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+#' @seealso \code{\link{construct.CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @import utils
 #' @export
 #'
