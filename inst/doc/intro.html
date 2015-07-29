@@ -73,12 +73,12 @@ img {
 <pre class="r"><code>library(CAM)
 data(CGF_50)
 d&lt;-CGF_50$Distance
-y&lt;-CGF_50$Combined_LD
-fit&lt;-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
+Z&lt;-CGF_50$Combined_LD
+fit&lt;-singleCAM(d=d,Z=Z,m1=0.3,T=70L,isolation=FALSE)
 fit</code></pre>
 <pre><code>## Continuous Admixture Inference (CAM) for a Single LD Decay Curve
 ## 
-## Function call: singleCAM(d = d, y = y, m1 = 0.3, T = 70L, isolation = FALSE)
+## Function call: singleCAM(d = d, Z = Z, m1 = 0.3, T = 70L, isolation = FALSE)
 ## 
 ## Length of Used LD: 3497 
 ## 
@@ -173,7 +173,7 @@ fit</code></pre>
 </div>
 <div id="draw-conclusions-on-best-models" class="section level2">
 <h2>Draw Conclusions on Best Model(s)</h2>
-<p>The function <code>conclude.model()</code> can draw conclusions on which models are the significantly best ones. It takes a “CAM” class object or its summary table as input:</p>
+<p>The function <code>conclude.model()</code> can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a “CAM” class object or its summary table as input:</p>
 <pre class="r"><code>conclusion&lt;-conclude.model(fit)
 conclusion&lt;-conclude.model(fit$summary)
 conclusion</code></pre>
@@ -183,7 +183,11 @@ conclusion</code></pre>
 ## 
 ## Familiwise Error Rate: 0.05
 ## 
-## Best Model(s): CGF1-I, CGF2-I, GA-I
+## Best Model(s) and Time Estimation:
+##  Best.Models End Start
+##       CGF1-I  22   107
+##       CGF2-I  26   115
+##         GA-I  29    99
 ## 
 ## Group Means of log(msE)/msE:
 ##    CGF1-I    CGF2-I      GA-I        HI 
@@ -267,7 +271,11 @@ fit</code></pre>
 ## 
 ## Familiwise Error Rate: 0.05
 ## 
-## Best Model(s): CGF1-I, CGF2-I, GA-I
+## Best Model(s) and Time Estimation:
+##  Best.Models End Start
+##       CGF1-I  22   107
+##       CGF2-I  26   115
+##         GA-I  29    99
 ## 
 ## Group Means of log(msE)/msE:
 ##    CGF1-I    CGF2-I      GA-I        HI 

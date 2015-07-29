@@ -21,8 +21,8 @@ The function `singleCAM()` does CAM for a single LD decay curve. For example:
 library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
-y<-CGF_50$Combined_LD
-fit<-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
+Z<-CGF_50$Combined_LD
+fit<-singleCAM(d=d,Z=Z,m1=0.3,T=70L,isolation=FALSE)
 fit
 ```
 
@@ -79,7 +79,7 @@ See help page of `plot.CAM()` for more details.
 
 ## Draw Conclusions on Best Model(s)
 
-The function `conclude.model()` can draw conclusions on which models are the significantly best ones. It takes a "CAM" class object or its summary table as input:
+The function `conclude.model()` can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a "CAM" class object or its summary table as input:
 
 ```{r}
 conclusion<-conclude.model(fit)

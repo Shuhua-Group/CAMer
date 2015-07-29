@@ -20,7 +20,7 @@ an object of S3 class "CAM.conclusion". A list consisting of:
 \item{call}{function call}
 \item{group.means}{a named vector of group means of log(msE)/msE with each model being a group}
 \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
-\item{best.models}{the set of best models concluded}
+\item{best.models}{a data frame consisting of best models concluded and their estimated time intervals/points}
 \item{p.adjust.method}{method for adjusting p values used}
 }
 \description{
@@ -28,6 +28,8 @@ Draw conclusions on which models are best from a "CAM" class object or its summa
 }
 \details{
 The function uses pairwise paired Student's t-test on msE based on Jackknives to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+
+The estimated interval is the one that include all time points covered by more than half of the intervals estimated from Jackknives. The estimated point (fot HI model) is the nearest integer to the mean of the points estimated from Jackknives.
 
 There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
 }

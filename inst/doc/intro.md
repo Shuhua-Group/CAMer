@@ -17,15 +17,15 @@ The function `singleCAM()` does CAM for a single LD decay curve. For example:
 library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
-y<-CGF_50$Combined_LD
-fit<-singleCAM(d=d,y=y,m1=0.3,T=70L,isolation=FALSE)
+Z<-CGF_50$Combined_LD
+fit<-singleCAM(d=d,Z=Z,m1=0.3,T=70L,isolation=FALSE)
 fit
 ```
 
 ```
 ## Continuous Admixture Inference (CAM) for a Single LD Decay Curve
 ## 
-## Function call: singleCAM(d = d, y = y, m1 = 0.3, T = 70L, isolation = FALSE)
+## Function call: singleCAM(d = d, Z = Z, m1 = 0.3, T = 70L, isolation = FALSE)
 ## 
 ## Length of Used LD: 3497 
 ## 
@@ -150,7 +150,7 @@ See help page of `plot.CAM()` for more details.
 
 ## Draw Conclusions on Best Model(s)
 
-The function `conclude.model()` can draw conclusions on which models are the significantly best ones. It takes a "CAM" class object or its summary table as input:
+The function `conclude.model()` can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a "CAM" class object or its summary table as input:
 
 
 ```r
@@ -166,7 +166,11 @@ conclusion
 ## 
 ## Familiwise Error Rate: 0.05
 ## 
-## Best Model(s): CGF1-I, CGF2-I, GA-I
+## Best Model(s) and Time Estimation:
+##  Best.Models End Start
+##       CGF1-I  22   107
+##       CGF2-I  26   115
+##         GA-I  29    99
 ## 
 ## Group Means of log(msE)/msE:
 ##    CGF1-I    CGF2-I      GA-I        HI 
@@ -271,7 +275,11 @@ conclude.model(fit)
 ## 
 ## Familiwise Error Rate: 0.05
 ## 
-## Best Model(s): CGF1-I, CGF2-I, GA-I
+## Best Model(s) and Time Estimation:
+##  Best.Models End Start
+##       CGF1-I  22   107
+##       CGF2-I  26   115
+##         GA-I  29    99
 ## 
 ## Group Means of log(msE)/msE:
 ##    CGF1-I    CGF2-I      GA-I        HI 

@@ -814,10 +814,12 @@ print.CAM<-function(x,...){
 #' \item{call}{function call}
 #' \item{group.means}{a named vector of group means of log(msE)/msE with each model being a group}
 #' \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
-#' \item{best.models}{the set of best models concluded}
+#' \item{best.models}{a data frame consisting of best models concluded and their estimated time intervals/points}
 #' \item{p.adjust.method}{method for adjusting p values used}
 #' @details
 #' The function uses pairwise paired Student's t-test on msE based on Jackknives to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+#' 
+#' The estimated interval is the one that include all time points covered by more than half of the intervals estimated from Jackknives. The estimated point (fot HI model) is the nearest integer to the mean of the points estimated from Jackknives.
 #'
 #' There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
 #' @note
@@ -835,6 +837,7 @@ print.CAM<-function(x,...){
 conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
     if(class(x)=="CAM") data<-x$summary else data<-x
     data<-data[grep("Jack",data$LD),]
+    NJack<-nrow(data)/4
     if(log) data$msE<-log(data$msE)
 
     means<-tapply(data$msE,data$Model,mean)
@@ -853,8 +856,26 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
         best<-c(best,which(p.value[best,]>=alpha))
         best<-models[sort(best)]
     } else best<-"HI"
+    
+    end<-sapply(best,function(model){
+        if(model!="HI"){
+            data2<-data[data$Model==model,]
+            e<-min(data2$End)
+            while(sum(e>=data2$End)<=NJack/2) e<-e+1
+            e
+        } else NA
+    })
+    
+    start<-sapply(best,function(model){
+        data2<-data[data$Model==model,]
+        if(model!="HI"){
+            s<-max(data$Start)
+            while(sum(s<=data2$Start)<=NJack/2) s<-s-1
+            s
+        } else round(mean(data2$Start))
+    })
 
-    conclusion<-list(call=match.call(),alpha=alpha,group.means=means,adjusted.p.value=p.value,best.models=best,p.adjust.method=p.adjust.method)
+    conclusion<-list(call=match.call(),alpha=alpha,group.means=means,adjusted.p.value=p.value,best.models=data.frame(Best.Models=best,End=end,Start=start),p.adjust.method=p.adjust.method)
     class(conclusion)<-"CAM.conclusion"
     conclusion
 }
@@ -873,12 +894,9 @@ print.CAM.conclusion<-function(x,...){
     cat("\n")
     cat("Familiwise Error Rate: ")
     cat(x$alpha,"\n\n",sep="")
-    cat("Best Model(s): ")
-    for(i in seq_along(x$best.models)){
-        cat(x$best.models[i])
-        if(i==length(x$best.models)) cat("\n\n")
-        else cat(", ")
-    }
+    cat("Best Model(s) and Time Estimation:\n")
+    print(x$best.models,row.names=FALSE)
+    cat("\n")
     cat("Group Means of log(msE)/msE:\n")
     print(x$group.means,...)
     cat("\n")
