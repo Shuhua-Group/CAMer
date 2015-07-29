@@ -55,9 +55,11 @@ Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code
 Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 }
 \note{
-When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 
-Do care abour memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+Do care about memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+
+It is possible that this function opens several nodes but non of them is computing, and hence the execution does not stop, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}. The cause has not been identified yet. The current solution is to terminate the function by hand and re-run the function with fewer cores (e.g. set \code{single.parallel=FALSE}).
 }
 \examples{
 data(GA_I)

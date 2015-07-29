@@ -67,7 +67,7 @@ Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} 
 There is a special method of \code{plot} and \code{print} for this class.
 }
 \note{
-When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 }
 \examples{
 data(CGF_50)

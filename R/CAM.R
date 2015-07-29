@@ -130,7 +130,7 @@ fit.theta<-function(Ac,Z){
 #'
 #' fitted.curves<-reconstruct.fitted(fit)
 #' @note
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 #' @seealso \code{\link{CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @export
 
@@ -217,16 +217,18 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
             search<-function(model){
                 est.fun<-est.funs[[model]]
                 if(model==1L){
-                    ssE<-theta0<-theta1<-rep(NA,T)
+                    ssE<-Inf
                     for(n in seq_len(T)){
                         coef<-est.fun(n)
-                        theta0[n]<-coef$theta0
-                        theta1[n]<-coef$theta1
-                        ssE[n]<-coef$ssE
+                        if(coef$ssE<ssE){
+                            theta0<-coef$theta0
+                            theta1<-coef$theta1
+                            ssE<-coef$ssE
+                            N<-n
+                        }
                     }
-                    n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
                     
-                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
+                    list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
                 } else {
                     est.old<-est.fun(1,T)
                     gen.old<-list(end=1,start=T,theta0=est.old$theta0,theta1=est.old$theta1,ssE=est.old$ssE)
@@ -246,51 +248,52 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
             search<-function(model){
                 est.fun<-est.funs[[model]]
                 if(model==1L){
-                    ssE<-theta0<-theta1<-rep(NA,T)
+                    ssE<-Inf
                     for(n in seq_len(T)){
                         coef<-est.fun(n)
-                        theta0[n]<-coef$theta0
-                        theta1[n]<-coef$theta1
-                        ssE[n]<-coef$ssE
+                        if(coef$ssE<ssE){
+                            theta0<-coef$theta0
+                            theta1<-coef$theta1
+                            ssE<-coef$ssE
+                            N<-n
+                        }
                     }
-                    n<-which(ssE==min(ssE,na.rm=TRUE))[1L]
                     
-                    list(m=NA,n=n,start=n,end=NA,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
+                    list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
                 } else {
-                    ssE<-theta0<-theta1<-matrix(nrow=T,ncol=T)
+                    SSE<-Inf
 
                     for(n in seq_len(max.duration)){
                         for(m in seq_len(T-n+1L)){
                             coef<-est.fun(m,m+n-1L)
-                            theta0[n,m]<-coef$theta0
-                            theta1[n,m]<-coef$theta1
-                            ssE[n,m]<-coef$ssE
+                            if(coef$ssE<SSE){
+                                theta0<-coef$theta0
+                                theta1<-coef$theta1
+                                SSE<-coef$ssE
+                                M<-m
+                                N<-n
+                            }
                         }
                     }
 
-                    SSE<-Inf
-                    for(n in seq_len(max.duration))
-                        for(m in seq_len(T-n+1L))
-                            if(ssE[n,m]<SSE){
-                                M<-m;N<-n;SSE<-ssE[n,m]
-                            }
-                    
-                    list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0[N,M],theta1=theta1[N,M],ssE=SSE,msE=SSE/(length(Z)-1))
+                    list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0,theta1=theta1,ssE=SSE,msE=SSE/(length(Z)-1))
                 }
             }
     } else
         search<-function(model){
             est.fun<-est.funs[[model]]
-            ssE<-theta0<-theta1<-rep(NA,T)
+            ssE<-Inf
             for(n in seq_len(T)){
                 coef<-if(model==1L) est.fun(n) else est.fun(1L,n)
-                theta0[n]<-coef$theta0
-                theta1[n]<-coef$theta1
-                ssE[n]<-coef$ssE
+                if(coef$ssE<ssE){
+                    theta0<-coef$theta0
+                    theta1<-coef$theta1
+                    ssE<-coef$ssE
+                    N<-n
+                }
             }
-            n<-which(ssE==min(ssE,na.rm=TRUE))[1]
             
-            list(m=if(model==1L) NA else 1L,n=n,start=n,end=if(model==1L) NA else 1L,theta0=theta0[n],theta1=theta1[n],ssE=ssE[n],msE=ssE[n]/(length(Z)-1))
+            list(m=if(model==1L) NA else 1L,n=N,start=N,end=if(model==1L) NA else 1L,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
         }
 
     if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
@@ -330,6 +333,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                              ssE=sapply(estimate,function(dummy) dummy$ssE),
                              Max.index=rep(result$maxindex,4L),
                              msE=sapply(estimate,function(dummy) dummy$msE))
+    row.names(result$summary)<-NULL
     if(any(result$summary$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
 
     result
@@ -397,9 +401,11 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' fit<-CAM("CGF_50.rawld",0.3)
 #' }
 #' @note 
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation".
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 #' 
-#' Do care abour memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+#' Do care about memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
+#' 
+#' It is possible that this function opens several nodes but non of them is computing, and hence the execution does not stop, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}. The cause has not been identified yet. The current solution is to terminate the function by hand and re-run the function with fewer cores (e.g. set \code{single.parallel=FALSE}).
 #' @seealso \code{\link{construct.CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @import utils
 #' @export
@@ -436,17 +442,25 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
         if(missing(LD.clusternum)) LD.clusternum<-ncol(Zs)
         if(getRversion()>="2.14.0"){
         cl<-parallel::makeCluster(LD.clusternum)
-        parallel::clusterExport(cl,c("distance","fit.theta","singleCAM","d","m1","T","isolation","fast.search","max.duration","single.parallel","single.clusternum"),envir=environment())
+        parallel::clusterExport(cl,c("distance","fit.theta","d","m1","T","isolation","single.parallel"),envir=environment())
+        if(isolation)
+            parallel::clusterExport(cl,"fast.search",envir=environment())
         if(isolation && !fast.search)
             parallel::clusterExport(cl,"max.duration",envir=environment())
+        if(single.parallel)
+            parallel::clusterExport(cl,"single.clusternum",envir=environment())
         tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
                  finally=parallel::stopCluster(cl))
         } else {
             require(snow,quietly=TRUE)
             cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta","singleCAM","d","m1","T","isolation","fast.search","max.duration","single.parallel","single.clusternum"),envir=environment())
+            clusterExport(cl,c("distance","fit.theta","d","m1","T","isolation","single.parallel"),envir=environment())
+            if(isolation)
+                clusterExport(cl,"fast.search",envir=environment())
             if(isolation && !fast.search)
                 clusterExport(cl,"max.duration",envir=environment())
+            if(single.parallel)
+                clusterExport(cl,"single.clusternum",envir=environment())
             tryCatch(results$CAM.list<-parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
                      finally=stopCluster(cl))
         }
@@ -475,6 +489,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     }
     data$LD<-as.factor(data$LD)
     data$Model<-factor(data$Model,ordered=TRUE)
+    row.names(data)<-NULL
     results$summary<-data
     if(any(data$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
     results
