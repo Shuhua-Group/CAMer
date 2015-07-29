@@ -192,7 +192,7 @@ See the help page of `conclude.model()` for further information.
 
 -----------------
 
-## Miscellaneous
+## Miscellany
 
 ### Construct a Simple **CAM** object
 
