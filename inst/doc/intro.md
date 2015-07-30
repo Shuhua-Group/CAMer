@@ -128,7 +128,7 @@ A new method of `plot()` for **CAM** class is introduced in this package (`plot.
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-3-1.png) 
+![](intro_files/figure-html/plot-1.png) 
 
 where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
 
@@ -142,7 +142,7 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
                              "yellow","orange","orange"),ncol=4))
 ```
 
-![](intro_files/figure-html/unnamed-chunk-4-1.png) 
+![](intro_files/figure-html/plot.color-1.png) 
 
 See help page of `plot.CAM()` for more details.
 
@@ -220,10 +220,6 @@ fit
 ##        Jack1 CGF1-I   105  23 1.794603e-06       NA
 ##        Jack1 CGF2-I   111  28 1.779137e-06       NA
 ##        Jack1   GA-I    98  30 1.787182e-06       NA
-##       Jack10     HI    63  NA 2.248512e-06       NA
-##       Jack10 CGF1-I   105  23 1.721175e-06       NA
-##       Jack10 CGF2-I   113  27 1.722507e-06       NA
-##       Jack10   GA-I    98  30 1.723349e-06       NA
 ##        Jack2     HI    63  NA 2.358990e-06       NA
 ##        Jack2 CGF1-I   106  22 1.852915e-06       NA
 ##        Jack2 CGF2-I   115  26 1.848968e-06       NA
@@ -256,13 +252,17 @@ fit
 ##        Jack9 CGF1-I   106  23 1.867137e-06       NA
 ##        Jack9 CGF2-I   117  26 1.880573e-06       NA
 ##        Jack9   GA-I    99  30 1.868055e-06       NA
+##       Jack10     HI    63  NA 2.248512e-06       NA
+##       Jack10 CGF1-I   105  23 1.721175e-06       NA
+##       Jack10 CGF2-I   113  27 1.722507e-06       NA
+##       Jack10   GA-I    98  30 1.723349e-06       NA
 ```
 
 ```r
 plot(fit)
 ```
 
-![](intro_files/figure-html/unnamed-chunk-6-1.png) 
+![](intro_files/figure-html/construct.CAM-1.png) 
 
 ```r
 conclude.model(fit)
@@ -312,3 +312,73 @@ str(fitted)
 ##  $ CGF2-I.fitted: num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
 ##  $ GA-I.fitted  : num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
 ```
+
+
+### HI Modle for Single LD Decay Curve
+
+The function `singleHI()` does time inference, of HI model only, for a single LD decay curve. The algorithm is the same as the HI model part of `singleCAM()`. For example:
+
+
+```r
+fit<-singleHI(d,Z,m1=0.3,T=70L)
+fit
+```
+
+```
+## Continuous Admixture Inference (CAM) for a Single LD Decay Curve
+## 
+## Function call: singleHI(d = d, Z = Z, m1 = 0.3, T = 70L)
+## 
+## Length of Used LD: 3497 
+## 
+##  Model Start End          msE
+##     HI    23  NA 8.912686e-06
+```
+
+This function also returns an object of **CAM.single** class, and can be passed to `reconstruct.fitted()`:
+
+
+```r
+fitted<-reconstruct.fitted(fit)
+str(fitted)
+```
+
+```
+## List of 1
+##  $ HI.fitted: num [1:3497] 0.195 0.194 0.193 0.193 0.192 ...
+```
+
+It is recommended to use this function when only HI model is concerned. See the help page of `singleHI()` for further details.
+
+### HI Model for Multiple LD Decay Curves (.rawld File)
+
+The function `HI()` does time inference, of HI model only, for a .rawld file. The algorithm is the same as the HI model part of `CAM()`. For example:
+
+
+```r
+fit<-HI(GA_I,m1=.3,T=150L)
+fit
+```
+
+```
+## Continuous Admixture Inference (CAM) for a .rawlf File
+## 
+## Function call:HI(rawld = GA_I, m1 = 0.3, T = 150L)
+## 
+## Total Length of LD: 3497 
+## 
+##           LD Model Start End          msE  quasi.F
+##  Combined_LD    HI    63  NA 2.235635e-06 1.323224
+##        Jack1    HI    63  NA 2.220300e-06       NA
+##        Jack2    HI    63  NA 2.358990e-06       NA
+##        Jack3    HI    64  NA 2.185886e-06       NA
+##        Jack4    HI    64  NA 2.432188e-06       NA
+##        Jack5    HI    63  NA 2.423726e-06       NA
+##        Jack6    HI    64  NA 2.307339e-06       NA
+##        Jack7    HI    63  NA 2.396205e-06       NA
+##        Jack8    HI    63  NA 2.304644e-06       NA
+##        Jack9    HI    64  NA 2.350640e-06       NA
+##       Jack10    HI    63  NA 2.248512e-06       NA
+```
+
+The output is also an object of **CAM** class. However, it should *NOT* be passed to `plot()`, and its summary table should *NOT* be passed to `construct.CAM()`. See the help page of `HI()` for further details.

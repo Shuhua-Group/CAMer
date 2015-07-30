@@ -17,7 +17,7 @@ This package does Continuous Admixture Modeling (CAM) and related summary. It in
 
 The function `singleCAM()` does CAM for a single LD decay curve. For example:
 
-```{r}
+```{r singleCAM}
 library(CAM)
 data(CGF_50)
 d<-CGF_50$Distance
@@ -38,7 +38,7 @@ See the help page of `singleCAM()` for more examples.
 
 The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:
 
-```{r}
+```{r CAM}
 data(GA_I)
 fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
 fit
@@ -58,7 +58,7 @@ See help page of `CAM()` for more examples.
 
 A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example:
 
-```{r,fig.width=9.6,fig.height=7.2}
+```{r plot,fig.width=9.6,fig.height=7.2}
 plot(fit)
 ```
 
@@ -66,7 +66,7 @@ where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_
 
 To change the colors of models:
 
-```{r,fig.width=9.6,fig.height=7.2}
+```{r plot.color,fig.width=9.6,fig.height=7.2}
 plot(fit,model.cols=matrix(c("pink","red","pink",
                              "lightseagreen","green","green",
                              "skyblue","blue","blue",
@@ -81,7 +81,7 @@ See help page of `plot.CAM()` for more details.
 
 The function `conclude.model()` can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a "CAM" class object or its summary table as input:
 
-```{r}
+```{r conclude.model}
 conclusion<-conclude.model(fit)
 conclusion<-conclude.model(fit$summary)
 conclusion
@@ -101,7 +101,7 @@ See the help page of `conclude.model()` for further information.
 
 Sometimes maybe only the summary table of an object of **CAM** class is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function and `conclude.model()` function.
 
-```{r,fig.width=9.6,fig.height=7.2}
+```{r construct.CAM,fig.width=9.6,fig.height=7.2}
 summarydata<-fit$summary
 rm(fit)
 fit<-construct.CAM(rawld=GA_I,m1=0.3,dataset=summarydata)
@@ -116,7 +116,37 @@ where `fit` is obtained from previous examples.
 
 One may want to get the fitted LD decay curves. The function `reconstruct.fitted()` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
 
-```{r}
+```{r reconstruct.fitted}
 fitted<-reconstruct.fitted(fit$CAM.list[[1]])
 str(fitted)
 ```
+
+
+### HI Modle for Single LD Decay Curve
+
+The function `singleHI()` does time inference, of HI model only, for a single LD decay curve. The algorithm is the same as the HI model part of `singleCAM()`. For example:
+
+```{r singleHI}
+fit<-singleHI(d,Z,m1=0.3,T=70L)
+fit
+```
+
+This function also returns an object of **CAM.single** class, and can be passed to `reconstruct.fitted()`:
+
+```{r singleHI.reconstrcut}
+fitted<-reconstruct.fitted(fit)
+str(fitted)
+```
+
+It is recommended to use this function when only HI model is concerned. See the help page of `singleHI()` for further details.
+
+### HI Model for Multiple LD Decay Curves (.rawld File)
+
+The function `HI()` does time inference, of HI model only, for a .rawld file. The algorithm is the same as the HI model part of `CAM()`. For example:
+
+```{r HI}
+fit<-HI(GA_I,m1=.3,T=150L)
+fit
+```
+
+The output is also an object of **CAM** class. However, it should *NOT* be passed to `plot()`, and its summary table should *NOT* be passed to `construct.CAM()`. See the help page of `HI()` for further details.

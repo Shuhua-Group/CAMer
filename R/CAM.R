@@ -56,12 +56,12 @@ fit.theta<-function(Ac,Z){
 
 #' Continuous Admixture Modeling (CAM) for a Single LD Decay Curve
 #'
-#' Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding ssE for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
+#' Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding statictis (ssE, msE, etc.) for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
 #'
 #' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
-#' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param Z the numeric vector of LD decay curve
 #' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search Defaults to \code{TRUE}. See "Details".
 #' @param max.duration Defaults to 150. See "Details".
@@ -96,7 +96,7 @@ fit.theta<-function(Ac,Z){
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #'
-#' Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
+#' Require \pkg{parallel} or \pkg{snow} package installed if \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the version of \code{R} is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 #'
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computation time.
 #'
@@ -344,8 +344,8 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) respectively for all Ld decay curves in a .rawld file.
 #'
 #' @param rawld a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}.
-#' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search only used when \code{isolation=TRUE}. \code{TRUE} to use the fast searching algorithm, which sometimes gives slightly wider time intervals than the slow searching algorithm. Defaults to \code{TRUE}.
 #' @param max.duration Defaults to 150. See "Details".
@@ -370,7 +370,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #' 
-#' Require \pkg{parallel} or \pkg{snow} package if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
+#' Require \pkg{parallel} or \pkg{snow} package installed if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the version of \code{R} is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 #' 
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 #'
@@ -401,7 +401,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' fit<-CAM("CGF_50.rawld",0.3)
 #' }
 #' @note 
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 #' 
 #' Do care about memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
 #' 
@@ -497,7 +497,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
 
 #' Reconstruct the Fitted LD Decay Curves of Four Models
 #'
-#' Given an object of "CAM.single" class, reconstruct the fitted LD decay curves of the four models.
+#' Given an object of "CAM.single" class, reconstruct the fitted LD decay curves of the four models (from \code{\link{singleCAM}}) or HI model (from \code{\link{singleHI}}).
 #'
 #' @param CAM.single an object of "CAM.single" class
 #' @return a list consisting of the four fitted curves
@@ -508,28 +508,33 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
 #'
 #' fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 #' fitted.curves<-reconstruct.fitted(fit)
-#' @seealso \code{\link{singleCAM}}, \code{\link{construct.CAM}}
+#' 
+#' fit<-singleHI(d,Z,m1=0.3,T=100L)
+#' fitted.curves<-reconstruct.fitted(fit)
+#' @seealso \code{\link{singleCAM}}, \code{\link{singleHI}} \code{\link{construct.CAM}}
 #' @export
 
 reconstruct.fitted<-function(CAM.single){
     Z1<-CAM.single$estimate[[1L]]$theta0+CAM.single$estimate[[1L]]$theta1*
         CAM.single$A[,CAM.single$estimate[[1L]]$n]*CAM.single$m1*CAM.single$m2
 
-    alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2L]]$n)
-    Z2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[2L]]$end:CAM.single$estimate[[2L]]$start]%*%
-        matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1
+    if(length(CAM.single$estimate)>1){
+        alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2L]]$n)
+        Z2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
+            CAM.single$A[,CAM.single$estimate[[2L]]$end:CAM.single$estimate[[2L]]$start]%*%
+            matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1
+        
+        alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3L]]$n)
+        Z3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
+            CAM.single$A[,CAM.single$estimate[[3L]]$end:CAM.single$estimate[[3L]]$start]%*%
+            matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2
+        
+        Z4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
+            CAM.single$A[,CAM.single$estimate[[4L]]$end:CAM.single$estimate[[4L]]$start]%*%
+            matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2
+    }
 
-    alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3L]]$n)
-    Z3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[3L]]$end:CAM.single$estimate[[3L]]$start]%*%
-        matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2
-
-    Z4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
-        CAM.single$A[,CAM.single$estimate[[4L]]$end:CAM.single$estimate[[4L]]$start]%*%
-        matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2
-
-    z<-list(Z1,Z2,Z3,Z4)
+    z<-if(length(CAM.single$estimate)>1) list(Z1,Z2,Z3,Z4) else list(Z1)
     names(z)<-paste(names(CAM.single$estimate),".fitted",sep="")
     z
 }
@@ -727,8 +732,6 @@ construct.CAM<-function(rawld,m1,dataset){
     dataset$Model<-as.character(dataset$Model)
     dataset$Model.num<-sapply(dataset$Model,switch,
                               HI=1,CGF1=2,`CGF1-I`=2,CGF2=3,`CGF2-I`=3,GA=4,`GA-I`=4)
-    ordr<-order(dataset$LD,dataset$Model.num)
-    dataset<-dataset[ordr,]
     dataset$Model.num<-NULL
     dataset$LD<-as.factor(dataset$LD)
     dataset$Model<-as.factor(dataset$Model)
@@ -917,4 +920,183 @@ print.CAM.conclusion<-function(x,...){
     cat("\n")
     cat("Adjusted p-value:\n")
     print(x$adjusted.p.value,...)
+}
+
+
+#' Time Inference of HI model for a Single LD Decay Curve
+#' 
+#' Find the estimated time point for HI model and corresponding statictis (ssE, msE, etc.) for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
+#' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
+#' @param Z the numeric vector of LD decay curve
+#' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param T the most ancient generation to be searched. Defaults to 500.
+#' @return an object of S3 class "CAM.single". A list consisting of:
+#' \item{call}{the matched call}
+#' \item{maxindex}{the index of the maximal value in \code{Z} See "Details".}
+#' \item{d,Z}{identical to function inputs up to some truncation. See "Details"}
+#' \item{T,isolation}{identical to function inputs}
+#' \item{A}{numeric matrix \eqn{A} with the \eqn{(i,j)}-th entry being \eqn{\text{exp}(-j \cdot d_i)}, \eqn{d_i} meaning the \eqn{i}-th entry of \code{d} and \eqn{j} meaning the genertion.}
+#' \item{m1,m2}{admixture proportion of population 1 and 2}
+#' \item{estimate}{a list of estimates. Each element contains the estimated parameters \eqn{m}, \eqn{n}, \eqn{\theta_0}, \eqn{\theta_1}, starting generation, ending generation and the corresponding ssE and msE. The time point for HI model is stored in \code{start} variable.}
+#' \item{summary}{a data frame containing the information in \code{estimate} in a compact form}
+#' @details 
+#' This function is similar to \code{\link{singleCAM}}, except that it only considers HI model as the core model.
+#' @examples 
+#' data(CGF_50)
+#' d<-CGF_50$Distance
+#' Z<-CGF_50$Combined_LD
+#' fitHI<-singleHI(d,Z,m1=.3,T=70L)
+#' fitHI
+#' @seealso \code{\link{singleCAM}}, \code{\link{HI}}, \code{\link{reconstruct.fitted}}
+#' @export
+
+singleHI<-function(d,Z,m1,T=500L){
+    maxindex<-which(Z==max(Z))[1L]
+    if(maxindex>1){
+        Z<-Z[-seq_len(maxindex-1L)]
+        d<-d[-seq_len(maxindex-1L)]
+    }
+    A<-exp(-d%*%t(seq_len(T)))
+    m2<-1-m1
+    s<-length(d)
+    
+    if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
+    
+    result<-list(call=match.call(),maxindex=maxindex,
+                 d=d,T=T,A=A,Z=Z,m1=m1,m2=m2)
+    class(result)<-"CAM.single"
+    
+    est.fun<-function(n){
+        Ac<-A[,n]*m1*m2
+        fit.theta(Ac,Z)
+    }
+    
+    ssE<-Inf
+    for(n in seq_len(T)){
+        coef<-est.fun(n)
+        if(coef$ssE<ssE){
+            theta0<-coef$theta0
+            theta1<-coef$theta1
+            ssE<-coef$ssE
+            N<-n
+        }
+    }
+    
+    estimate<-list(list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1)))
+    names(estimate)<-"HI"
+    result$estimate<-estimate
+    
+    result$summary<-data.frame(Model=names(estimate),
+                               Start=sapply(estimate,function(dummy) dummy$start),
+                               End=sapply(estimate,function(dummy) dummy$end),
+                               theta0=sapply(estimate,function(dummy) dummy$theta0),
+                               theta1=sapply(estimate,function(dummy) dummy$theta1),
+                               ssE=sapply(estimate,function(dummy) dummy$ssE),
+                               Max.index=result$maxindex,
+                               msE=sapply(estimate,function(dummy) dummy$msE))
+    row.names(result$summary)<-NULL
+    if(any(result$summary$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
+    
+    result
+}
+
+#' Time Inference of HI model
+#' 
+#' Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) respectively for all Ld decay curves in a .rawld file.
+#' @param rawld a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}.
+#' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param T the most ancient generation to be searched. Defaults to 500.
+#' @param LD.parallel a logical expression indicating whether each LD decay curve should be computed parallely. Defaults to \code{TRUE}.
+#' @param LD.clusternum the number of clusters in parallel computation. See "Details".
+#' @return an object of S3 class "CAM". A list \code{CAM.list} consisting of some basic information of function call, N objects of "CAM.single" class (where N is the number of LD decay curves in the .rawld file) calculated by \code{\link{singleHI}}, the fitted Ld decay curve fitted by the previous method (up to some truncation according to \code{max.index}) and a summary table containing the parameter estimates for each model and each curve, and diagnostic statistics msE and quasi-F. See \code{\link{singleCAM}} for more details of this kind of "CAM.songle" class.
+#'
+#' There is a special method of \code{print} for this class.
+#' @details
+#' \code{LD.clusternum} is used if \code{LD.parallel=TRUE}. If not specified, it is set to be the number of LD decay curves in the .rawld file.
+#'
+#' The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using HI model. See \code{\link{singleHI}} for further details of fitting algorithm for each LD decay curve.
+#'
+#' If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
+#' 
+#' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
+#' 
+#' Require \pkg{parallel} or \pkg{snow} package installed if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the \code{R} version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
+#' 
+#' Be aware that when the computational cost is small (e.g. \code{T=20L}), using parallel computation for single LD decay curves can result in longer computation time.
+#' @note
+#' Although the output is a "CAM" class object, it should \emph{NOT} be passed to \code{\link{plot.CAM}}. Its summary table should \emph{NOT} be passed to \code{\link{construct.CAM}} either.
+#' 
+#' When \code{LD.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+#' @examples 
+#' data(GA_I)
+#' fit<-HI(GA_I,m1=0.3,T=150L)
+#' fit
+#' 
+#' \dontrun{
+#' #passing a file path to the argument `rawld=`
+#' fit<-CAM("CGF_50.rawld",m1=0.3,T=150L)
+#' }
+#' @import utils
+#' @seealso \code{\link{singleHI}}, \code{\link{CAM}}
+#' @export
+
+HI<-function(rawld,m1,T=500L,LD.parallel=TRUE,LD.clusternum){
+    if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
+    Jack.index<-grep("Jack",names(rawld))
+    LD.index<-grep("Combined_LD",names(rawld))
+    Zs<-rawld[,c(LD.index,Jack.index)]
+    d<-rawld$Distance
+    
+    if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
+    
+    results<-list(call=match.call(),d=d,Zs=Zs,T=T,m1=m1,m2=1-m1)
+    class(results)<-"CAM"
+    
+    if(LD.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
+        message("Cannot find 'parallel' or 'snow' package! Computing each LD sequentially...\n")
+        LD.parallel<-FALSE
+    }
+    if(LD.parallel){
+        if(missing(LD.clusternum)) LD.clusternum<-ncol(Zs)
+        if(getRversion()>="2.14.0"){
+            cl<-parallel::makeCluster(LD.clusternum)
+            parallel::clusterExport(cl,c("distance","fit.theta","d","m1","T"),envir=environment())
+            tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleHI,d=d,m1=m1,T=T),
+                     finally=parallel::stopCluster(cl))
+        } else {
+            require(snow,quietly=TRUE)
+            cl<-makeCluster(single.clusternum)
+            clusterExport(cl,c("distance","fit.theta","d","m1","T"),envir=environment())
+            tryCatch(results$CAM.list<-parCapply(cl,Zs,singleHI,d=d,m1=m1,T=T),
+                     finally=stopCluster(cl))
+        }
+    } else results$CAM.list<-lapply(seq_len(ncol(Zs)),function(ld){
+        singleHI(d,Zs[,ld],m1,T)
+    })
+    names(results$CAM.list)<-c("Combined_LD",paste("Jack",seq_len(length(Jack.index)),sep=""))
+    
+    results$fitted<-rawld$Fitted
+    if(results$CAM.list[[1L]]$maxindex>1L) results$fitted<-results$fitted[-seq_len(results$CAM.list[[1L]]$maxindex-1L)]
+    v<-distance(results$fitted,results$CAM.list[[1L]]$Z)
+    
+    data<-NULL
+    for(ld in seq_len(ncol(Zs))){
+        data.temp<-data.frame(LD=names(results$CAM.list)[ld],
+                              Model=names(results$CAM.list[[ld]]$estimate),
+                              Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
+                              End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
+                              theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
+                              theta1=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta1),
+                              ssE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$ssE),
+                              Max.index=results$CAM.list[[ld]]$maxindex,
+                              msE=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$msE),
+                              quasi.F=if(ld==1L) sapply(results$CAM.list[[1L]]$estimate,function(dummy){dummy$ssE/v}) else NA)
+        data<-rbind(data,data.temp)
+    }
+    data$LD<-as.factor(data$LD)
+    data$Model<-factor(data$Model,ordered=TRUE)
+    row.names(data)<-NULL
+    results$summary<-data
+    if(any(data$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
+    results
 }

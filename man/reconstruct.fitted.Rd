@@ -13,7 +13,7 @@ reconstruct.fitted(CAM.single)
 a list consisting of the four fitted curves
 }
 \description{
-Given an object of "CAM.single" class, reconstruct the fitted LD decay curves of the four models.
+Given an object of "CAM.single" class, reconstruct the fitted LD decay curves of the four models (from \code{\link{singleCAM}}) or HI model (from \code{\link{singleHI}}).
 }
 \examples{
 data(CGF_50)
@@ -22,8 +22,11 @@ d<-CGF_50$Distance
 
 fit<-singleCAM(d,Z,m1=0.3,T=100L,isolation=FALSE)
 fitted.curves<-reconstruct.fitted(fit)
+
+fit<-singleHI(d,Z,m1=0.3,T=100L)
+fitted.curves<-reconstruct.fitted(fit)
 }
 \seealso{
-\code{\link{singleCAM}}, \code{\link{construct.CAM}}
+\code{\link{singleCAM}}, \code{\link{singleHI}} \code{\link{construct.CAM}}
 }
 

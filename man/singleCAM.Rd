@@ -39,7 +39,7 @@ an object of S3 class "CAM.single". A list consisting of:
 \item{summary}{a data frame containing the information in \code{estimate} in a compact form}
 }
 \description{
-Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding ssE for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
+Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding statictis (ssE, msE, etc.) for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
 }
 \details{
 \code{fast.search} is only used when \code{isolation=TRUE}. \code{TRUE} to use the fast searching algorithm, which sometimes gives slightly wider time intervals than the slow searching algorithm. It is recommended to use \code{fast.search=TRUE} (default), not only because it is significantly faster, but also because according to our experience it can partially solve the over-fitting problem of CGF-I and GA-I models so that HI usually does not perform significantly worse than them.
@@ -60,7 +60,7 @@ If the last entry of distence is greater than 10, a warning of unit will be give
 
 If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 
-Require \pkg{parallel} or \pkg{snow} package if \code{single.parallel=TRUE}. For newer versions of R (>=2.14.0), \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the R version is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
+Require \pkg{parallel} or \pkg{snow} package installed if \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the version of \code{R} is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
 
 Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computation time.
 
