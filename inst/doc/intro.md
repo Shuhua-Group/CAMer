@@ -2,7 +2,7 @@
 An Introduction to **CAM** package
 ===============
 
-This package does Continuous Admixture Modeling (CAM) and related summary. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
+This package does Continuous Admixture Modeling (CAM) and related summary based on the result of MALDmef. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
 
@@ -10,7 +10,7 @@ This package does Continuous Admixture Modeling (CAM) and related summary. It in
 
 ### Single LD Decay Curve
 
-The function `singleCAM()` does CAM for a single LD decay curve. For example:
+The function `singleCAM()` does CAM for a single LD decay curve. For example, let's use the *CGF_50* data set (the admixture proportion for population 1 ($m_1$) is 0.3) to do CAM with the most ancient generation concerned being 70 (`T=70L`) and core models being HI, CGF1, CGF2 and GA (`isolation=FALSE`):
 
 
 ```r
@@ -36,7 +36,7 @@ fit
 ##     GA    53   1 5.509048e-06
 ```
 
-where `d` corresponds to genetic distance and `y` corresponds to an LD decay curve. The admixture proportion for population 1 ($m_1$) is 0.3 for this data set.
+where parameter `d` corresponds to genetic distance and parameter `Z` corresponds to an LD decay curve.
 
 Here the class of `fit` is **CAM.single**, and it has its own method for `print()`.
 
@@ -46,7 +46,7 @@ See the help page of `singleCAM()` for more examples.
 
 ### Multiple LD Decay Curves (.rawld File)
 
-The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example:
+The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Parallel computation is also supported. For example, let's use the *GA* data set ((the admixture proportion for population 1 ($m_1$) is 0.3) with the most ancient generation concerned being 150 (`T=150L`) and core models being HI, CGF1-I, CGF2-I and GA-I (`isolation=TRUE` by default), without using parallel computation for the four models for each LD decay curve (`single.parallel=FALSE`):
 
 
 ```r
@@ -115,13 +115,13 @@ Here the class of `fit` is **CAM**, and it has its own method for `print()` and 
 
 Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
 
-See help page of `CAM()` for more examples.
+See help page of `CAM()` for more examples and details.
 
 ------------------------
 
 ## Summary Plots
 
-A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example:
+A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example, let's plot the previous result:
 
 
 ```r
@@ -130,9 +130,9 @@ plot(fit)
 
 ![](intro_files/figure-html/plot-1.png) 
 
-where `fit` is obtained in the previous example. One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
+One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
 
-To change the colors of models:
+To change the colors of models, one can pass a $3 \times 4$ matrix of colors:
 
 
 ```r
@@ -150,7 +150,7 @@ See help page of `plot.CAM()` for more details.
 
 ## Draw Conclusions on Best Model(s)
 
-The function `conclude.model()` can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a "CAM" class object or its summary table as input:
+The function `conclude.model()` can draw conclusions on which models are the significantly best ones and find their estimated time intervals/points. It takes a "CAM" class object or its summary table as input. For example, let's find out the best model(s) from the previous CAM analysis:
 
 
 ```r
@@ -196,7 +196,7 @@ See the help page of `conclude.model()` for further information.
 
 ### Construct a Simple **CAM** object
 
-Sometimes maybe only the summary table of an object of **CAM** class is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function and `conclude.model()` function.
+Sometimes maybe only the summary table of an object of **CAM** class is saved. The function `construct.CAM()` can construct a simple **CAM** object given the original .rawld file, the summary table of the original **CAM** object and the admixture proportion of population 1 $m_1$, which can be passed to `plot.CAM()` function and `conclude.model()` function. For example, let's "save" the summary table of the previous result (`fit$summary`), then use this function to construct a **CAM** class object and do some further analysis from it:
 
 
 ```r
@@ -293,11 +293,9 @@ conclude.model(fit)
 ## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA
 ```
 
-where `fit` is obtained from previous examples.
-
 ### Reconstruct Fitted LD Decay Curves
 
-One may want to get the fitted LD decay curves. The function `reconstruct.fitted()` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input:
+One may want to get the fitted LD decay curves. The function `reconstruct.fitted()` takes a **CAM.single** class object and returns a list containing the best-fit curves for the four models. It can take the **CAM.single** class objects in the constructed a **CAM** class object from `construct.CAM()` as input. For example, let's use the **CAM** class object just constructed and reconstruct the fitted curves:
 
 
 ```r
@@ -316,7 +314,7 @@ str(fitted)
 
 ### HI Modle for Single LD Decay Curve
 
-The function `singleHI()` does time inference, of HI model only, for a single LD decay curve. The algorithm is the same as the HI model part of `singleCAM()`. For example:
+The function `singleHI()` does time inference, of HI model only, for a single LD decay curve. The algorithm is the same as the HI model part of `singleCAM()`. For example, let's use the Combined LD in the *CGF_50* data set and use only HI as the core model:
 
 
 ```r
@@ -352,7 +350,7 @@ It is recommended to use this function when only HI model is concerned. See the 
 
 ### HI Model for Multiple LD Decay Curves (.rawld File)
 
-The function `HI()` does time inference, of HI model only, for a .rawld file. The algorithm is the same as the HI model part of `CAM()`. For example:
+The function `HI()` does time inference, of HI model only, for a .rawld file. The algorithm is the same as the HI model part of `CAM()`. For example, let's again use the *GA_I* data set with the most ancient generation concerned being 150 (`T=150L`), but this time only HI is the core model:
 
 
 ```r
@@ -381,4 +379,6 @@ fit
 ##       Jack10    HI    63  NA 2.248512e-06       NA
 ```
 
-The output is also an object of **CAM** class. However, it should *NOT* be passed to `plot()`, and its summary table should *NOT* be passed to `construct.CAM()`. See the help page of `HI()` for further details.
+The output is also an object of **CAM** class. However, it should *NOT* be passed to `plot()`, and its summary table should *NOT* be passed to `construct.CAM()`.
+
+It is recommended to use this function when only HI model is concerned. See the help page of `HI()` for further details.
