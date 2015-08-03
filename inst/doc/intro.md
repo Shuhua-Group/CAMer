@@ -1,8 +1,8 @@
 
-An Introduction to **CAM** package
+An Introduction to **CAMer** package
 ===============
 
-This package does Continuous Admixture Modeling (CAM) and related summary based on the result of MALDmef. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
+**CAMer** package (Continuous Admixture Modeler) does Continuous Admixture Modeling (CAM) and related summary based on the result of ***MALDmef***. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
 
@@ -14,7 +14,7 @@ The function `singleCAM()` does CAM for a single LD decay curve. For example, le
 
 
 ```r
-library(CAM)
+library(CAMer)
 data(CGF_50)
 d<-CGF_50$Distance
 Z<-CGF_50$Combined_LD

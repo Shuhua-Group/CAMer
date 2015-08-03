@@ -1,11 +1,11 @@
-#' Continuous Admixture Modeling (CAM)
+#' Continuous Admixture Modeler (CAMer)
 #' 
-#' \pkg{CAM} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
+#' \pkg{CAMer} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
 #' 
-#' See \href{https://github.com/david940408/CAM/blob/master/inst/doc/intro.md}{An Introduction to CAM package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
+#' See \href{https://github.com/david940408/CAMer/blob/master/inst/doc/intro.md}{An Introduction to CAMer package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
 #' 
 #' @docType package
-#' @name CAM-package
+#' @name CAMer
 NULL
 
 #' Simulated .rawld File for CGF1
@@ -634,7 +634,8 @@ plot.CAM<-function(x,filename,T.max,
         colors<-grDevices::colorRampPalette(model.cols[1:2,model],alpha=TRUE)(NJack)
         dummy<-intervals[[model]]
         if(model==1){
-            graphics::points(x=dummy[model,],y=rep(4.5-model,ncol(dummy)),col=colors[dummy[2,]],pch=15,cex=1.2,...)
+            for(t in seq_len(ncol(dummy)))
+                graphics::lines(x=dummy[1,t]+c(-.5,.5),y=rep(4.5-model,2),col=colors[dummy[2,t]],lwd=5,...)
         } else {
             if(max(dummy[1,])<=T.max){
                 for(t in seq_len(ncol(dummy)))
@@ -653,26 +654,26 @@ plot.CAM<-function(x,filename,T.max,
     } else graphics::mtext(c("   HI","CGF1","CGF2","  GA"),side=4,line=2,at=4:1-.5)
 
     if(missing(box.lim)){
-        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"],
-                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"],
-                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"],
-                          data.jack$msE[data.jack$Model=="HI"],
+        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="HI"]*1e5,
                           horizontal=TRUE,boxwex=.8,pch=20,
                           log=if(box.log) "x" else "",medlwd=1,
                           boxfill=rev(model.cols[3,]),
                           outcol=rev(model.cols[3,]),
-                          main="msE Boxplot",xlab=if(box.log) "msE on log scale" else "msE",axes=FALSE,...)
+                          main="msE Boxplot",xlab=if(box.log) expression(paste("msE (",phantom()%*%10^{-5},") on log scale",sep="")) else expression(paste("msE (",phantom()%*%10^{-5},")",sep="")),axes=FALSE,...)
     } else {
-        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"],
-                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"],
-                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"],
-                          data.jack$msE[data.jack$Model=="HI"],
+        graphics::boxplot(data.jack$msE[data.jack$Model=="GA"|data.jack$Model=="GA-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="CGF2"|data.jack$Model=="CGF2-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="CGF1"|data.jack$Model=="CGF1-I"]*1e5,
+                          data.jack$msE[data.jack$Model=="HI"]*1e5,
                           horizontal=TRUE,boxwex=.8,pch=20,
                           log=if(box.log) "x" else "",medlwd=1,
                           ylim=box.lim,
                           boxfill=rev(model.cols[3,]),
                           outcol=rev(model.cols[3,]),
-                          main="msE Boxplot",xlab=if(box.log) "msE on log scale" else "msE",axes=FALSE,...)
+                          main="msE Boxplot",xlab=if(box.log) expression(paste("msE (",phantom()%*%10^{-5},") on log scale",sep="")) else expression(paste("msE (",phantom()%*%10^{-5},")",sep="")),axes=FALSE,...)
     }
     graphics::axis(2,labels=NA);graphics::axis(1)
 

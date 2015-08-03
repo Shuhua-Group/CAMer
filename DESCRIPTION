@@ -1,6 +1,6 @@
-Package: CAM
+Package: CAMer
 Type: Package
-Title: Continuous Admixture Modeling (CAM)
+Title: Continuous Admixture Modeler
 Version: 0.1
 Date: 2015-07-20
 Author: Qiu Hongxiang
