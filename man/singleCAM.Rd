@@ -11,7 +11,7 @@ singleCAM(d, Z, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
 \arguments{
 \item{d}{the numeric vector of genetic distance (Morgan) of LD decay curve}
 
-\item{Z}{the numeric vector of LD decay curve}
+\item{Z}{the numeric vector of admixture induced LD (ALD) decay curve}
 
 \item{m1}{the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.}
 

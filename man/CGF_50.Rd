@@ -5,7 +5,7 @@
 \title{Simulated .rawld File for CGF1}
 \format{A data frame with 3497 rows and 21 variables}
 \description{
-A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is CGF1 (50 generations) with admixture proportion of population 1 being 0.3.
+A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is CGF1 (CGF with population 1 being the recipient) (50 generations) with admixture proportion of population 1 being 0.3.
 }
 \details{
 The useful variables are as follows:

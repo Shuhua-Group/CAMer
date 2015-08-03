@@ -44,7 +44,7 @@ Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) r
 
 \code{single.parallel} indicates whether parallel computation should be used when computing a single LD decay curve. Defaults to \code{TRUE} if \code{isolation=TRUE,fast.search=FALSE} and \code{FALSE} otherwise.
 
-The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each LD decay curve.
+The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each admixture induced LD (ALD) decay curve decay curve.
 
 If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
 

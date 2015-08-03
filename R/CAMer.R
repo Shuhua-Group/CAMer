@@ -10,7 +10,7 @@ NULL
 
 #' Simulated .rawld File for CGF1
 #'
-#' A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is CGF1 (50 generations) with admixture proportion of population 1 being 0.3.
+#' A data frame read from a .rawld file by \code{read.table}. Forward simulation data using 10 chromosomes where the true model is CGF1 (CGF with population 1 being the recipient) (50 generations) with admixture proportion of population 1 being 0.3.
 #'
 #' @details
 #' The useful variables are as follows:
@@ -59,7 +59,7 @@ fit.theta<-function(Ac,Z){
 #' Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding statictis (ssE, msE, etc.) for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
 #'
 #' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
-#' @param Z the numeric vector of LD decay curve
+#' @param Z the numeric vector of admixture induced LD (ALD) decay curve
 #' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
 #' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
@@ -364,7 +364,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #'
 #' \code{single.parallel} indicates whether parallel computation should be used when computing a single LD decay curve. Defaults to \code{TRUE} if \code{isolation=TRUE,fast.search=FALSE} and \code{FALSE} otherwise.
 #'
-#' The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each LD decay curve.
+#' The .rawld file should include exactly one column nameed "Distance" in Morgan, exactly one column named "Combined_LD", several columns named "Jack?" representing Jackknives where ? is a number and exactly one column named "Fitted" representing the fitted LD decay curve using the previous method. This function fits "Combined_LD" and all Jackknives using all models. See \code{\link{singleCAM}} for further details of fitting algorithm for each admixture induced LD (ALD) decay curve decay curve.
 #'
 #' If the last entry of Distence in the .rawld file is greater than 10, a warning of unit will be given.
 #' 
@@ -790,7 +790,7 @@ construct.CAM<-function(rawld,m1,dataset){
 print.CAM.single<-function(x,...){
     cat("Continuous Admixture Inference (CAM) for a Single LD Decay Curve\n\n")
     cat("Function call: ")
-    print(x$call)
+    print(x$call,...)
     cat("\n")
     cat("Length of Used LD:", length(x$Z),"\n\n")
     print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE,...)
@@ -814,7 +814,7 @@ print.CAM<-function(x,...){
     cat("Continuous Admixture Inference (CAM) for a .rawlf File\n\n")
     if(!is.null(x$call)){
         cat("Function call:")
-        print(x$call)
+        print(x$call,...)
         cat("\n")
     }
     cat("Total Length of LD:",length(x$d),"\n\n")
@@ -909,12 +909,12 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
 print.CAM.conclusion<-function(x,...){
     cat("CAM Best Model(s) Conclusion:\n\n")
     cat("Function call: ")
-    print(x$call)
+    print(x$call,...)
     cat("\n")
     cat("Familiwise Error Rate: ")
     cat(x$alpha,"\n\n",sep="")
     cat("Best Model(s) and Time Estimation:\n")
-    print(x$best.models,row.names=FALSE)
+    print(x$best.models,row.names=FALSE,...)
     cat("\n")
     cat("Group Means of log(msE)/msE:\n")
     print(x$group.means,...)
