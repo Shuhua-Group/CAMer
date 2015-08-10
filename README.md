@@ -4,13 +4,14 @@
 
 ##Installation
 
-1.
+One way is to use `devtools`
+
 ```r
 library(devtools)
 install_github("david940408/CAMer")
 ```
 
-2. Download the repo from the website of population genetic group: http://www.picb.ac.cn/PGG/resource.php or https://github.com/david940408/CAMer, and run `R CMD INSTALL path/to/CAMer` in the shell/comand line.
+Another way is to download the repo from the website of population genetic group: http://www.picb.ac.cn/PGG/resource.php or https://github.com/david940408/CAMer, and run `R CMD INSTALL path/to/CAMer` in the shell/comand line.
 
 ##Vignette
 
