@@ -88,8 +88,9 @@ fit</code></pre>
 ##   CGF2    60   1 2.750241e-06
 ##     GA    53   1 5.509048e-06</code></pre>
 <p>where parameter <code>d</code> corresponds to genetic distance and parameter <code>Z</code> corresponds to an LD decay curve.</p>
-<p>Here the class of <code>fit</code> is <strong>CAM.single</strong>, and it has its own method for <code>print()</code>.</p>
-<p>Parallel computation is also supported provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing funcationality.</p>
+<p>One can also specify the file path of the .log file containing the information of <code>m1</code> in argument <code>m1=</code>.</p>
+<p>Here the class of <code>fit</code> is <strong>CAM.single</strong>, and it has its own method for <code>print()</code>. <code>fit$summary</code> is a more comprehensive data frame containing the data frame printed.</p>
+<p>Parallel computation is also supported provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing functionality.</p>
 <p>See the help page of <code>singleCAM()</code> for more examples.</p>
 </div>
 <div id="multiple-ld-decay-curves-.rawld-file" class="section level3">
@@ -149,9 +150,9 @@ fit</code></pre>
 ##       Jack10 CGF1-I   105  23 1.721175e-06       NA
 ##       Jack10 CGF2-I   113  27 1.722507e-06       NA
 ##       Jack10   GA-I    98  30 1.723349e-06       NA</code></pre>
-<p>One can also specify the file path of the .rawld file in argument <code>rawld=</code>.</p>
-<p>Here the class of <code>fit</code> is <strong>CAM</strong>, and it has its own method for <code>print()</code> and <code>plot()</code>. A <strong>CAM</strong> object has an element named <code>CAM.list</code> consisting of the <strong>CAM.single</strong> objects for each LD decay curve.</p>
-<p>Parallel computation is also supported as in the example, provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing funcationality.</p>
+<p>One can also specify the file path of the .rawld file in argument <code>rawld=</code> and the file path of the .log file containing the information of <code>m1</code> in argument <code>m1=</code>.</p>
+<p>Here the class of <code>fit</code> is <strong>CAM</strong>, and it has its own method for <code>print()</code> and <code>plot()</code>. <code>fit$summary</code> is a more comprehensive data frame containing the data frame printed. A <strong>CAM</strong> object has an element named <code>CAM.list</code> consisting of the <strong>CAM.single</strong> objects for each LD decay curve.</p>
+<p>Parallel computation is also supported as in the example, provided that <strong>parallel</strong> package or <strong>snow</strong> package is installed. For newer versions of R (&gt;=2.14.0), <strong>parallel</strong> is in R-core. If only <strong>snow</strong> is available, it is recommended to library it before using the parallel computing functionality.</p>
 <p>See help page of <code>CAM()</code> for more examples and details.</p>
 <hr />
 </div>
@@ -200,7 +201,7 @@ conclusion</code></pre>
 ## GA-I   1.797942e-01 8.078541e-01           NA 9.238602e-10
 ## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA</code></pre>
 <p>The function returns an object of <strong>CAM.conclusion</strong> class, which has a special method for <code>print()</code>.</p>
-<p>Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does <strong>NOT</strong> check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a “CAM” class object for this purpose.</p>
+<p>Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is observed. It does <strong>NOT</strong> check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a “CAM” class object for this purpose.</p>
 <p>See the help page of <code>conclude.model()</code> for further information.</p>
 <hr />
 </div>

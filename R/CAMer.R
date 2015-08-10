@@ -60,7 +60,7 @@ fit.theta<-function(Ac,Z){
 #'
 #' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
 #' @param Z the numeric vector of admixture induced LD (ALD) decay curve
-#' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.
 #' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search Defaults to \code{TRUE}. See "Details".
@@ -130,6 +130,8 @@ fit.theta<-function(Ac,Z){
 #'
 #' fitted.curves<-reconstruct.fitted(fit)
 #' @note
+#' If the input of \code{m1} is the .log file path, there should not be any "=" in the names of populations. If there are, the function may not be able to execute normally, and the user should check the .log file and input \code{m1} as a number manually.
+#' 
 #' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 #' @seealso \code{\link{CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @export
@@ -138,6 +140,12 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                     fast.search=TRUE,max.duration=150L,
                     single.parallel=isolation && !fast.search,
                     single.clusternum=4L){
+    if(is.character(m1)){
+        m1<-readLines(m1)
+        m1<-grep("=",m1,value=TRUE)
+        m1<-strsplit(m1,"=")[[1]][2]
+        m1<-as.numeric(strsplit(m1,":")[[1]][1])
+    }
     maxindex<-which(Z==max(Z))[1L]
     if(maxindex>1){
         Z<-Z[-seq_len(maxindex-1L)]
@@ -344,7 +352,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) respectively for all Ld decay curves in a .rawld file.
 #'
 #' @param rawld a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}.
-#' @param m1 the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.
+#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.
 #' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search only used when \code{isolation=TRUE}. \code{TRUE} to use the fast searching algorithm, which sometimes gives slightly wider time intervals than the slow searching algorithm. Defaults to \code{TRUE}.
@@ -401,6 +409,8 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' fit<-CAM("CGF_50.rawld",0.3)
 #' }
 #' @note 
+#' If the input of \code{m1} is the .log file path, there should not be any "=" in the names of populations. If there are, the function may not be able to execute normally, and the user should check the .log file and input \code{m1} as a number manually.
+#' 
 #' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 #' 
 #' Do care about memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
@@ -417,6 +427,12 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
               single.parallel=isolation && !fast.search,
               single.clusternum=4L){
     if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
+    if(is.character(m1)){
+        m1<-readLines(m1)
+        m1<-grep("=",m1,value=TRUE)
+        m1<-strsplit(m1,"=")[[1]][2]
+        m1<-as.numeric(strsplit(m1,":")[[1]][1])
+    }
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
     Zs<-rawld[,c(LD.index,Jack.index)]
@@ -772,19 +788,6 @@ construct.CAM<-function(rawld,m1,dataset){
     results
 }
 
-#' Print Method for "CAM.single" Class
-#'
-#' @param x a "CAM.single" class object
-#' @param ... further arguments
-#' @details
-#' Print a very brief summary of a "CAM.single" class object. Include:
-#' \itemize{
-#' \item Function call
-#' \item length of used LD (excluding first few values if necessary)
-#' \item a data frame containing the estimated time intervals/points and corresponding msE. The time point for HI model is stored in \code{Start} variable.
-#' }
-
-#' @seealso \code{\link{singleCAM}}
 #' @export
 
 print.CAM.single<-function(x,...){
@@ -794,20 +797,9 @@ print.CAM.single<-function(x,...){
     cat("\n")
     cat("Length of Used LD:", length(x$Z),"\n\n")
     print(x$summary[,c("Model","Start","End","msE")],row.names=FALSE,...)
+    invisible(x)
 }
 
-#' Print Method for "CAM" Class
-#'
-#' @param x a "CAM" class object
-#' @param ... further arguments
-#' @details
-#' The print method for "CAM" Class. Include:
-#' \itemize{
-#' \item Function call (if available from the object)
-#' \item Total length of LD decay curve
-#' \item a data frame containing the estimated intervals/points, msE and quasi-F for each model and each LD decay curve. The time point for HI model is stored in \code{Start} variable.
-#' }
-#' @seealso \code{\link{CAM}}
 #' @export
 
 print.CAM<-function(x,...){
@@ -819,6 +811,7 @@ print.CAM<-function(x,...){
     }
     cat("Total Length of LD:",length(x$d),"\n\n")
     print(x$summary[,c("LD","Model","Start","End","msE","quasi.F")],row.names=FALSE,...)
+    invisible(x)
 }
 
 #' Draw Conclusions on Models from a "CAM" class object
@@ -899,11 +892,6 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
     conclusion
 }
 
-#' Print Method for "CAM.conclusion" Class
-#'
-#' @param x an object of "CAM.conclusion" class
-#' @param ... further arguments
-#' @seealso \code{\link{conclude.model}}
 #' @export
 
 print.CAM.conclusion<-function(x,...){
@@ -921,6 +909,7 @@ print.CAM.conclusion<-function(x,...){
     cat("\n")
     cat("Adjusted p-value:\n")
     print(x$adjusted.p.value,...)
+    invisible(x)
 }
 
 

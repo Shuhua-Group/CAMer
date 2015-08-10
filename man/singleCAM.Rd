@@ -13,7 +13,7 @@ singleCAM(d, Z, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
 
 \item{Z}{the numeric vector of admixture induced LD (ALD) decay curve}
 
-\item{m1}{the admixture proportion of population 1. If m2 is the admixing proportion of population 2, then m1+m2=1.}
+\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.}
 
 \item{T}{the most ancient generation to be searched. Defaults to 500.}
 
@@ -67,6 +67,8 @@ Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} 
 There is a special method of \code{plot} and \code{print} for this class.
 }
 \note{
+If the input of \code{m1} is the .log file path, there should not be any "=" in the names of populations. If there are, the function may not be able to execute normally, and the user should check the .log file and input \code{m1} as a number manually.
+
 When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
 }
 \examples{

@@ -38,9 +38,11 @@ fit
 
 where parameter `d` corresponds to genetic distance and parameter `Z` corresponds to an LD decay curve.
 
-Here the class of `fit` is **CAM.single**, and it has its own method for `print()`.
+One can also specify the file path of the .log file containing the information of `m1` in argument `m1=`.
 
-Parallel computation is also supported provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
+Here the class of `fit` is **CAM.single**, and it has its own method for `print()`. `fit$summary` is a more comprehensive data frame containing the data frame printed.
+
+Parallel computation is also supported provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing functionality.
 
 See the help page of `singleCAM()` for more examples.
 
@@ -109,11 +111,11 @@ fit
 ##       Jack10   GA-I    98  30 1.723349e-06       NA
 ```
 
-One can also specify the file path of the .rawld file in argument `rawld=`.
+One can also specify the file path of the .rawld file in argument `rawld=` and the file path of the .log file containing the information of `m1` in argument `m1=`.
 
-Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
+Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. `fit$summary` is a more comprehensive data frame containing the data frame printed. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
 
-Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing funcationality.
+Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing functionality.
 
 See help page of `CAM()` for more examples and details.
 
@@ -186,7 +188,7 @@ conclusion
 
 The function returns an object of **CAM.conclusion** class, which has a special method for `print()`.
 
-Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is obeserved. It does **NOT** check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a "CAM" class object for this purpose.
+Note that this function only selects the significantly best model(s), i.e. the one(s) that are significantly the closest to what is observed. It does **NOT** check if the best model(s) are credible or not. The user should check the quasi-F value ans msE in the summary table or plot of a "CAM" class object for this purpose.
 
 See the help page of `conclude.model()` for further information.
 
