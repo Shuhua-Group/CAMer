@@ -11,4 +11,7 @@
 \details{
 See \href{https://github.com/david940408/CAMer/blob/master/inst/doc/intro.md}{An Introduction to CAMer package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
 }
+\references{
+Zhou Y, Qiu H, Xu S (2015). _Modeling Continuous Admixture_. (under review)
+}
 

@@ -9,9 +9,9 @@ CAM(rawld, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
   single.parallel = isolation && !fast.search, single.clusternum = 4L)
 }
 \arguments{
-\item{rawld}{a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}.}
+\item{rawld}{a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}. The .rawld file should be the output of \code{MALDmef}.}
 
-\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.}
+\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.}
 
 \item{T}{the most ancient generation to be searched. Defaults to 500.}
 

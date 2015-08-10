@@ -5,6 +5,7 @@
 #' See \href{https://github.com/david940408/CAMer/blob/master/inst/doc/intro.md}{An Introduction to CAMer package} or intro.html in under inst/doc/ subdirectory of the package for an introduction. This file demonstrates how to use the functions.
 #' 
 #' @docType package
+#' @references Zhou Y, Qiu H, Xu S (2015). _Modeling Continuous Admixture_. (under review)
 #' @name CAMer
 NULL
 
@@ -60,7 +61,7 @@ fit.theta<-function(Ac,Z){
 #'
 #' @param d the numeric vector of genetic distance (Morgan) of LD decay curve
 #' @param Z the numeric vector of admixture induced LD (ALD) decay curve
-#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.
+#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.
 #' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search Defaults to \code{TRUE}. See "Details".
@@ -351,8 +352,8 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #'
 #' Estimate admixture time intervals/points for HI, CGF1(-I), CGF2(-I) and GA(-I) respectively for all Ld decay curves in a .rawld file.
 #'
-#' @param rawld a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}.
-#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.
+#' @param rawld a string representing the path of the .rawld file or a data frame read from the .rawld file by \code{read.table}. The .rawld file should be the output of \code{MALDmef}.
+#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.
 #' @param T the most ancient generation to be searched. Defaults to 500.
 #' @param isolation \code{TRUE} if the models used for fitting are HI, CGF1-I, CGF2-I and GA-I; \code{FALSE} if the models used for fitting are HI, CGF1, CGF2 and GA. Defaults to \code{TRUE}.
 #' @param fast.search only used when \code{isolation=TRUE}. \code{TRUE} to use the fast searching algorithm, which sometimes gives slightly wider time intervals than the slow searching algorithm. Defaults to \code{TRUE}.

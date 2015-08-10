@@ -1,10 +1,16 @@
 # CAMer
 
-**CAMer** (Continuous Admixture Modeler) is an R package for Continuous Admixture Modeling (CAM).
+**CAMer** (Continuous Admixture Modeler) is an R package for Continuous Admixture Modeling (CAM), based on the result of ***MALDmef***.
 
 ##Installation
 
-Not avaiable yet.
+1.
+```r
+library(devtools)
+install_github("david940408/CAMer")
+```
+
+2. Download the repo from the website of population genetic group: http://www.picb.ac.cn/PGG/resource.php or https://github.com/david940408/CAMer, and run `R CMD INSTALL path/to/CAMer` in the shell/comand line.
 
 ##Vignette
 

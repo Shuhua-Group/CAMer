@@ -13,7 +13,7 @@ singleCAM(d, Z, m1, T = 500L, isolation = TRUE, fast.search = TRUE,
 
 \item{Z}{the numeric vector of admixture induced LD (ALD) decay curve}
 
-\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}.}
+\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.}
 
 \item{T}{the most ancient generation to be searched. Defaults to 500.}
 
