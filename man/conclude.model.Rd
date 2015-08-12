@@ -31,7 +31,7 @@ The function uses pairwise paired Student's t-test on msE based on Jackknives to
 
 The estimated interval is the one that include all time points covered by more than half of the intervals estimated from Jackknives. The estimated point (fot HI model) is the nearest integer to the mean of the points estimated from Jackknives.
 
-There is a special print method for this class (\code{\link{print.CAM.conclusion}}).
+There is a special print method for this class.
 }
 \note{
 The function only chooses the best model(s). It does NOT do any diagnostic analysis. Particularly, it does NOT check whether the best model(s) are credible.
