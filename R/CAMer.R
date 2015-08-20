@@ -537,18 +537,18 @@ reconstruct.fitted<-function(CAM.single){
 
     if(length(CAM.single$estimate)>1){
         alpha<-1-CAM.single$m1^(1/CAM.single$estimate[[2L]]$n)
-        Z2<-CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
+        Z2<-as.numeric(CAM.single$estimate[[2L]]$theta0+CAM.single$estimate[[2L]]$theta1*
             CAM.single$A[,CAM.single$estimate[[2L]]$end:CAM.single$estimate[[2L]]$start]%*%
-            matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1
+            matrix(CAM.single$m1^((CAM.single$estimate[[2L]]$n-1L):0/CAM.single$estimate[[2L]]$n),ncol=1L)*alpha*CAM.single$m1)
         
         alpha<-1-CAM.single$m2^(1/CAM.single$estimate[[3L]]$n)
-        Z3<-CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
+        Z3<-as.numeric(CAM.single$estimate[[3L]]$theta0+CAM.single$estimate[[3L]]$theta1*
             CAM.single$A[,CAM.single$estimate[[3L]]$end:CAM.single$estimate[[3L]]$start]%*%
-            matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2
+            matrix(CAM.single$m2^((CAM.single$estimate[[3L]]$n-1):0/CAM.single$estimate[[3L]]$n),ncol=1L)*alpha*CAM.single$m2)
         
-        Z4<-CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
+        Z4<-as.numeric(CAM.single$estimate[[4L]]$theta0+CAM.single$estimate[[4L]]$theta1*
             CAM.single$A[,CAM.single$estimate[[4L]]$end:CAM.single$estimate[[4L]]$start]%*%
-            matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2
+            matrix((1-1/CAM.single$estimate[[4L]]$n)^(0:(CAM.single$estimate[[4L]]$n-1L))/c(rep(CAM.single$estimate[[4L]]$n,CAM.single$estimate[[4L]]$n-1L),1L),ncol=1L)*CAM.single$m1*CAM.single$m2)
     }
 
     z<-if(length(CAM.single$estimate)>1) list(Z1,Z2,Z3,Z4) else list(Z1)
@@ -718,7 +718,7 @@ plot.CAM<-function(x,filename,T.max,
 #' Construct a simple "CAM" class object which can be passed to \code{\link{plot.CAM}} and whose elements in \code{CAM.list} can be passed to \code{\link{reconstruct.fitted}}. Can be used when only the .rawld file, \eqn{m_1} and the summary table is available (e.g., only the summary table was saved after running \code{\link{CAM}} last time).
 #'
 #' @param rawld original .rawld filepath or its data frame
-#' @param m1 the admixture proportion of population 1.
+#' @param m1 the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.
 #' @param dataset summary table as in \code{summary} of an object of "CAM" class
 #' @return a simple "CAM" class object.
 #' @note 
@@ -737,6 +737,12 @@ plot.CAM<-function(x,filename,T.max,
 
 construct.CAM<-function(rawld,m1,dataset){
     if(is.character(rawld)) rawld<-utils::read.table(rawld,header=TRUE)
+    if(is.character(m1)){
+        m1<-readLines(m1)
+        m1<-grep("=",m1,value=TRUE)
+        m1<-strsplit(m1,"=")[[1]][2]
+        m1<-as.numeric(strsplit(m1,":")[[1]][1])
+    }
     Jack.index<-grep("Jack",names(rawld))
     LD.index<-grep("Combined_LD",names(rawld))
     Zs<-rawld[,c(LD.index,Jack.index)]

@@ -9,7 +9,7 @@ construct.CAM(rawld, m1, dataset)
 \arguments{
 \item{rawld}{original .rawld filepath or its data frame}
 
-\item{m1}{the admixture proportion of population 1.}
+\item{m1}{the admixture proportion of population 1 or the path of the .log file containing this information. If \code{m2} is the admixing proportion of population 2, then \code{m1+m2=1}. The .log file should be the output of \code{MALDmef}.}
 
 \item{dataset}{summary table as in \code{summary} of an object of "CAM" class}
 }
