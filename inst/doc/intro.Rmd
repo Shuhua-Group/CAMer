@@ -59,7 +59,7 @@ See help page of `CAM()` for more examples and details.
 
 ## Summary Plots
 
-A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example, let's plot the previous result:
+A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to `Combined_LD` in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for `Combined_LD`. For example, let's plot the previous result:
 
 ```{r plot,fig.width=9.6,fig.height=7.2}
 plot(fit)

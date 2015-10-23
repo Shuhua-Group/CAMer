@@ -237,7 +237,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                         }
                     }
                     
-                    list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
+                    list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
                 } else {
                     est.old<-est.fun(1,T)
                     gen.old<-list(end=1,start=T,theta0=est.old$theta0,theta1=est.old$theta1,ssE=est.old$ssE)
@@ -268,7 +268,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                         }
                     }
                     
-                    list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
+                    list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
                 } else {
                     SSE<-Inf
 
@@ -302,7 +302,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
                 }
             }
             
-            list(m=if(model==1L) NA else 1L,n=N,start=N,end=if(model==1L) NA else 1L,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
+            list(m=if(model==1L) N else 1L,n=N,start=N,end=if(model==1L) N else 1L,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
         }
 
     if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
@@ -332,9 +332,9 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
         }
     } else estimate<-lapply(seq_len(4L),search)
 
-    names(estimate)<-if(isolation) c("HI","CGF1-I","CGF2-I","GA-I") else c("HI","CGF1","CGF2","GA")
+    names(estimate)<-if(isolation) factor(c("HI","CGF1-I","CGF2-I","GA-I"),levels=c("HI","CGF1-I","CGF2-I","GA-I")) else factor(c("HI","CGF1","CGF2","GA"),levels=c("HI","CGF1","CGF2","GA"))
     result$estimate<-estimate
-    result$summary<-data.frame(Model=names(estimate),
+    result$summary<-data.frame(Model=factor(names(estimate),levels=names(estimate)),
                              Start=sapply(estimate,function(dummy) dummy$start),
                              End=sapply(estimate,function(dummy) dummy$end),
                              theta0=sapply(estimate,function(dummy) dummy$theta0),
@@ -420,7 +420,6 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' @seealso \code{\link{construct.CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @import utils
 #' @export
-#'
 
 CAM<-function(rawld,m1,T=500L,isolation=TRUE,
               fast.search=TRUE,max.duration=150L,
@@ -493,7 +492,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     data<-NULL
     for(ld in seq_len(ncol(Zs))){
         data.temp<-data.frame(LD=rep(names(results$CAM.list)[ld],4L),
-                              Model=names(results$CAM.list[[ld]]$estimate),
+                              Model=factor(names(results$CAM.list[[ld]]$estimate),levels=names(results$CAM.list[[ld]]$estimate)),
                               Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
                               End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
                               theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
@@ -504,8 +503,8 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
                               quasi.F=if(ld==1L) sapply(results$CAM.list[[1L]]$estimate,function(dummy){dummy$ssE/v}) else rep(NA,4L))
         data<-rbind(data,data.temp)
     }
-    data$LD<-as.factor(data$LD)
-    data$Model<-factor(data$Model,ordered=TRUE)
+    data$LD<-factor(data$LD,levels=names(results$CAM.list))
+    
     row.names(data)<-NULL
     results$summary<-data
     if(any(data$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")
@@ -752,13 +751,12 @@ construct.CAM<-function(rawld,m1,dataset){
 
     T<-max(dataset$Start)
 
-    dataset$LD<-as.character(dataset$LD)
-    dataset$Model<-as.character(dataset$Model)
-    dataset$Model.num<-sapply(dataset$Model,switch,
-                              HI=1,CGF1=2,`CGF1-I`=2,CGF2=3,`CGF2-I`=3,GA=4,`GA-I`=4)
-    dataset$Model.num<-NULL
-    dataset$LD<-as.factor(dataset$LD)
-    dataset$Model<-as.factor(dataset$Model)
+    dataset$LD<-factor(dataset$LD,levels=c("Combined_LD",paste("Jack",seq_along(Jack.index),sep="")))
+    dataset$Model<-factor(dataset$Model,
+                          levels=c(unique(grep("HI",dataset$Model,value=TRUE)),
+                                   unique(grep("CGF1",dataset$Model,value=TRUE)),
+                                   unique(grep("CGF2",dataset$Model,value=TRUE)),
+                                   unique(grep("GA",dataset$Model,value=TRUE))))
 
     m2<-1-m1
 
@@ -781,7 +779,7 @@ construct.CAM<-function(rawld,m1,dataset){
             results$CAM.list[[ld]]$estimate[[model]]<-list(m=data.temp$End,n=if(model==1L) data.temp$Start else data.temp$Start-data.temp$End+1,start=data.temp$Start,end=data.temp$End,theta0=data.temp$theta0,theta1=data.temp$theta1,ssE=data.temp$ssE,msE=data.temp$msE)
         }
         names(results$CAM.list[[ld]]$estimate)<-if(results$isolation) c("HI","CGF1-I","CGF2-I","GA-I") else c("HI","CGF1","CGF2","GA")
-        results$CAM.list[[ld]]$summary<-data.frame(Model=names(results$CAM.list[[ld]]$estimate),
+        results$CAM.list[[ld]]$summary<-data.frame(Model=factor(names(results$CAM.list[[ld]]$estimate),levels=names(results$CAM.list[[ld]]$estimate)),
                                                    Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
                                                    End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
                                                    theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
@@ -828,15 +826,18 @@ print.CAM<-function(x,...){
 #' @param x a "CAM" class object or the summary table of a "CAM" class object
 #' @param alpha familywise type-I error rate. Defaults to 0.05
 #' @param p.adjust.method method for adjusting p-values to adapt for familywise type-I error rate. Defaults to \code{"holm"}
-#' @param log a logical expression. Whether log transformation should be applied to msE. Defaults to \code{TRUE}
+#' @param log a logical expression. Whether log transformation should be applied to msE. Defaults to \code{TRUE} to make the null distribution more symmetric.
 #' @return an object of S3 class "CAM.conclusion". A list consisting of:
 #' \item{call}{function call}
-#' \item{group.means}{a named vector of group means of log(msE)/msE with each model being a group}
-#' \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
+#' \item{group.means}{a named vector of group means of pseudo log(msE)/msE with each model being a group}
+#' \item{adjusted.p.value}{a matrix of adjusted p-values for pairwise differences with the i,j-th entry being the adjusted p-value for the difference in pseudo log(msE)/msE of Model i and Model j. All entries on the diagonal are \code{NA}.}
 #' \item{best.models}{a data frame consisting of best models concluded and their estimated time intervals/points}
+#' \item{pseudovalue}{a data frame containing all pseudovalues, i.e. pseudo msE/log(msE)}
 #' \item{p.adjust.method}{method for adjusting p values used}
 #' @details
-#' The function uses pairwise paired Student's t-test on msE based on Jackknives to select the best model(s). If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
+#' The function uses pairwise Wilcoxon signed-rank test on pseudo log(msE) or msE based on Jackknives to select the best model(s). These pseudovalues are treated as if they were independent following Tukey (1958).
+#' 
+#' If HI model is not significantly worse than any other model, it is chosen as the best model; otherwise, the model(s) with significantly smallest msE are chosen as best model(s).
 #' 
 #' The estimated interval is the one that include all time points covered by more than half of the intervals estimated from Jackknives. The estimated point (fot HI model) is the nearest integer to the mean of the points estimated from Jackknives.
 #'
@@ -855,36 +856,39 @@ print.CAM<-function(x,...){
 
 conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
     if(class(x)=="CAM") data<-x$summary else data<-x
-    data<-data[grep("Jack",data$LD),]
-    NJack<-nrow(data)/4
     if(log) data$msE<-log(data$msE)
 
-    means<-tapply(data$msE,data$Model,mean)
-    models<-names(means)
+    data1<-data[grep("Combined_LD",data$LD),]
+    data2<-data[grep("Jack",data$LD),]
+    NJack<-nrow(data2)/4
+    data2$LD<-factor(data2$LD,levels=paste("Jack",1:NJack,sep=""))
+    data2$pseudovalue<-data1[sapply(data2$Model,function(x) which(data1$Model==x)),"msE"]*NJack-data2$msE*(NJack-1)
 
-    p.value<-stats::pairwise.t.test(data$msE,data$Model,p.adjust.method=p.adjust.method,paired=TRUE)$p.value
+    medians<-tapply(data2$pseudovalue,data2$Model,median)
+    models<-names(medians)
+
+    p.value<-stats::pairwise.wilcox.test(data2$pseudovalue,data2$Model,p.adjust.method=p.adjust.method,paired=TRUE)$p.value
     p.value[is.na(p.value)]<-0
     p.value<-cbind(rbind(0,p.value),0)
     p.value<-p.value+t(p.value)
     p.value[matrix(as.logical(diag(4L)),ncol=4L)]<-rep(NA,4L)
     colnames(p.value)<-row.names(p.value)<-models
 
-
-    best<-which(means==min(means))[1L]
-    if(means[4L]!=means[best] && p.value[4L,best]<alpha){
+    best<-which(medians==min(medians))[1L]
+    if(medians["HI"]!=medians[best] && p.value["HI",best]<alpha){
         best<-c(best,which(p.value[best,]>=alpha))
         best<-models[sort(best)]
     } else best<-"HI"
-    
+
     end<-sapply(best,function(model){
         if(model!="HI"){
             data2<-data[data$Model==model,]
             e<-min(data2$End)
             while(sum(e>=data2$End)<=NJack/2) e<-e+1
             e
-        } else NA
+        } else round(mean(data2$Start))
     })
-    
+
     start<-sapply(best,function(model){
         data2<-data[data$Model==model,]
         if(model!="HI"){
@@ -894,7 +898,7 @@ conclude.model<-function(x,alpha=0.05,p.adjust.method="holm",log=TRUE){
         } else round(mean(data2$Start))
     })
 
-    conclusion<-list(call=match.call(),alpha=alpha,group.means=means,adjusted.p.value=p.value,best.models=data.frame(Best.Models=best,End=end,Start=start),p.adjust.method=p.adjust.method)
+    conclusion<-list(call=match.call(),alpha=alpha,group.medians=medians,adjusted.p.value=p.value,best.models=data.frame(Best.Models=factor(best,levels=sapply(c("HI","CGF1","CGF2","GA"),function(model) grep(model,data$Model,value=TRUE)[1])),End=end,Start=start),pseudovalue=data2[,c("LD","Model","pseudovalue")],p.adjust.method=p.adjust.method)
     class(conclusion)<-"CAM.conclusion"
     conclusion
 }
@@ -911,8 +915,8 @@ print.CAM.conclusion<-function(x,...){
     cat("Best Model(s) and Time Estimation:\n")
     print(x$best.models,row.names=FALSE,...)
     cat("\n")
-    cat("Group Means of log(msE)/msE:\n")
-    print(x$group.means,...)
+    cat("Group Medians of pseudo log(msE)/msE:\n")
+    print(x$group.medians,...)
     cat("\n")
     cat("Adjusted p-value:\n")
     print(x$adjusted.p.value,...)
@@ -979,11 +983,11 @@ singleHI<-function(d,Z,m1,T=500L){
         }
     }
     
-    estimate<-list(list(m=NA,n=N,start=N,end=NA,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1)))
+    estimate<-list(list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1)))
     names(estimate)<-"HI"
     result$estimate<-estimate
     
-    result$summary<-data.frame(Model=names(estimate),
+    result$summary<-data.frame(Model=factor(names(estimate),levels=names(estimate)),
                                Start=sapply(estimate,function(dummy) dummy$start),
                                End=sapply(estimate,function(dummy) dummy$end),
                                theta0=sapply(estimate,function(dummy) dummy$theta0),
@@ -1079,7 +1083,7 @@ HI<-function(rawld,m1,T=500L,LD.parallel=TRUE,LD.clusternum){
     data<-NULL
     for(ld in seq_len(ncol(Zs))){
         data.temp<-data.frame(LD=names(results$CAM.list)[ld],
-                              Model=names(results$CAM.list[[ld]]$estimate),
+                              Model=factor(names(results$CAM.list[[ld]]$estimate),names(results$CAM.list[[ld]]$estimate)),
                               Start=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$start),
                               End=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$end),
                               theta0=sapply(results$CAM.list[[ld]]$estimate,function(dummy) dummy$theta0),
@@ -1090,8 +1094,8 @@ HI<-function(rawld,m1,T=500L,LD.parallel=TRUE,LD.clusternum){
                               quasi.F=if(ld==1L) sapply(results$CAM.list[[1L]]$estimate,function(dummy){dummy$ssE/v}) else NA)
         data<-rbind(data,data.temp)
     }
-    data$LD<-as.factor(data$LD)
-    data$Model<-factor(data$Model,ordered=TRUE)
+    
+    data$LD<-factor(data$LD,levels=names(results$CAM.list))
     row.names(data)<-NULL
     results$summary<-data
     if(any(data$Start==T)) warning("Most Ancient Generation T Reached! Consider Re-running with a Larger T.")

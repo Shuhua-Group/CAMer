@@ -30,7 +30,7 @@ fit
 ## Length of Used LD: 3497 
 ## 
 ##  Model Start End          msE
-##     HI    23  NA 8.912686e-06
+##     HI    23  23 8.912686e-06
 ##   CGF1    49   1 1.654922e-06
 ##   CGF2    60   1 2.750241e-06
 ##     GA    53   1 5.509048e-06
@@ -65,50 +65,50 @@ fit
 ## Total Length of LD: 3497 
 ## 
 ##           LD  Model Start End          msE  quasi.F
-##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
-##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-##        Jack1     HI    63  NA 2.220300e-06       NA
-##        Jack1 CGF1-I   105  23 1.794603e-06       NA
-##        Jack1 CGF2-I   111  28 1.779137e-06       NA
-##        Jack1   GA-I    98  30 1.787182e-06       NA
-##        Jack2     HI    63  NA 2.358990e-06       NA
-##        Jack2 CGF1-I   106  22 1.852915e-06       NA
-##        Jack2 CGF2-I   115  26 1.848968e-06       NA
-##        Jack2   GA-I    99  29 1.847539e-06       NA
-##        Jack3     HI    64  NA 2.185886e-06       NA
-##        Jack3 CGF1-I   108  22 1.725799e-06       NA
-##        Jack3 CGF2-I   115  27 1.708941e-06       NA
-##        Jack3   GA-I   101  29 1.723330e-06       NA
-##        Jack4     HI    64  NA 2.432188e-06       NA
-##        Jack4 CGF1-I   109  21 1.882746e-06       NA
-##        Jack4 CGF2-I   119  25 1.888059e-06       NA
-##        Jack4   GA-I    99  30 1.867834e-06       NA
-##        Jack5     HI    63  NA 2.423726e-06       NA
-##        Jack5 CGF1-I   110  20 1.802694e-06       NA
-##        Jack5 CGF2-I   118  25 1.803764e-06       NA
-##        Jack5   GA-I   100  29 1.801889e-06       NA
-##        Jack6     HI    64  NA 2.307339e-06       NA
-##        Jack6 CGF1-I   109  21 1.770311e-06       NA
-##        Jack6 CGF2-I   119  25 1.776908e-06       NA
-##        Jack6   GA-I   100  29 1.763367e-06       NA
-##        Jack7     HI    63  NA 2.396205e-06       NA
-##        Jack7 CGF1-I   107  21 1.786312e-06       NA
-##        Jack7 CGF2-I   116  25 1.787210e-06       NA
-##        Jack7   GA-I   100  28 1.787691e-06       NA
-##        Jack8     HI    63  NA 2.304644e-06       NA
-##        Jack8 CGF1-I   108  21 1.774159e-06       NA
-##        Jack8 CGF2-I   115  26 1.750770e-06       NA
-##        Jack8   GA-I    99  29 1.749116e-06       NA
-##        Jack9     HI    64  NA 2.350640e-06       NA
-##        Jack9 CGF1-I   106  23 1.867137e-06       NA
-##        Jack9 CGF2-I   117  26 1.880573e-06       NA
-##        Jack9   GA-I    99  30 1.868055e-06       NA
-##       Jack10     HI    63  NA 2.248512e-06       NA
-##       Jack10 CGF1-I   105  23 1.721175e-06       NA
-##       Jack10 CGF2-I   113  27 1.722507e-06       NA
-##       Jack10   GA-I    98  30 1.723349e-06       NA
+##  Combined_LD     HI    62  62 3.269912e-06 1.448423
+##  Combined_LD CGF1-I   110  18 2.350439e-06 1.041138
+##  Combined_LD CGF2-I   121  22 2.313658e-06 1.024846
+##  Combined_LD   GA-I   101  26 2.290190e-06 1.014450
+##        Jack1     HI    62  62 3.331873e-06       NA
+##        Jack1 CGF1-I   109  19 2.532073e-06       NA
+##        Jack1 CGF2-I   119  23 2.498988e-06       NA
+##        Jack1   GA-I   102  26 2.487870e-06       NA
+##        Jack2     HI    61  61 3.227448e-06       NA
+##        Jack2 CGF1-I   110  18 2.361470e-06       NA
+##        Jack2 CGF2-I   118  23 2.310203e-06       NA
+##        Jack2   GA-I   101  26 2.299594e-06       NA
+##        Jack3     HI    61  61 3.477126e-06       NA
+##        Jack3 CGF1-I   111  17 2.457821e-06       NA
+##        Jack3 CGF2-I   122  21 2.418382e-06       NA
+##        Jack3   GA-I   102  25 2.392573e-06       NA
+##        Jack4     HI    62  62 3.363831e-06       NA
+##        Jack4 CGF1-I   112  17 2.387836e-06       NA
+##        Jack4 CGF2-I   121  22 2.348988e-06       NA
+##        Jack4   GA-I   104  25 2.343282e-06       NA
+##        Jack5     HI    62  62 3.411285e-06       NA
+##        Jack5 CGF1-I   109  19 2.402213e-06       NA
+##        Jack5 CGF2-I   124  21 2.390199e-06       NA
+##        Jack5   GA-I   104  25 2.357778e-06       NA
+##        Jack6     HI    62  62 3.289421e-06       NA
+##        Jack6 CGF1-I   108  19 2.457056e-06       NA
+##        Jack6 CGF2-I   121  22 2.440099e-06       NA
+##        Jack6   GA-I   100  27 2.402203e-06       NA
+##        Jack7     HI    62  62 3.428745e-06       NA
+##        Jack7 CGF1-I   110  18 2.429383e-06       NA
+##        Jack7 CGF2-I   121  22 2.406796e-06       NA
+##        Jack7   GA-I   103  25 2.398758e-06       NA
+##        Jack8     HI    62  62 3.283614e-06       NA
+##        Jack8 CGF1-I   107  20 2.527757e-06       NA
+##        Jack8 CGF2-I   119  23 2.491798e-06       NA
+##        Jack8   GA-I   102  26 2.471097e-06       NA
+##        Jack9     HI    61  61 3.479743e-06       NA
+##        Jack9 CGF1-I   111  17 2.418923e-06       NA
+##        Jack9 CGF2-I   122  21 2.380390e-06       NA
+##        Jack9   GA-I   105  24 2.367834e-06       NA
+##       Jack10     HI    61  61 3.253384e-06       NA
+##       Jack10 CGF1-I   108  19 2.330627e-06       NA
+##       Jack10 CGF2-I   118  23 2.291267e-06       NA
+##       Jack10   GA-I   103  25 2.289236e-06       NA
 ```
 
 One can also specify the file path of the .rawld file in argument `rawld=` and the file path of the .log file containing the information of `m1` in argument `m1=`.
@@ -123,7 +123,7 @@ See help page of `CAM()` for more examples and details.
 
 ## Summary Plots
 
-A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to \code{Combined_LD} in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for \code{Combined_LD}. For example, let's plot the previous result:
+A new method of `plot()` for **CAM** class is introduced in this package (`plot.CAM()`). This function generates three plots in a device. The plot on the top left is the estimated time intervals/points for the four models. The color depth of segments/points corresponds to how many intervals/points covers this part in Jackknives. The deeper the color, the more estimates from Jackknives cover this part. The plot on the top right is the boxplot of msE for the four models. The third plot shows the fitting of four models to `Combined_LD` in the .rawld file. The numbers after model names in the legend are quasi-F values of the four models for `Combined_LD`. For example, let's plot the previous result:
 
 
 ```r
@@ -170,20 +170,19 @@ conclusion
 ## 
 ## Best Model(s) and Time Estimation:
 ##  Best.Models End Start
-##       CGF1-I  22   107
-##       CGF2-I  26   115
-##         GA-I  29    99
+##       CGF2-I  22   121
+##         GA-I  25   102
 ## 
-## Group Means of log(msE)/msE:
-##    CGF1-I    CGF2-I      GA-I        HI 
-## -13.22938 -13.23121 -13.23263 -12.97332 
+## Group Medians of pseudo log(msE)/msE:
+##        HI    CGF1-I    CGF2-I      GA-I 
+## -12.84265 -13.23881 -13.30074 -13.33372 
 ## 
 ## Adjusted p-value:
-##              CGF1-I       CGF2-I         GA-I           HI
-## CGF1-I           NA 8.078541e-01 1.797942e-01 9.238602e-10
-## CGF2-I 8.078541e-01           NA 8.078541e-01 8.919968e-10
-## GA-I   1.797942e-01 8.078541e-01           NA 9.238602e-10
-## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA
+##                HI     CGF1-I     CGF2-I       GA-I
+## HI             NA 0.01171875 0.01171875 0.01171875
+## CGF1-I 0.01171875         NA 0.05468750 0.01171875
+## CGF2-I 0.01171875 0.05468750         NA 0.05468750
+## GA-I   0.01171875 0.01171875 0.05468750         NA
 ```
 
 The function returns an object of **CAM.conclusion** class, which has a special method for `print()`.
@@ -214,50 +213,50 @@ fit
 ## Total Length of LD: 3497 
 ## 
 ##           LD  Model Start End          msE  quasi.F
-##  Combined_LD     HI    63  NA 2.235635e-06 1.323224
-##  Combined_LD CGF1-I   105  23 1.695982e-06 1.003815
-##  Combined_LD CGF2-I   116  26 1.705954e-06 1.009717
-##  Combined_LD   GA-I   100  29 1.706906e-06 1.010281
-##        Jack1     HI    63  NA 2.220300e-06       NA
-##        Jack1 CGF1-I   105  23 1.794603e-06       NA
-##        Jack1 CGF2-I   111  28 1.779137e-06       NA
-##        Jack1   GA-I    98  30 1.787182e-06       NA
-##        Jack2     HI    63  NA 2.358990e-06       NA
-##        Jack2 CGF1-I   106  22 1.852915e-06       NA
-##        Jack2 CGF2-I   115  26 1.848968e-06       NA
-##        Jack2   GA-I    99  29 1.847539e-06       NA
-##        Jack3     HI    64  NA 2.185886e-06       NA
-##        Jack3 CGF1-I   108  22 1.725799e-06       NA
-##        Jack3 CGF2-I   115  27 1.708941e-06       NA
-##        Jack3   GA-I   101  29 1.723330e-06       NA
-##        Jack4     HI    64  NA 2.432188e-06       NA
-##        Jack4 CGF1-I   109  21 1.882746e-06       NA
-##        Jack4 CGF2-I   119  25 1.888059e-06       NA
-##        Jack4   GA-I    99  30 1.867834e-06       NA
-##        Jack5     HI    63  NA 2.423726e-06       NA
-##        Jack5 CGF1-I   110  20 1.802694e-06       NA
-##        Jack5 CGF2-I   118  25 1.803764e-06       NA
-##        Jack5   GA-I   100  29 1.801889e-06       NA
-##        Jack6     HI    64  NA 2.307339e-06       NA
-##        Jack6 CGF1-I   109  21 1.770311e-06       NA
-##        Jack6 CGF2-I   119  25 1.776908e-06       NA
-##        Jack6   GA-I   100  29 1.763367e-06       NA
-##        Jack7     HI    63  NA 2.396205e-06       NA
-##        Jack7 CGF1-I   107  21 1.786312e-06       NA
-##        Jack7 CGF2-I   116  25 1.787210e-06       NA
-##        Jack7   GA-I   100  28 1.787691e-06       NA
-##        Jack8     HI    63  NA 2.304644e-06       NA
-##        Jack8 CGF1-I   108  21 1.774159e-06       NA
-##        Jack8 CGF2-I   115  26 1.750770e-06       NA
-##        Jack8   GA-I    99  29 1.749116e-06       NA
-##        Jack9     HI    64  NA 2.350640e-06       NA
-##        Jack9 CGF1-I   106  23 1.867137e-06       NA
-##        Jack9 CGF2-I   117  26 1.880573e-06       NA
-##        Jack9   GA-I    99  30 1.868055e-06       NA
-##       Jack10     HI    63  NA 2.248512e-06       NA
-##       Jack10 CGF1-I   105  23 1.721175e-06       NA
-##       Jack10 CGF2-I   113  27 1.722507e-06       NA
-##       Jack10   GA-I    98  30 1.723349e-06       NA
+##  Combined_LD     HI    62  62 3.269912e-06 1.448423
+##  Combined_LD CGF1-I   110  18 2.350439e-06 1.041138
+##  Combined_LD CGF2-I   121  22 2.313658e-06 1.024846
+##  Combined_LD   GA-I   101  26 2.290190e-06 1.014450
+##        Jack1     HI    62  62 3.331873e-06       NA
+##        Jack1 CGF1-I   109  19 2.532073e-06       NA
+##        Jack1 CGF2-I   119  23 2.498988e-06       NA
+##        Jack1   GA-I   102  26 2.487870e-06       NA
+##        Jack2     HI    61  61 3.227448e-06       NA
+##        Jack2 CGF1-I   110  18 2.361470e-06       NA
+##        Jack2 CGF2-I   118  23 2.310203e-06       NA
+##        Jack2   GA-I   101  26 2.299594e-06       NA
+##        Jack3     HI    61  61 3.477126e-06       NA
+##        Jack3 CGF1-I   111  17 2.457821e-06       NA
+##        Jack3 CGF2-I   122  21 2.418382e-06       NA
+##        Jack3   GA-I   102  25 2.392573e-06       NA
+##        Jack4     HI    62  62 3.363831e-06       NA
+##        Jack4 CGF1-I   112  17 2.387836e-06       NA
+##        Jack4 CGF2-I   121  22 2.348988e-06       NA
+##        Jack4   GA-I   104  25 2.343282e-06       NA
+##        Jack5     HI    62  62 3.411285e-06       NA
+##        Jack5 CGF1-I   109  19 2.402213e-06       NA
+##        Jack5 CGF2-I   124  21 2.390199e-06       NA
+##        Jack5   GA-I   104  25 2.357778e-06       NA
+##        Jack6     HI    62  62 3.289421e-06       NA
+##        Jack6 CGF1-I   108  19 2.457056e-06       NA
+##        Jack6 CGF2-I   121  22 2.440099e-06       NA
+##        Jack6   GA-I   100  27 2.402203e-06       NA
+##        Jack7     HI    62  62 3.428745e-06       NA
+##        Jack7 CGF1-I   110  18 2.429383e-06       NA
+##        Jack7 CGF2-I   121  22 2.406796e-06       NA
+##        Jack7   GA-I   103  25 2.398758e-06       NA
+##        Jack8     HI    62  62 3.283614e-06       NA
+##        Jack8 CGF1-I   107  20 2.527757e-06       NA
+##        Jack8 CGF2-I   119  23 2.491798e-06       NA
+##        Jack8   GA-I   102  26 2.471097e-06       NA
+##        Jack9     HI    61  61 3.479743e-06       NA
+##        Jack9 CGF1-I   111  17 2.418923e-06       NA
+##        Jack9 CGF2-I   122  21 2.380390e-06       NA
+##        Jack9   GA-I   105  24 2.367834e-06       NA
+##       Jack10     HI    61  61 3.253384e-06       NA
+##       Jack10 CGF1-I   108  19 2.330627e-06       NA
+##       Jack10 CGF2-I   118  23 2.291267e-06       NA
+##       Jack10   GA-I   103  25 2.289236e-06       NA
 ```
 
 ```r
@@ -279,20 +278,19 @@ conclude.model(fit)
 ## 
 ## Best Model(s) and Time Estimation:
 ##  Best.Models End Start
-##       CGF1-I  22   107
-##       CGF2-I  26   115
-##         GA-I  29    99
+##       CGF2-I  22   121
+##         GA-I  25   102
 ## 
-## Group Means of log(msE)/msE:
-##    CGF1-I    CGF2-I      GA-I        HI 
-## -13.22938 -13.23121 -13.23263 -12.97332 
+## Group Medians of pseudo log(msE)/msE:
+##        HI    CGF1-I    CGF2-I      GA-I 
+## -12.84265 -13.23881 -13.30074 -13.33372 
 ## 
 ## Adjusted p-value:
-##              CGF1-I       CGF2-I         GA-I           HI
-## CGF1-I           NA 8.078541e-01 1.797942e-01 9.238602e-10
-## CGF2-I 8.078541e-01           NA 8.078541e-01 8.919968e-10
-## GA-I   1.797942e-01 8.078541e-01           NA 9.238602e-10
-## HI     9.238602e-10 8.919968e-10 9.238602e-10           NA
+##                HI     CGF1-I     CGF2-I       GA-I
+## HI             NA 0.01171875 0.01171875 0.01171875
+## CGF1-I 0.01171875         NA 0.05468750 0.01171875
+## CGF2-I 0.01171875 0.05468750         NA 0.05468750
+## GA-I   0.01171875 0.01171875 0.05468750         NA
 ```
 
 ### Reconstruct Fitted LD Decay Curves
@@ -307,10 +305,10 @@ str(fitted)
 
 ```
 ## List of 4
-##  $ HI.fitted    : num [1:3497] 0.192 0.19 0.187 0.185 0.183 ...
-##  $ CGF1-I.fitted: num [1:3497, 1] 0.199 0.196 0.194 0.191 0.188 ...
-##  $ CGF2-I.fitted: num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
-##  $ GA-I.fitted  : num [1:3497, 1] 0.2 0.197 0.194 0.192 0.189 ...
+##  $ HI.fitted    : num [1:3497] 0.191 0.189 0.187 0.184 0.182 ...
+##  $ CGF1-I.fitted: num [1:3497] 0.2 0.197 0.194 0.191 0.188 ...
+##  $ CGF2-I.fitted: num [1:3497] 0.2 0.198 0.195 0.192 0.189 ...
+##  $ GA-I.fitted  : num [1:3497] 0.199 0.197 0.194 0.191 0.188 ...
 ```
 
 
@@ -332,7 +330,7 @@ fit
 ## Length of Used LD: 3497 
 ## 
 ##  Model Start End          msE
-##     HI    23  NA 8.912686e-06
+##     HI    23  23 8.912686e-06
 ```
 
 This function also returns an object of **CAM.single** class, and can be passed to `reconstruct.fitted()`:
@@ -368,17 +366,17 @@ fit
 ## Total Length of LD: 3497 
 ## 
 ##           LD Model Start End          msE  quasi.F
-##  Combined_LD    HI    63  NA 2.235635e-06 1.323224
-##        Jack1    HI    63  NA 2.220300e-06       NA
-##        Jack2    HI    63  NA 2.358990e-06       NA
-##        Jack3    HI    64  NA 2.185886e-06       NA
-##        Jack4    HI    64  NA 2.432188e-06       NA
-##        Jack5    HI    63  NA 2.423726e-06       NA
-##        Jack6    HI    64  NA 2.307339e-06       NA
-##        Jack7    HI    63  NA 2.396205e-06       NA
-##        Jack8    HI    63  NA 2.304644e-06       NA
-##        Jack9    HI    64  NA 2.350640e-06       NA
-##       Jack10    HI    63  NA 2.248512e-06       NA
+##  Combined_LD    HI    62  62 3.269912e-06 1.448423
+##        Jack1    HI    62  62 3.331873e-06       NA
+##        Jack2    HI    61  61 3.227448e-06       NA
+##        Jack3    HI    61  61 3.477126e-06       NA
+##        Jack4    HI    62  62 3.363831e-06       NA
+##        Jack5    HI    62  62 3.411285e-06       NA
+##        Jack6    HI    62  62 3.289421e-06       NA
+##        Jack7    HI    62  62 3.428745e-06       NA
+##        Jack8    HI    62  62 3.283614e-06       NA
+##        Jack9    HI    61  61 3.479743e-06       NA
+##       Jack10    HI    61  61 3.253384e-06       NA
 ```
 
 The output is also an object of **CAM** class. However, it should *NOT* be passed to `plot()`, and its summary table should *NOT* be passed to `construct.CAM()`.
