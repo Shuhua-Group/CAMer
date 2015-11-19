@@ -44,6 +44,8 @@ The function `CAM()` does CAM for a .rawld file with multiple LD decay curve. Pa
 ```{r CAM}
 data(GA_I)
 fit<-CAM(rawld=GA_I,m1=0.3,T=150L,LD.parallel=TRUE,single.parallel=FALSE)
+#Usually, one only needs to pass the paths to the .rawld file and to the .log file to CAM():
+#fit<-CAM(rawld="path/to/GA_I.rawld",m1="path/to/GA_I.log",T=150L,LD.parallel=TRUE,single.parallel=FALSE)
 fit
 ```
 
