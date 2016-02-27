@@ -1,21 +1,25 @@
 Package: CAMer
 Type: Package
 Title: Continuous Admixture Modeler
-Version: 0.2
+Version: 0.3
 Date: 2015-08-10
 Author: Qiu Hongxiang
+Depends:
+    R (>= 3.0.0)
 Imports:
     grDevices,
     graphics,
     stats,
-    utils
-Suggests:
+    utils,
     parallel,
-    snow
+    Rcpp (>= 0.12.3)
 Maintainer: Qiu Hongxiang <david940408@gmail.com>
 Description: Includes functions for doing Continuous Admixture Modeling (CAM),
     e.g. LD fitting, summary plots, summary tables, selecting the best model(s),
     etc, based on the result of MALDmef.
 License: GPL (>=2)
 LazyData: FALSE
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
+LinkingTo:
+    Rcpp,
+    RcppArmadillo

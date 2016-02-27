@@ -1,3 +1,12 @@
+#' @useDynLib CAMer
+#' @importFrom Rcpp sourceCpp
+NULL
+
+.onUnload <- function (libpath) {
+    library.dynam.unload("CAMer", libpath)
+}
+
+
 #' Continuous Admixture Modeler (CAMer)
 #' 
 #' \pkg{CAMer} includes functions to do Continuous Admixture Modeling (CAM), generate summary plots, select the best-fit model(s), generate statistics to test if the results are credible and miscellaneous functionalities.
@@ -42,19 +51,6 @@ NULL
 NULL
 
 
-distance<-function(v1,v2){
-    sum((v1-v2)^2)
-}
-
-
-fit.theta<-function(Ac,Z){
-    X<-cbind(rep(1,length(Z)),Ac)
-    QR<-qr(X)
-    Q<-qr.Q(QR);R<-qr.R(QR)
-    theta<-solve(R,t(Q)%*%Z)
-    list(theta0=theta[1],theta1=theta[2],ssE=distance(theta[1]+Ac*theta[2],Z))
-}
-
 #' Continuous Admixture Modeling (CAM) for a Single LD Decay Curve
 #'
 #' Find the estimated time intervals/point for HI, CGF1(-I), CGF2(-I) and GA(-I) models and corresponding statictis (ssE, msE, etc.) for a single LD decay curve (e.g. Combined_LD or Jack? in a .rawld file).
@@ -97,8 +93,6 @@ fit.theta<-function(Ac,Z){
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #'
-#' Require \pkg{parallel} or \pkg{snow} package installed if \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the version of \code{R} is too old. If neither of the packages is available but \code{single.parallel=TRUE}, the function will compute sequentially with messages.
-#'
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation can result in longer computation time.
 #'
 #' There is a special method of \code{plot} and \code{print} for this class.
@@ -133,7 +127,7 @@ fit.theta<-function(Ac,Z){
 #' @note
 #' If the input of \code{m1} is the .log file path, there should not be any "=" in the names of populations. If there are, the function may not be able to execute normally, and the user should check the .log file and input \code{m1} as a number manually.
 #' 
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments does not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. The ultimate method to close the unused clusters is probably to quit the R session.
 #' @seealso \code{\link{CAM}}, \code{\link{reconstruct.fitted}}, \code{\link{conclude.model}}
 #' @export
 
@@ -154,7 +148,6 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
     }
     A<-exp(-d%*%t(seq_len(T)))
     m2<-1-m1
-    s<-length(d)
 
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
 
@@ -168,169 +161,13 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
         }
     }
     class(result)<-"CAM.single"
-
-    est.fun.HI<-function(n){
-        Ac<-A[,n]*m1*m2
-        fit.theta(Ac,Z)
-    }
-    est.fun.CGF1<-function(end,start){
-        n<-start-end+1L
-        alpha<-1-m1^(1/n)
-        Ac<-A[,end:start]%*%matrix(m1^((n-1):0/n),ncol=1L)*alpha*m1
-        fit.theta(Ac,Z)
-    }
-    est.fun.CGF2<-function(end,start){
-        n<-start-end+1L
-        alpha<-1-m2^(1/n)
-        Ac<-A[,end:start]%*%matrix(m2^((n-1):0/n),ncol=1L)*alpha*m2
-        fit.theta(Ac,Z)
-    }
-    est.fun.GA<-function(end,start){
-        n<-start-end+1L
-        Ac<-A[,end:start]%*%matrix((1-1/n)^(0:(n-1))/c(rep(n,n-1),1),ncol=1L)*m1*m2
-        fit.theta(Ac,Z)
-    }
-    est.funs<-list(est.fun.HI,est.fun.CGF1,est.fun.CGF2,est.fun.GA)
-
-    if(isolation){
-        if(fast.search){
-            upgrade.generation<-function(est.fun,gen.old){
-                end.new<-min(gen.old$end+1L,gen.old$start)
-                start.new<-max(gen.old$start-1L,gen.old$end)
-
-                gen.end.new<-est.fun(end.new,gen.old$start)
-                gen.start.new<-est.fun(gen.old$end,start.new)
-
-                ssE<-min(sapply(list(gen.old,gen.end.new,gen.start.new),function(dummy) dummy$ssE))
-                if(gen.old$ssE==ssE){
-                    end<-gen.old$end
-                    start<-gen.old$start
-                    theta0<-gen.old$theta0
-                    theta1<-gen.old$theta1
-                } else if(gen.end.new$ssE==ssE){
-                    end<-end.new
-                    start<-gen.old$start
-                    theta0<-gen.end.new$theta0
-                    theta1<-gen.end.new$theta1
-                } else {
-                    end<-gen.old$end
-                    start<-start.new
-                    theta0<-gen.start.new$theta0
-                    theta1<-gen.start.new$theta1
-                }
-
-                list(start=start,end=end,theta0=theta0,theta1=theta1,ssE=ssE,
-                     changed=!(end==gen.old$end && start==gen.old$start))
-            }
-
-            search<-function(model){
-                est.fun<-est.funs[[model]]
-                if(model==1L){
-                    ssE<-Inf
-                    for(n in seq_len(T)){
-                        coef<-est.fun(n)
-                        if(coef$ssE<ssE){
-                            theta0<-coef$theta0
-                            theta1<-coef$theta1
-                            ssE<-coef$ssE
-                            N<-n
-                        }
-                    }
-                    
-                    list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
-                } else {
-                    est.old<-est.fun(1,T)
-                    gen.old<-list(end=1,start=T,theta0=est.old$theta0,theta1=est.old$theta1,ssE=est.old$ssE)
-                    repeat{
-                        gen.new<-upgrade.generation(est.fun,gen.old)
-                        if(gen.new$changed) gen.old<-gen.new
-                        else break
-                    }
-                    
-                    list(m=gen.new$end,n=gen.new$start-gen.new$end+1L,
-                         start=gen.new$start,end=gen.new$end,
-                         theta0=gen.new$theta0,theta1=gen.new$theta1,
-                         ssE=gen.new$ssE,msE=gen.new$ssE/(length(Z)-1))
-                }
-            }
-        } else
-            search<-function(model){
-                est.fun<-est.funs[[model]]
-                if(model==1L){
-                    ssE<-Inf
-                    for(n in seq_len(T)){
-                        coef<-est.fun(n)
-                        if(coef$ssE<ssE){
-                            theta0<-coef$theta0
-                            theta1<-coef$theta1
-                            ssE<-coef$ssE
-                            N<-n
-                        }
-                    }
-                    
-                    list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
-                } else {
-                    SSE<-Inf
-
-                    for(n in seq_len(max.duration)){
-                        for(m in seq_len(T-n+1L)){
-                            coef<-est.fun(m,m+n-1L)
-                            if(coef$ssE<SSE){
-                                theta0<-coef$theta0
-                                theta1<-coef$theta1
-                                SSE<-coef$ssE
-                                M<-m
-                                N<-n
-                            }
-                        }
-                    }
-
-                    list(m=M,n=N,start=M+N-1L,end=M,theta0=theta0,theta1=theta1,ssE=SSE,msE=SSE/(length(Z)-1))
-                }
-            }
-    } else
-        search<-function(model){
-            est.fun<-est.funs[[model]]
-            ssE<-Inf
-            for(n in seq_len(T)){
-                coef<-if(model==1L) est.fun(n) else est.fun(1L,n)
-                if(coef$ssE<ssE){
-                    theta0<-coef$theta0
-                    theta1<-coef$theta1
-                    ssE<-coef$ssE
-                    N<-n
-                }
-            }
-            
-            list(m=if(model==1L) N else 1L,n=N,start=N,end=if(model==1L) N else 1L,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1))
-        }
-
-    if(single.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
-        message("Cannot find 'parallel' or 'snow' package! Computing sequentially...\n")
-        single.parallel<-FALSE
-    }
+    
     if(single.parallel){
-        if(getRversion()>="2.14.0"){
-            cl<-parallel::makeCluster(single.clusternum)
-            parallel::clusterExport(cl,c("distance","fit.theta","est.funs","A","Z","m1","m2","T"),envir=environment())
-            if(isolation && !fast.search)
-                parallel::clusterExport(cl,"max.duration",envir=environment())
-            if(isolation && fast.search)
-                parallel::clusterExport(cl,"upgrade.generation",envir=environment())
-            tryCatch(estimate<-parallel::parLapply(cl,seq_len(4L),search),
-                     finally=parallel::stopCluster(cl))
-        } else {
-            require(snow,quietly=TRUE)
-            cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta","est.funs","A","Z","m1","m2","T"),envir=environment())
-            if(isolation && !fast.search)
-                clusterExport(cl,"max.duration",envir=environment())
-            if(isolation && fast.search)
-                clusterExport(cl,"upgrade.generation",envir=environment())
-            tryCatch(estimate<-parLapply(cl,seq_len(4L),search),
-                     finally=stopCluster(cl))
-        }
-    } else estimate<-lapply(seq_len(4L),search)
+        cl<-parallel::makeCluster(single.clusternum)
+        parallel::clusterExport(cl,c("A","Z","m1","m2","T","max.duration"),envir=environment())
+        tryCatch(estimate<-parallel::parLapply(cl,seq_len(4L),search,T=T,max_duration=max.duration,A=A,Z=Z,m1=m1,m2=m2,isolation=isolation,fast_search=fast.search),
+                 finally=parallel::stopCluster(cl))
+    } else estimate<-lapply(seq_len(4L),search,T=T,max_duration=max.duration,A=A,Z=Z,m1=m1,m2=m2,isolation=isolation,fast_search=fast.search)
 
     names(estimate)<-if(isolation) factor(c("HI","CGF1-I","CGF2-I","GA-I"),levels=c("HI","CGF1-I","CGF2-I","GA-I")) else factor(c("HI","CGF1","CGF2","GA"),levels=c("HI","CGF1","CGF2","GA"))
     result$estimate<-estimate
@@ -379,8 +216,6 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #' 
-#' Require \pkg{parallel} or \pkg{snow} package installed if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the version of \code{R} is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
-#' 
 #' Be aware that when the computational cost is small (e.g. \code{isolation=FALSE} or \code{T=20L,isoaltion=TRUE,fast.search=FALSE,max.duration=10L}), using parallel computation for single LD decay curves can result in longer computation time.
 #'
 #' @examples
@@ -412,7 +247,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
 #' @note 
 #' If the input of \code{m1} is the .log file path, there should not be any "=" in the names of populations. If there are, the function may not be able to execute normally, and the user should check the .log file and input \code{m1} as a number manually.
 #' 
-#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+#' When \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. The ultimate method to close the unused clusters is probably to quit the R session.
 #' 
 #' Do care about memory allocation, especially when both \code{LD.parallel=TRUE} and \code{single.parallel=TRUE}.
 #' 
@@ -450,36 +285,14 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
     }
     class(results)<-"CAM"
 
-    if(LD.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
-        message("Cannot find 'parallel' or 'snow' package! Computing each LD sequentially...\n")
-        LD.parallel<-FALSE
-    }
     if(LD.parallel){
         if(missing(LD.clusternum)) LD.clusternum<-ncol(Zs)
-        if(getRversion()>="2.14.0"){
         cl<-parallel::makeCluster(LD.clusternum)
-        parallel::clusterExport(cl,c("distance","fit.theta","d","m1","T","isolation","single.parallel"),envir=environment())
-        if(isolation)
-            parallel::clusterExport(cl,"fast.search",envir=environment())
-        if(isolation && !fast.search)
-            parallel::clusterExport(cl,"max.duration",envir=environment())
+        parallel::clusterExport(cl,c("d","m1","T","isolation","single.parallel","fast.search","max.duration"),envir=environment())
         if(single.parallel)
             parallel::clusterExport(cl,"single.clusternum",envir=environment())
         tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
                  finally=parallel::stopCluster(cl))
-        } else {
-            require(snow,quietly=TRUE)
-            cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta","d","m1","T","isolation","single.parallel"),envir=environment())
-            if(isolation)
-                clusterExport(cl,"fast.search",envir=environment())
-            if(isolation && !fast.search)
-                clusterExport(cl,"max.duration",envir=environment())
-            if(single.parallel)
-                clusterExport(cl,"single.clusternum",envir=environment())
-            tryCatch(results$CAM.list<-parCapply(cl,Zs,singleCAM,d=d,m1=m1,T=T,isolation=isolation,fast.search=fast.search,max.duration=max.duration,single.parallel=single.parallel,single.clusternum=single.clusternum),
-                     finally=stopCluster(cl))
-        }
     } else results$CAM.list<-lapply(seq_len(ncol(Zs)),function(ld){
         singleCAM(d,Zs[,ld],m1,T,isolation=isolation,single.parallel=single.parallel,fast.search=fast.search,max.duration=max.duration,single.clusternum=single.clusternum)
     })
@@ -487,7 +300,7 @@ CAM<-function(rawld,m1,T=500L,isolation=TRUE,
 
     results$fitted<-rawld$Fitted
     if(results$CAM.list[[1L]]$maxindex>1L) results$fitted<-results$fitted[-seq_len(results$CAM.list[[1L]]$maxindex-1L)]
-    v<-distance(results$fitted,results$CAM.list[[1L]]$Z)
+    v<-sum((results$fitted-results$CAM.list[[1L]]$Z)^2)
 
     data<-NULL
     for(ld in seq_len(ncol(Zs))){
@@ -959,7 +772,6 @@ singleHI<-function(d,Z,m1,T=500L){
     }
     A<-exp(-d%*%t(seq_len(T)))
     m2<-1-m1
-    s<-length(d)
     
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")
     
@@ -967,23 +779,7 @@ singleHI<-function(d,Z,m1,T=500L){
                  d=d,T=T,A=A,Z=Z,m1=m1,m2=m2)
     class(result)<-"CAM.single"
     
-    est.fun<-function(n){
-        Ac<-A[,n]*m1*m2
-        fit.theta(Ac,Z)
-    }
-    
-    ssE<-Inf
-    for(n in seq_len(T)){
-        coef<-est.fun(n)
-        if(coef$ssE<ssE){
-            theta0<-coef$theta0
-            theta1<-coef$theta1
-            ssE<-coef$ssE
-            N<-n
-        }
-    }
-    
-    estimate<-list(list(m=N,n=N,start=N,end=N,theta0=theta0,theta1=theta1,ssE=ssE,msE=ssE/(length(Z)-1)))
+    estimate<-list(search_HI(T,A,Z,m1,m2))
     names(estimate)<-"HI"
     result$estimate<-estimate
     
@@ -1021,13 +817,11 @@ singleHI<-function(d,Z,m1,T=500L){
 #' 
 #' If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 #' 
-#' Require \pkg{parallel} or \pkg{snow} package installed if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the \code{R} version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
-#' 
 #' Be aware that when the computational cost is small (e.g. \code{T=20L}), using parallel computation for single LD decay curves can result in longer computation time.
 #' @note
 #' Although the output is a "CAM" class object, it should \emph{NOT} be passed to \code{\link{plot.CAM}}. Its summary table should \emph{NOT} be passed to \code{\link{construct.CAM}} either.
 #' 
-#' When \code{LD.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+#' When \code{LD.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. The ultimate method to close the unused clusters is probably to quit the R session.
 #' @examples 
 #' data(GA_I)
 #' fit<-HI(GA_I,m1=0.3,T=150L)
@@ -1053,24 +847,12 @@ HI<-function(rawld,m1,T=500L,LD.parallel=TRUE,LD.clusternum){
     results<-list(call=match.call(),d=d,Zs=Zs,T=T,m1=m1,m2=1-m1)
     class(results)<-"CAM"
     
-    if(LD.parallel && getRversion()<"2.14.0" && !suppressWarnings(require(snow,quietly=TRUE))){
-        message("Cannot find 'parallel' or 'snow' package! Computing each LD sequentially...\n")
-        LD.parallel<-FALSE
-    }
     if(LD.parallel){
         if(missing(LD.clusternum)) LD.clusternum<-ncol(Zs)
-        if(getRversion()>="2.14.0"){
-            cl<-parallel::makeCluster(LD.clusternum)
-            parallel::clusterExport(cl,c("distance","fit.theta","d","m1","T"),envir=environment())
-            tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleHI,d=d,m1=m1,T=T),
-                     finally=parallel::stopCluster(cl))
-        } else {
-            require(snow,quietly=TRUE)
-            cl<-makeCluster(single.clusternum)
-            clusterExport(cl,c("distance","fit.theta","d","m1","T"),envir=environment())
-            tryCatch(results$CAM.list<-parCapply(cl,Zs,singleHI,d=d,m1=m1,T=T),
-                     finally=stopCluster(cl))
-        }
+        cl<-parallel::makeCluster(LD.clusternum)
+        parallel::clusterExport(cl,c("d","Zs","m1","T"),envir=environment())
+        tryCatch(results$CAM.list<-parallel::parCapply(cl,Zs,singleHI,d=d,m1=m1,T=T),
+                 finally=parallel::stopCluster(cl))
     } else results$CAM.list<-lapply(seq_len(ncol(Zs)),function(ld){
         singleHI(d,Zs[,ld],m1,T)
     })
@@ -1078,7 +860,7 @@ HI<-function(rawld,m1,T=500L,LD.parallel=TRUE,LD.clusternum){
     
     results$fitted<-rawld$Fitted
     if(results$CAM.list[[1L]]$maxindex>1L) results$fitted<-results$fitted[-seq_len(results$CAM.list[[1L]]$maxindex-1L)]
-    v<-distance(results$fitted,results$CAM.list[[1L]]$Z)
+    v<-sum((results$fitted-results$CAM.list[[1L]]$Z)^2)
     
     data<-NULL
     for(ld in seq_len(ncol(Zs))){

@@ -34,14 +34,12 @@ If the last entry of Distence in the .rawld file is greater than 10, a warning o
 
 If the estimated time intervals/points cover \code{T}, a warning of too small \code{T} is given. The user should re-run the function with a larger \code{T} so that optimal time intervals/points can be reached.
 
-Require \pkg{parallel} or \pkg{snow} package installed if \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}. For newer versions of \code{R (>=2.14.0)}, \pkg{parallel} is in R-core. If only \pkg{snow} is available, it is recommended to library it before using the parallel computing funcationality. When only \pkg{snow} is available, it will be \code{require}-d and hence the search path will be changed; if \pkg{parallel} is available, it will be used but the search path will not be changed. One may go to \url{https://cran.r-project.org/src/contrib/Archive/snow/} to download and install older versions of \pkg{snow} if the \code{R} version is too old. If neither of the packages is available but \code{LD.parallel=TRUE} or \code{single.parallel=TRUE}, the function will compute sequentially with messages.
-
 Be aware that when the computational cost is small (e.g. \code{T=20L}), using parallel computation for single LD decay curves can result in longer computation time.
 }
 \note{
 Although the output is a "CAM" class object, it should \emph{NOT} be passed to \code{\link{plot.CAM}}. Its summary table should \emph{NOT} be passed to \code{\link{construct.CAM}} either.
 
-When \code{LD.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. If only \pkg{snow} package is available, according to \url{http://homepage.stat.uiowa.edu/~luke/R/cluster/cluster.html}, "don't interrupt a snow computation". The ultimate method to close the unused clusters is probably to quit the R session.
+When \code{LD.parallel=TRUE}, it is not recommended to terminate the execution of the function. If \pkg{parallel} package is available, it is said that \code{\link[parallel]{setDefaultCluster}} from \pkg{parallel} can be used to remove the registered cluster, but real experiments do not support this; fortunately, these unused clusters will be removed automatically later, but with warnings. The ultimate method to close the unused clusters is probably to quit the R session.
 }
 \examples{
 data(GA_I)
