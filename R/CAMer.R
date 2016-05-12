@@ -146,7 +146,7 @@ singleCAM<-function(d,Z,m1,T=500L,isolation=TRUE,
         Z<-Z[-seq_len(maxindex-1L)]
         d<-d[-seq_len(maxindex-1L)]
     }
-    A<-exp(-d%*%t(seq_len(T)))
+    A<-outer(d,seq_len(T),function(d_,l_) (1-d_)^l_)
     m2<-1-m1
 
     if(d[length(d)]>10) warning("The unit of Genetic Distance might not be Morgan.")

@@ -1,4 +1,6 @@
 ##v0.3
+###Algorithm
+* Changed the exponentials to polynomials in the matrix (see the manuscript for details).
 
 ###Implementation
 * Re-implemented part of `singleCAM`, `CAM` and `HI` in C++ to achieve faster speed. Hence this package now depends on `Rcpp` package (and `RcppArmadillo` for linear algebra as well).
@@ -10,7 +12,6 @@
 ###Miscellany
 * Reduced the size of data.
 * Corrected a typo in README.md (comand->command).
-
 
 
 
