@@ -1,8 +1,8 @@
 Package: CAMer
 Type: Package
 Title: Continuous Admixture Modeler
-Version: 0.2
-Date: 2015-08-10
+Version: 0.3
+Date: 2016-05-12
 Author: Qiu Hongxiang
 Imports:
     grDevices,
