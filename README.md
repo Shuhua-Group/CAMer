@@ -1,6 +1,6 @@
 # CAMer
 
-**CAMer** (Continuous Admixture Modeler) is an R package for Continuous Admixture Modeling (CAM), based on the result of **MALDmef** (available on http://www.picb.ac.cn/PGG/resource.php).
+**CAMer** (Continuous Admixture Modeler) is an R package for Continuous Admixture Modeling (CAM), based on the result of **iMAAPs** (available on http://www.picb.ac.cn/PGG/resource.php).
 
 ##Installation
 
