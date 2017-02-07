@@ -1,7 +1,10 @@
-bibentry(bibtype="Manual",
-         title="Modeling Continuous Admixture",
+bibentry(bibtype="Article",
+         title="Modeling Continuous Admixture Using Admixture-Induced Linkage Disequilibrium",
          author=c(person("Ying","Zhou"),
                   person("Hongxiang","Qiu"),
                   person("Shuhua","Xu")),
-          year=2015,
-          note="(under review)")
+          year=2017,
+          journal="Scientific Reports",
+          number=43054,
+          volume=7,
+          doi="10.1038/srep43054")
