@@ -2,7 +2,7 @@
 An Introduction to **CAMer** package
 ===============
 
-**CAMer** package (Continuous Admixture Modeler) does Continuous Admixture Modeling (CAM) and related summary based on the result of ***MALDmef***. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
+**CAMer** package (Continuous Admixture Modeler) does Continuous Admixture Modeling (CAM) and related summary based on the result of ***iMAAPs***. It introduces three new S3 classes, **CAM.single**, **CAM** and **CAM.conclusion**, and some corresponding methods. It also contains some utility functions and two simulated data sets (*CGF_50* and *GA_I*) for illustration.
 
 -----------
 
@@ -41,6 +41,8 @@ where parameter `d` corresponds to genetic distance and parameter `Z` correspond
 One can also specify the file path of the .log file containing the information of `m1` in argument `m1=`.
 
 Here the class of `fit` is **CAM.single**, and it has its own method for `print()`. `fit$summary` is a more comprehensive data frame containing the data frame printed.
+
+Parallel computation is also supported provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing functionality.
 
 See the help page of `singleCAM()` for more examples.
 
@@ -115,6 +117,8 @@ One can also specify the file path of the .rawld file in argument `rawld=` and t
 
 Here the class of `fit` is **CAM**, and it has its own method for `print()` and `plot()`. `fit$summary` is a more comprehensive data frame containing the data frame printed. A **CAM** object has an element named `CAM.list` consisting of the **CAM.single** objects for each LD decay curve.
 
+Parallel computation is also supported as in the example, provided that **parallel** package or **snow** package is installed. For newer versions of R (>=2.14.0), **parallel** is in R-core. If only **snow** is available, it is recommended to library it before using the parallel computing functionality.
+
 See help page of `CAM()` for more examples and details.
 
 ------------------------
@@ -128,7 +132,7 @@ A new method of `plot()` for **CAM** class is introduced in this package (`plot.
 plot(fit)
 ```
 
-![](intro_files/figure-html/plot-1.png)
+![](intro_files/figure-html/plot-1.png) 
 
 One can also run `plot(fit,"GA_I.pdf")` to plot to a .pdf file, which is recommended.
 
@@ -142,7 +146,7 @@ plot(fit,model.cols=matrix(c("pink","red","pink",
                              "yellow","orange","orange"),ncol=4))
 ```
 
-![](intro_files/figure-html/plot.color-1.png)
+![](intro_files/figure-html/plot.color-1.png) 
 
 See help page of `plot.CAM()` for more details.
 
@@ -261,7 +265,7 @@ fit
 plot(fit)
 ```
 
-![](intro_files/figure-html/construct.CAM-1.png)
+![](intro_files/figure-html/construct.CAM-1.png) 
 
 ```r
 conclude.model(fit)
