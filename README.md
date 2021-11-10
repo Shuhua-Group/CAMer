@@ -21,3 +21,5 @@ See [An Introduction to CAMer package](https://github.com/Shuhua-Group/CAMer/blo
 When using ```CAMer```, please cite:
 
 Zhou Y, Qiu H, Xu S. Modeling Continuous Admixture Using Admixture-Induced Linkage Disequilibrium. Sci Rep. 2017 Feb 23;7:43054. doi: 10.1038/srep43054. PMID: 28230170; PMCID: PMC5322361.
+
+(https://pubmed.ncbi.nlm.nih.gov/28230170/)
